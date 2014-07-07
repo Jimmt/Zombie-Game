@@ -2,14 +2,15 @@ package com.jumpbuttonstudios;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.jumpbuttonstudios.zombiegame.ZombieGame;
 
 public class Main {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "Zombie-Game";
-		cfg.useGL20 = false;
-		cfg.width = 480;
-		cfg.height = 320;
+		cfg.title = "Zombie Game";
+		cfg.useGL20 = true;
+		cfg.width = 800;
+		cfg.height = 800;
 		
 		new LwjglApplication(new ZombieGame(), cfg);
 	}
