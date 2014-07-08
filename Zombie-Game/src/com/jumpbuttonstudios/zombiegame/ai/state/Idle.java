@@ -18,7 +18,8 @@ package com.jumpbuttonstudios.zombiegame.ai.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.jumpbuttonstudios.zombiegame.Player;
+import com.gibbo.gameutil.ai.state.State;
+import com.jumpbuttonstudios.zombiegame.character.Character;
 
 /**
  * 
@@ -29,31 +30,44 @@ public class Idle implements State {
 	/** Single instance */
 	private static Idle instance = new Idle();
 
-	/** Player instance */
-	Player player;
+	/** Character instance */
+	Character character;
 
 	@Override
 	public void enter(Object object) {
-		player = (Player) object;
-		player.setFrontArm(player.getFrontArm());
-		player.setBackArm(player.getBackArm());
+		character = (Character) object;
+
+		character.setCurrentAnimation("idle");
+		if (character.getBody().getLinearVelocity().x < 0) {
+			if (!character.getCurrentAnimation().isFlipX()){
+				character.getCurrentAnimation().flipFrames(true, false);
+			}
+		}else{
+			if (character.getCurrentAnimation().isFlipX()){
+				character.getCurrentAnimation().flipFrames(true, false);
+			}
+			
+		}
+		character.getBody().setLinearDamping(10);
 
 	}
 
 	@Override
 	public void execute(Object object) {
-		player = (Player) object;
-		player.getB2d().getBody().setLinearVelocity(0, 0);
-		
-		if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)){
-			player.getStateMachine().changeState(Running.instance());
+		character = (Character) object;
+
+		if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
+			character.getStateMachine().changeState(Running.instance());
+		}else if(Gdx.input.isKeyPressed(Keys.SPACE)){
+			character.getStateMachine().changeState(Jumping.instance());
 		}
 
 	}
 
 	@Override
 	public void exit(Object object) {
-		
+		character.getBody().setLinearDamping(0);
+
 	}
 
 	public static Idle instance() {

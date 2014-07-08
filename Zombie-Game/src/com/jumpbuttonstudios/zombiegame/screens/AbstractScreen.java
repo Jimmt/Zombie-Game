@@ -1,4 +1,4 @@
-package com.jumpbuttonstudios.zombiegame;
+package com.jumpbuttonstudios.zombiegame.screens;
 
 import box2dLight.RayHandler;
 
@@ -18,6 +18,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.gibbo.gameutil.camera.ActionOrthoCamera;
+import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.ZombieGame;
 
 public abstract class AbstractScreen implements Screen {
 	protected ZombieGame zg;
@@ -27,30 +30,26 @@ public abstract class AbstractScreen implements Screen {
 	private Skin skin;
 	private BitmapFont font;
 	private TextureAtlas atlas;
-	private SpriteBatch batch;
-	private Box2DDebugRenderer debugRenderer;
+	protected SpriteBatch batch;
+	protected Box2DDebugRenderer debugRenderer;
 	private Table table;
 	protected ShapeRenderer sr;
 	protected RayHandler rh;
 	private FPSLogger logger;
-	
-	
 
 	public AbstractScreen(ZombieGame zg) {
 		this.zg = zg;
 		stage = new Stage(Constants.WIDTH, Constants.HEIGHT, true);
 		cam = (OrthographicCamera) stage.getCamera();
+		
+		batch = new SpriteBatch();
 
-		world = new World(new Vector2(0, -200f), false);
 		debugRenderer = new Box2DDebugRenderer();
 		sr = new ShapeRenderer();
 
-		
 		logger = new FPSLogger();
-		
-		
-	}
 
+	}
 
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
@@ -94,7 +93,8 @@ public abstract class AbstractScreen implements Screen {
 
 	public TextureAtlas getAtlas() {
 		if (atlas == null) {
-			atlas = new TextureAtlas(Gdx.files.internal("image-atlases/pack.atlas"));
+			atlas = new TextureAtlas(
+					Gdx.files.internal("image-atlases/pack.atlas"));
 		}
 
 		return this.atlas;
@@ -108,28 +108,16 @@ public abstract class AbstractScreen implements Screen {
 
 		stage.act(delta);
 
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		
 		stage.draw();
-		
-		
-		
-		if(rh != null)
-		rh.updateAndRender();
-		
-		
-		world.step(1 / 60f, 3, 3); 
-		
 
-		debugRenderer.render(world, cam.combined);
-//		Table.drawDebug(stage);
+		if (rh != null)
+			rh.updateAndRender();
 
-		getBatch().setProjectionMatrix(cam.combined);
-		
-//		logger.log();
-		
+
 	}
 
 	public void hide() {
@@ -146,7 +134,7 @@ public abstract class AbstractScreen implements Screen {
 	}
 
 	public void dispose() {
-		
+
 	}
 
 }

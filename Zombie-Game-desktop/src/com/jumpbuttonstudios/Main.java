@@ -9,8 +9,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Zombie Game";
 		cfg.useGL20 = true;
-		cfg.width = 800;
-		cfg.height = 800;
+		cfg.width = 768;
+		cfg.height = 432;
 		
 		new LwjglApplication(new ZombieGame(), cfg);
 	}

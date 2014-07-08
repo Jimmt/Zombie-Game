@@ -1,11 +1,11 @@
-package com.jumpbuttonstudios.zombiegame;
+package com.jumpbuttonstudios.zombiegame.screens;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.ZombieGame;
 
 public class MenuScreen extends AbstractScreen {
 

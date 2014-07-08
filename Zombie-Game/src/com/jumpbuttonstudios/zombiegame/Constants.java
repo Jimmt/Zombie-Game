@@ -9,4 +9,7 @@ public class Constants {
 	public static float TILE_SIZE = 64f;
 	public static float UNIT_WIDTH = WIDTH * scale;
 	public static float UNIT_HEIGHT = HEIGHT * scale;
+	
+	public static float WIDTH_SCALE = 32;
+	public static float HEIGHT_SCALE = 18;
 }

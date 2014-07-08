@@ -1,0 +1,8 @@
+.classpath
+.project
+.settings/
+libs/
+target/
+*.class
+*.jar
+/com

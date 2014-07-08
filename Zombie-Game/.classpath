@@ -4,5 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx.jar" sourcepath="libs/gdx-sources.jar"/>
 	<classpathentry kind="src" path="box2dlights-src"/>
+	<classpathentry kind="lib" path="libs/libgdx-utils.jar" sourcepath="libs/libgdx-utils-sources.jar"/>
+	<classpathentry kind="lib" path="libs/GameUtil-Internal.jar" sourcepath="libs/GameUtil-Internal-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
