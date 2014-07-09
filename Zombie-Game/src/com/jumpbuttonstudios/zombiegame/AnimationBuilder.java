@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
 /**
  * Builds animations for characters and entites present in the game
  * 
- * @author jimmt
+ * @author Austin "Jimmt" Hsieh
  * 
  */
 public class AnimationBuilder {

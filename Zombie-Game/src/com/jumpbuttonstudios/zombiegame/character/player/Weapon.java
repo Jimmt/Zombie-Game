@@ -22,6 +22,6 @@ public class Weapon extends Sprite {
 		return clipSize;
 	}
 	
-	
+	//TODO weapon firing
 	
 }

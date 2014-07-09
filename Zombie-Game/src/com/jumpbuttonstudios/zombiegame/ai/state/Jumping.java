@@ -35,12 +35,12 @@ public class Jumping implements State {
 	@Override
 	public void enter(Object object) {
 		character = (Character) object;
-		// TODO Add animation later, looks shit atm
+
 		character.setCurrentAnimation("jumping");
 		character.jump();
 
 		if (character.getFacing() == Facing.RIGHT) {
-			character.getCurrentAnimation().setX(-0.25f);
+			character.getCurrentAnimation().setX(-0.25f); //setting correct jumping animation position
 			if (character.getCurrentAnimation().isFlipX()) {
 				character.getCurrentAnimation().flipFrames(true, false);
 				System.out.println("lreft");
