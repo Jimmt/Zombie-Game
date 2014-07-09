@@ -36,18 +36,22 @@ public class Jumping implements State {
 		// TODO Add animation later, looks shit atm
 //		character.setCurrentAnimation("jumping");
 		character.jump();
+		
 	}
 
 	@Override
 	public void execute(Object object) {
-		character = (Character) object;
 
+		character = (Character) object;
+		character.getStateMachine().changeState(Idle.instance());
+		
+		
 	}
 
 	@Override
 	public void exit(Object object) {
-		// character = (Character) object;
-		// character.getStateMachine().changeState(Idle.instance());
+//		 character = (Character) object;
+//		 character.getStateMachine().changeState(Idle.instance());
 	}
 
 	public static Jumping instance() {

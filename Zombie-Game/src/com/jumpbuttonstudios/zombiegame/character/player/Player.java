@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.Idle;
+import com.jumpbuttonstudios.zombiegame.ai.state.Jumping;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 
 public class Player extends Character {
@@ -76,7 +77,10 @@ public class Player extends Character {
 	@Override
 	public void draw(SpriteBatch batch) {
 		backArm.update(batch);
-
+		
+		if (Gdx.input.isKeyPressed(Keys.SPACE) && isGrounded())
+			getStateMachine().changeState(Jumping.instance());
+		
 		if (currentAnimation.equals(getAnimation("running"))) {
 			if (getBody().getLinearVelocity().x < 0) {
 				currentAnimation.draw(batch, getBody().getPosition().x
@@ -157,7 +161,6 @@ public class Player extends Character {
 			} else {
 				weapon.setPosition(parent.getX() + position.x, parent.getY() + position.y);
 			}
-			
 		}
 
 		public void setWeapon(Weapon weapon) {

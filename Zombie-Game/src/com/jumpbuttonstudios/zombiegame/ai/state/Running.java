@@ -51,7 +51,6 @@ public class Running implements State {
 	public void execute(Object object) {
 		character = (Character) object;
 		Body body = character.getBody();
-		
 
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			
@@ -67,8 +66,7 @@ public class Running implements State {
 			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
 				body.applyForceToCenter(-character.getAcceleration(), 0, true);
 			}
-			if (Gdx.input.isKeyPressed(Keys.SPACE) && character.isGrounded())
-				character.getStateMachine().changeState(Jumping.instance());
+			
 		} else if (Gdx.input.isKeyPressed(Keys.D)) {
 			
 			/* Check if character changed directed */
@@ -83,8 +81,7 @@ public class Running implements State {
 			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
 				body.applyForceToCenter(character.getAcceleration(), 0, true);
 			}
-			if (Gdx.input.isKeyPressed(Keys.SPACE) && character.isGrounded())
-				character.getStateMachine().changeState(Jumping.instance());
+			
 
 		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && character.isGrounded()) {
 			character.getStateMachine().changeState(Jumping.instance());

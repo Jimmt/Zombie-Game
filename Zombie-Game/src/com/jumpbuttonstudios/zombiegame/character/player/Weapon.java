@@ -19,7 +19,6 @@ public class Weapon extends Sprite {
 		
 
 		setSize(getWidth() * Constants.scale, getHeight() * Constants.scale);
-		
 
 	}
 	
