@@ -40,7 +40,7 @@ public class Player extends Character {
 		addAnimation(AnimationBuilder.create(0.06f, 1, 11, width * 1.9f,
 				height * 1.05f, false,
 				"Sprites/Characters/Male/Run/WithArms2.png"), "running");
-		addAnimation(AnimationBuilder.create(1, 1, 2, width * 2, height * 0.5f, false,
+		addAnimation(AnimationBuilder.create(1, 1, 2, width * 1.85f, height * 1f, false,
 				"Sprites/Characters/Male/Jump/WithArms.png"), "jumping");
 
 		setFacing(Facing.RIGHT);
@@ -51,7 +51,7 @@ public class Player extends Character {
 		/** Create limbs */
 
 		backArm = new LimbJoint(this, 15 * Constants.scale,
-				5 * Constants.scale,
+				4 * Constants.scale,
 				new Weapon("Guns/M1911/WithArm.png", 7, 2));
 
 		/* Setup state machine */

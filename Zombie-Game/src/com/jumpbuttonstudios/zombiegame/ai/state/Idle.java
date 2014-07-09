@@ -59,6 +59,7 @@ public class Idle implements State {
 		if (character.getBody().getLinearVelocity().y == 0) {
 			character.setGrounded(true);
 		}
+		
 
 		if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
 			character.getStateMachine().changeState(Running.instance());

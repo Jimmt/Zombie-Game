@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.jumpbuttonstudios.zombiegame.Constants;
 
 public class Weapon extends Sprite {
-	
-	
-	
 	private int clipSize, rof;
 	
 	public Weapon(String path, int clipSize, int rof){
@@ -16,7 +13,6 @@ public class Weapon extends Sprite {
 		
 		this.clipSize = clipSize;
 		this.rof = rof;
-		
 
 		setSize(getWidth() * Constants.scale, getHeight() * Constants.scale);
 

@@ -18,6 +18,8 @@ package com.jumpbuttonstudios.zombiegame.ai.state;
 
 import com.gibbo.gameutil.ai.state.State;
 import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 
 /**
  * 
@@ -34,24 +36,43 @@ public class Jumping implements State {
 	public void enter(Object object) {
 		character = (Character) object;
 		// TODO Add animation later, looks shit atm
-//		character.setCurrentAnimation("jumping");
+		character.setCurrentAnimation("jumping");
 		character.jump();
-		
+
+		if (character.getFacing() == Facing.RIGHT) {
+			character.getCurrentAnimation().setX(-0.25f);
+			if (character.getCurrentAnimation().isFlipX()) {
+				character.getCurrentAnimation().flipFrames(true, false);
+				System.out.println("lreft");
+
+			}
+
+		}
+		if (character.getFacing() == Facing.LEFT) {
+			if (!character.getCurrentAnimation().isFlipX()) {
+				System.out.println("left");
+				character.getCurrentAnimation().flipFrames(true, false);
+			}
+			character.getCurrentAnimation().setX(-0.25f);
+		}
 	}
 
 	@Override
 	public void execute(Object object) {
 
+		if (character.getBody().getLinearVelocity().y == 0) {
+			character.setGrounded(true);
+		}
 		character = (Character) object;
-		character.getStateMachine().changeState(Idle.instance());
-		
-		
+		if (character.isGrounded())
+			character.getStateMachine().changeState(Idle.instance());
+
 	}
 
 	@Override
 	public void exit(Object object) {
-//		 character = (Character) object;
-//		 character.getStateMachine().changeState(Idle.instance());
+// character = (Character) object;
+// character.getStateMachine().changeState(Idle.instance());
 	}
 
 	public static Jumping instance() {
