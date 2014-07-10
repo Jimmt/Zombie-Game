@@ -114,20 +114,24 @@ public class Weapon {
 	/**
 	 * Fire the weapon
 	 */
-	public void fire(Vector2 direction) {	
+	public void fire(Vector2 direction) {
 		if (canFire) {
 			Sprite s = owner.getArms().getFrontArm();
 			if (owner.getFacing() == Facing.RIGHT) {
-				muzzlePos.set((s.getX() + s.getOriginX()) + bullet.getSprite().getWidth() / 2 + (MathUtils.cosDeg(direction.angle()) * 1.5f),
-						(s.getY() + s.getOriginY()) + bullet.getSprite().getHeight() / 2 + (MathUtils.sinDeg(direction.angle()) * 1.5f));
+				muzzlePos.set((s.getX() + s.getOriginX()) + bullet.getSprite().getWidth() / 2
+						+ (MathUtils.cosDeg(direction.angle()) * 1.5f), (s.getY() + s.getOriginY())
+						+ bullet.getSprite().getHeight() / 2
+						+ (MathUtils.sinDeg(direction.angle()) * 1.5f));
 // muzzlePos.set(
 // owner.getBody().getPosition().x
 // + (MathUtils.cosDeg(direction.angle()) * 1.4f),
 // owner.getBody().getPosition().y
 // + (MathUtils.cosDeg(direction.angle()) * 0.35f));
 			} else {
-				muzzlePos.set((s.getX() + s.getOriginX()) + bullet.getSprite().getWidth() / 2 + (MathUtils.cosDeg(direction.angle()) * 1.5f),
-						(s.getY() + s.getOriginY()) + bullet.getSprite().getHeight() / 2 + (MathUtils.sinDeg(direction.angle()) * 1.5f));
+				muzzlePos.set((s.getX() + s.getOriginX()) + bullet.getSprite().getWidth() / 2
+						+ (MathUtils.cosDeg(direction.angle()) * 1.5f), (s.getY() + s.getOriginY())
+						+ bullet.getSprite().getHeight() / 2
+						+ (MathUtils.sinDeg(direction.angle()) * 1.5f));
 // muzzlePos.set(
 // owner.getBody().getPosition().x
 // + (MathUtils.cosDeg(direction.angle()) * 1.4f),
@@ -135,6 +139,9 @@ public class Weapon {
 // + -(MathUtils.cosDeg(direction.angle()) * 0.35f));
 
 			}
+			Vector2 pos = new Vector2(muzzlePos.x, muzzlePos.y);
+			muzzleFlash.setRotation(direction.angle());
+			muzzleFlash.setOrigin(0, 0);
 			Bullet bullet = this.bullet.clone();
 			bullet.create(direction);
 			Level.bullets.add(bullet);
