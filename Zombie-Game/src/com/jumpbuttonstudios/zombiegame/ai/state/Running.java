@@ -23,7 +23,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.gibbo.gameutil.ai.state.State;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
-import com.jumpbuttonstudios.zombiegame.character.player.Player;
 
 /**
  * 
@@ -54,34 +53,41 @@ public class Running implements State {
 
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			
+			if(character.getFacing() == Facing.RIGHT)
+				character.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP_REVERSED);
+
 			/* Check if character changed directed */
 			if (character.getFacing() == Facing.RIGHT
 					&& !character.getCurrentAnimation().isFlipX()) {
-				character.getCurrentAnimation().flipFrames(true, false);
-				((Player) character).getBackArm().getWeapon().flip(true, false);
+//				character.getCurrentAnimation().flipFrames(true, false);
+				if(!character.getArms().isFlippedX()){
+//					character.getArms().flip();
+				}
 			}
-			character.setFacing(Facing.LEFT);
-			
+
 			/* Keep below max speed */
 			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
 				body.applyForceToCenter(-character.getAcceleration(), 0, true);
 			}
-			
+
 		} else if (Gdx.input.isKeyPressed(Keys.D)) {
 			
+			if(character.getFacing() == Facing.LEFT)
+				character.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP_REVERSED);
+
 			/* Check if character changed directed */
 			if (character.getFacing() == Facing.LEFT
 					&& character.getCurrentAnimation().isFlipX()) {
-				character.getCurrentAnimation().flipFrames(true, false);
-				((Player) character).getBackArm().getWeapon().flip(true, false);
+//				character.getCurrentAnimation().flipFrames(true, false);
+				if(character.getArms().isFlippedX()){
+//					character.getArms().flip();
+				}
 			}
-			character.setFacing(Facing.RIGHT);
-			
+
 			/* Keep below max speed */
 			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
 				body.applyForceToCenter(character.getAcceleration(), 0, true);
 			}
-			
 
 		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && character.isGrounded()) {
 			character.getStateMachine().changeState(Jumping.instance());
@@ -89,8 +95,6 @@ public class Running implements State {
 			/* Go idle if no keys pressed */
 			character.getStateMachine().changeState(Idle.instance());
 		}
-		
-
 
 	}
 

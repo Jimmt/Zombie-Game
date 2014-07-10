@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame;
+package com.jumpbuttonstudios.zombiegame.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
+import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
 /**
  * The level class holds entities in the level, controls spawning and what not
@@ -28,7 +30,10 @@ import com.jumpbuttonstudios.zombiegame.character.player.Player;
 public class Level {
 	
 	/** The Box2D world for the current level */
-	public static World world = new World(new Vector2(0, -10f), true);	
+	public static World world = new World(new Vector2(0, -10f), true);
+	
+	/** All the bullets present in the game */
+	public static Array<Bullet> bullets = new Array<Bullet>();
 	
 	/** The player present in the game */
 	public Player player;
@@ -51,6 +56,9 @@ public class Level {
 		world.step(1f/60f, 5, 8);
 		
 		player.update(delta);
+		
+		for(Bullet bullet : bullets){
+		}
 	}
 
 }

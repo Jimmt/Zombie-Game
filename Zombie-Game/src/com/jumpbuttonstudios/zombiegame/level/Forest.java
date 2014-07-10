@@ -1,4 +1,4 @@
-package com.jumpbuttonstudios.zombiegame;
+package com.jumpbuttonstudios.zombiegame.level;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
+import com.jumpbuttonstudios.zombiegame.Box2DObject;
+import com.jumpbuttonstudios.zombiegame.Constants;
 
 /**
  * The forest scene, consists of a boudary fixtures and draws the ground and

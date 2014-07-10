@@ -40,11 +40,11 @@ public class Idle implements State {
 		character.setCurrentAnimation("idle");
 		if (character.getBody().getLinearVelocity().x < 0) {
 			if (!character.getCurrentAnimation().isFlipX()) {
-				character.getCurrentAnimation().flipFrames(true, false);
+//				character.getCurrentAnimation().flipFrames(true, false);
 			}
 		} else {
 			if (character.getCurrentAnimation().isFlipX()) {
-				character.getCurrentAnimation().flipFrames(true, false);
+//				character.getCurrentAnimation().flipFrames(true, false);
 			}
 
 		}
@@ -59,7 +59,6 @@ public class Idle implements State {
 		if (character.getBody().getLinearVelocity().y == 0) {
 			character.setGrounded(true);
 		}
-		
 
 		if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
 			character.getStateMachine().changeState(Running.instance());

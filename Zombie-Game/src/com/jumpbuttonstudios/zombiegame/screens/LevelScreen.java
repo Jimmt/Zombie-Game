@@ -1,9 +1,11 @@
 package com.jumpbuttonstudios.zombiegame.screens;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.gibbo.gameutil.camera.ActionOrthoCamera;
-import com.jumpbuttonstudios.zombiegame.Level;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
+import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
 public class LevelScreen extends AbstractScreen {
 
@@ -11,7 +13,7 @@ public class LevelScreen extends AbstractScreen {
 	private Level level = new Level();
 
 	/** The Camera for Box2D */
-	ActionOrthoCamera b2dCam = new ActionOrthoCamera(16, 9);
+	public static ActionOrthoCamera b2dCam = new ActionOrthoCamera(16, 9);
 
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
@@ -40,6 +42,10 @@ public class LevelScreen extends AbstractScreen {
 
 		level.forest.draw(batch);		
 		level.player.draw(batch);
+		
+		for(Bullet bullet : Level.bullets){
+			bullet.draw(batch);
+		}
 
 		batch.end();
 

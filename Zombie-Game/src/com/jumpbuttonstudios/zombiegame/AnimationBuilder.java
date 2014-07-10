@@ -17,31 +17,10 @@ import com.badlogic.gdx.utils.Array;
  * 
  */
 public class AnimationBuilder {
-	private Animation animation;
-	private Texture sheet;
-	private TextureRegion[] frames;
-
-	public AnimationBuilder(float time, int rows, int cols, String path) {
-		sheet = new Texture(Gdx.files.internal(path));
-		TextureRegion[][] temp = TextureRegion.split(sheet, sheet.getWidth()
-				/ rows, sheet.getHeight() / cols);
-
-		frames = new TextureRegion[rows * cols];
-		int index = 0;
-		for (int i = 0; i < cols; i++) {
-			for (int j = 0; j < rows; j++) {
-				frames[index++] = temp[i][j];
-
-			}
-		}
-
-		animation = new Animation(time, frames);
-		animation.setPlayMode(Animation.LOOP);
-
-	}
 
 	/**
-	 * Creates a returns a new animation
+	 * Creates a returns a new Box2D animated sprite, this is to be used with
+	 * Box2D objects only
 	 * 
 	 * @param time
 	 *            time of each frame
@@ -56,10 +35,15 @@ public class AnimationBuilder {
 	 *            height of each frame
 	 * @param path
 	 *            the path to the spritesheet
+	 * @param If
+	 *            you have blank frames in your sprite sheet pass the frame
+	 *            numbers in the form of an array, this will remove them and
+	 *            resize the array accordinly. If you have no blank frames you
+	 *            may pass null
 	 * @return
 	 */
-	public static AnimatedBox2DSprite create(float time, int rows, int cols,
-			float width, float height, boolean adjustSize, String path) {
+	public static AnimatedBox2DSprite createb2d(float time, int rows, int cols,
+			float scaleX, float scaleY, String path, int[] blankFrames) {
 		/* The sprite sheet */
 		Texture sheet;
 		/* Key frames */
@@ -73,7 +57,6 @@ public class AnimationBuilder {
 		TextureRegion[][] temp = TextureRegion.split(sheet, sheet.getWidth()
 				/ cols, sheet.getHeight() / rows);
 
-		/* Init the keyframes arry and size it by rows by columns */
 		/* Fill the frames array with sprites that we split from the sheet */
 		for (int j = 0; j < rows; j++) {
 			for (int i = 0; i < cols; i++) {
@@ -82,20 +65,60 @@ public class AnimationBuilder {
 			}
 		}
 
+		/** Remove blank frames */
+		if (blankFrames != null)
+			for (int blank = 0; blank < blankFrames.length; blank++) {
+				frames.removeIndex(blankFrames[blank]);
+			}
+
 		Animation animation = new Animation(time, frames);
 		AnimatedSprite animSprite = new AnimatedSprite(animation);
 		AnimatedBox2DSprite animb2dSprite = new AnimatedBox2DSprite(animSprite);
 
-		animb2dSprite.setAdjustSize(adjustSize);
-		animb2dSprite.setHeight(height);
-		animb2dSprite.setWidth(width);
+		animb2dSprite.setAdjustSize(false);
+		animb2dSprite.setHeight(frames.first().getHeight() * scaleX);
+		animb2dSprite.setWidth(frames.first().getWidth() * scaleY);
 
 		/* Return an animation */
 		return animb2dSprite;
 	}
+	
+	public static AnimatedSprite create(float time, int rows, int cols,
+			float scaleX, float scaleY, String path, int[] blankFrames) {
+		/* The sprite sheet */
+		Texture sheet;
+		/* Key frames */
+		Array<Sprite> frames = new Array<Sprite>();
+		;
 
-	public Animation getAnimation() {
-		return animation;
+		/* Set the sheet to the one provided */
+		sheet = new Texture(Gdx.files.internal(path));
+
+		/* Split up the sprite sheet into segments */
+		TextureRegion[][] temp = TextureRegion.split(sheet, sheet.getWidth()
+				/ cols, sheet.getHeight() / rows);
+
+		/* Fill the frames array with sprites that we split from the sheet */
+		for (int j = 0; j < rows; j++) {
+			for (int i = 0; i < cols; i++) {
+				frames.add(new Sprite(temp[j][i]));
+
+			}
+		}
+
+		/** Remove blank frames */
+		if (blankFrames != null)
+			for (int blank = 0; blank < blankFrames.length; blank++) {
+				frames.removeIndex(blankFrames[blank]);
+			}
+
+		Animation animation = new Animation(time, frames);
+		AnimatedSprite animSprite = new AnimatedSprite(animation);
+		
+		animSprite.setSize(frames.first().getWidth() * scaleX, frames.first().getHeight() * scaleY);
+
+		/* Return an animation */
+		return animSprite;
 	}
 
 }

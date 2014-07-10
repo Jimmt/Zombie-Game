@@ -27,7 +27,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gibbo.gameutil.ai.state.StateMachine;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Box2DObject;
-import com.jumpbuttonstudios.zombiegame.character.player.Weapon;
+import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 /**
  * A concrete character class, all in-game characters share similar properties
@@ -80,7 +80,7 @@ public class Character extends Box2DObject {
 	 * speed
 	 */
 	protected float acceleration;
-	
+
 	/** The jump power of the character */
 	protected float jumpPower;
 
@@ -95,9 +95,12 @@ public class Character extends Box2DObject {
 
 	/** Direction character is facing */
 	protected Facing facing;
-	
+
 	/** If the character is on the ground */
 	private boolean isGrounded = true;
+
+	/** The set of arms this character is using, if any */
+	protected Arms arms;
 
 	public void update(float delta) {
 		stateMachine.update(this);
@@ -109,8 +112,8 @@ public class Character extends Box2DObject {
 			currentAnimation.draw(batch, getBody());
 		}
 	}
-	
-	public void jump(){
+
+	public void jump() {
 		body.setLinearDamping(0);
 		body.applyForceToCenter(0, jumpPower, true);
 		setGrounded(false);
@@ -124,9 +127,14 @@ public class Character extends Box2DObject {
 	 *            {@link AnimationBuilder} to create it
 	 * @param name
 	 *            friendly type safe name to use the animation
+	 * @return this method will return a Vector2 representing the width and
+	 *         height of a single frame of the animation, this allows you to
+	 *         have a width/height value for any other calculations, such as
+	 *         creating Box2D fixture
 	 */
-	public void addAnimation(AnimatedBox2DSprite animation, String name) {
+	public Vector2 addAnimation(AnimatedBox2DSprite animation, String name) {
 		this.animations.put(name, animation);
+		return new Vector2(animation.getAnimatedSprite().getWidth(), animation.getAnimatedSprite().getHeight());
 	}
 
 	/**
@@ -184,6 +192,14 @@ public class Character extends Box2DObject {
 
 	public void setFacing(Facing facing) {
 		this.facing = facing;
+	}
+
+	public Arms getArms() {
+		return arms;
+	}
+
+	public void setArms(Arms arms) {
+		this.arms = arms;
 	}
 
 	/**

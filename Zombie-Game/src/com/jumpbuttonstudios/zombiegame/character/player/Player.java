@@ -1,9 +1,9 @@
 package com.jumpbuttonstudios.zombiegame.character.player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,53 +14,85 @@ import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.Idle;
 import com.jumpbuttonstudios.zombiegame.ai.state.Jumping;
+import com.jumpbuttonstudios.zombiegame.character.Arms;
+import com.jumpbuttonstudios.zombiegame.character.Arms.ArmsBuilder;
 import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
+import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 public class Player extends Character {
-
-	/** The arm closest to the user */
-	private LimbJoint frontArm;
-	/** The arm furthers from the user */
-	private LimbJoint backArm;
+	
+	Arms ak;
+	Arms pistol;
+	
+	Vector2 mouse;
 
 	public Player(World world) {
 		this.world = world;
+		
+		mouse = new Vector2();
 
-		Sprite sprite = new Sprite(new Texture(Gdx.files.internal("still.png")));
-		width = sprite.getWidth() * Constants.scale;
-		height = sprite.getHeight() * Constants.scale;
+		/* Create animations */
+		/* Idle animation */
+		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1,
+				Constants.scale, Constants.scale, "still.png", null), "idle");
+		/* Running animation */
+		addAnimation(AnimationBuilder.createb2d(0.06f, 2, 6, Constants.scale,
+				Constants.scale, "Sprites/Characters/Male/Run/WithoutArms.png",
+				new int[] { 11 }), "running");
+		/* Jump animation */
+		addAnimation(
+				AnimationBuilder.createb2d(1, 1, 2, Constants.scale, Constants.scale,
+						"Sprites/Characters/Male/Jump/WithoutArms.png", null),
+				"jumping");
+
+		/* Setup the width and height from our animations sprites */
+		width = tmp.x * Constants.scale;
+		height = tmp.y * Constants.scale;
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(0, 2), true);
 		createPolyFixture(width / 2, height / 2, 0.25f, 0.70f, 0.05f, false);
 
-		/* Create animations */
-		addAnimation(AnimationBuilder.create(1, 1, 1, width, height, true,
-				"still.png"), "idle");
-		addAnimation(AnimationBuilder.create(0.06f, 1, 11, width * 1.9f,
-				height * 1.05f, false,
-				"Sprites/Characters/Male/Run/WithArms2.png"), "running");
-		addAnimation(AnimationBuilder.create(1, 1, 2, width * 1.85f, height * 1f, false,
-				"Sprites/Characters/Male/Jump/WithArms.png"), "jumping");
-
+		/* Character starts facing right */
 		setFacing(Facing.RIGHT);
 		/* Set the current animation */
 		setCurrentAnimation("idle");
 
-		// TODO Implement this later
-		/** Create limbs */
+		/** Create arms */
+		pistol = ArmsBuilder
+				.create(this,
+						-28 * Constants.scale,
+						4 * Constants.scale,
+						new Pistol("Guns/M1911/WithArm.png", this),
+						-28 * Constants.scale,
+						-4 * Constants.scale,
+						new Sprite(
+								new Texture(
+										Gdx.files
+												.internal("Sprites/Characters/Male/BodyParts/Arms/Back/Bent.png"))));
+		
+		ak = ArmsBuilder
+				.create(this,
+						-28 * Constants.scale,
+						-16 * Constants.scale,
+						new Weapon("Guns/AK74u/WithArm.png", this),
+						-20 * Constants.scale,
+						-4 * Constants.scale,
+						new Sprite(
+								new Texture(
+										Gdx.files
+												.internal("Sprites/Characters/Male/BodyParts/Arms/Back/Bent.png"))));
 
-		backArm = new LimbJoint(this, 15 * Constants.scale,
-				4 * Constants.scale,
-				new Weapon("Guns/M1911/WithArm.png", 7, 2));
-
+		arms = pistol;
+		
 		/* Setup state machine */
 		stateMachine.setDefaultState(Idle.instance());
 		stateMachine.changeState(Idle.instance());
 
 		/* Setup character properties */
 		maxSpeed = 8;
-		acceleration = 120;
+		acceleration = 10;
 		jumpPower = 200;
 
 	}
@@ -69,111 +101,59 @@ public class Player extends Character {
 	public void update(float delta) {
 		super.update(delta);
 
-		if (Gdx.input.isKeyPressed(Keys.R))
-			setGrounded(true);
+		if (Gdx.input.isKeyPressed(Keys.P)) {
+			arms = ak;
+		} else if (Gdx.input.isKeyPressed(Keys.O)) {
+			arms = pistol;
+		}
+		
+		if(Gdx.input.isButtonPressed(Buttons.LEFT)){
+			if(arms.getWeapon() != null){
+				arms.getWeapon().fire(arms.getDirection());	
+			}
+				
+		}
+		
+		arms.update(delta);
 
 	}
 
 	@Override
 	public void draw(SpriteBatch batch) {
-		backArm.update(batch);
-		
+
+		if (arms != null) {
+			arms.drawBack(batch);
+		}
+
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && isGrounded())
 			getStateMachine().changeState(Jumping.instance());
-		
+
 		if (currentAnimation.equals(getAnimation("running"))) {
 			if (getBody().getLinearVelocity().x < 0) {
-				currentAnimation.draw(batch, getBody().getPosition().x
-						- (width / 2), getBody().getPosition().y, width,
-						height, body.getAngle() * MathUtils.radDeg);
+				currentAnimation.draw(batch, getBody().getPosition().x - 0.49f,
+						getBody().getPosition().y, width, height,
+						body.getAngle() * MathUtils.radDeg);
 			} else {
-				currentAnimation.draw(batch, getBody().getPosition().x
-						- (width / 2) + 0.15f, getBody().getPosition().y,
-						width, height, body.getAngle() * MathUtils.radDeg);
+				currentAnimation.draw(batch, getBody().getPosition().x - 0.39f,
+						getBody().getPosition().y, width, height,
+						body.getAngle() * MathUtils.radDeg);
 
 			}
-			
+
 		} else {
 			super.draw(batch);
 
 		}
-
-	}
-
-
-	public LimbJoint getBackArm() {
-		return backArm;
-	}
-
-	public void setFrontArm(LimbJoint frontArm) {
-		this.frontArm = frontArm;
-	}
-
-	public void setBackArm(LimbJoint backArm) {
-		this.backArm = backArm;
-	}
-
-	/**
-	 * Simple limb anchor class
-	 * 
-	 * @author JBS
-	 * 
-	 */
-	public class LimbJoint {
-
-		/** The parent of this limb */
-		private Character parent;
-
-		/** The position at which the limb is anchored */
-		private Vector2 position = new Vector2();
-
-		private float width, height;
-
-		private Weapon weapon;
-
-		/**
-		 * Creates a new joint or "anchor" point for a limb to be placed
-		 * 
-		 * @param x
-		 *            the x coordinate on the sprite this limb is anchored to
-		 * @param y
-		 *            the y coordinate on the sprite this limb is anchored to
-		 * @param path
-		 *            internal path to assets folder
-		 */
-		public LimbJoint(Character parent, float x, float y, Weapon weapon) {
-			this.weapon = weapon;
-			position.set(x, y);
-			this.parent = parent;
-			weapon.setPosition(parent.getX() + x, parent.getY() + y);
-		}
-
-		/**
-		 * Update the limb and keep its position relative to the parent
-		 * 
-		 * @param delta
-		 */
-		public void update(Batch batch) {
-			weapon.draw(batch);
-			
-			if(weapon.isFlipX()){
-			weapon.setPosition(parent.getX() - position.x - weapon.getWidth(), parent.getY() + position.y);
-			} else {
-				weapon.setPosition(parent.getX() + position.x, parent.getY() + position.y);
-			}
-		}
-
-		public void setWeapon(Weapon weapon) {
-			this.weapon = weapon;
-		}
 		
-		public Weapon getWeapon(){
-			return weapon;
-		}
+		arms.getWeapon().draw(batch);
 
-		public Vector2 getPosition() {
-			return position;
-		}
+		if (arms != null)
+			arms.drawFront(batch);
+		
+		mouse.set(Gdx.input.getX(), Constants.HEIGHT - Gdx.input.getY());
+		mouse.scl(Constants.scale);
+		arms.rotateTowards(mouse);
+
 	}
 
 }
