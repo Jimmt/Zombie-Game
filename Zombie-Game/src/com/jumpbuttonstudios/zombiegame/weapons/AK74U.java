@@ -29,13 +29,12 @@ public class AK74U extends Weapon {
 		
 		clipSize = 45;
 		muzzleVelocity = 35; // Tweak later and get proper/appropriate number
-		rof = TimeConversion.secondToNanos(0.075f); // Tweak later
+		rof = TimeConversion.secondToNanos(0.092f); // Tweak later
 		recoil = 25;
 		accuracyMultiplier = 30;
 		
 		bullet = new Bullet("Guns/AK74u/Bullet.png", this);
-//		muzzle = new Muzzle(this, 0, .9f, 0f, 0, 2.15f);
-		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0f, 2.15f);
+		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.90f, 2.15f);
 		
 	}
 

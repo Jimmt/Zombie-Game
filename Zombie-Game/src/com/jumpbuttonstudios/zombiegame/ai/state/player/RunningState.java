@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.ai.state;
+package com.jumpbuttonstudios.zombiegame.ai.state.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.gibbo.gameutil.ai.state.State;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
 
@@ -28,62 +27,62 @@ import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
  * 
  * @author Stephen Gibson
  */
-public class Running implements State {
+public class RunningState extends PlayerState {
 
-	private static Running instance = new Running();
-
-	/** Player instance */
-	Character character;
+	private static RunningState instance = new RunningState();
 
 	@Override
 	public void enter(Object object) {
-		character = (Character) object;
+		super.enter(object);
 
-		character.setCurrentAnimation("running");
-		character.getCurrentAnimation().getAnimation()
-				.setPlayMode(Animation.LOOP);
-		character.getCurrentAnimation().play();
+		/* Set the animation to running */
+		player.setCurrentAnimation("running");
+		/* Set the animation to loop */
+		player.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP);
+		/* Play the animation */
+		player.getCurrentAnimation().play();
 
 	}
 
 	@Override
 	public void execute(Object object) {
-		character = (Character) object;
-		Body body = character.getBody();
+		super.enter(object);
+		Body body = player.getBody();
 
 		if (Gdx.input.isKeyPressed(Keys.A)) {
-			
-			if(character.getFacing() == Facing.RIGHT)
-				character.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP_REVERSED);
+
+			if (player.getFacing() == Facing.RIGHT)
+				player.getCurrentAnimation().getAnimation()
+						.setPlayMode(Animation.LOOP_REVERSED);
 
 			/* Keep below max speed */
-			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
-				body.applyForceToCenter(-character.getAcceleration(), 0, true);
+			if (Math.abs(body.getLinearVelocity().x) <= player.getMaxSpeed()) {
+				body.applyForceToCenter(-player.getAcceleration(), 0, true);
 			}
 
 		} else if (Gdx.input.isKeyPressed(Keys.D)) {
-			
 
 			/* Keep below max speed */
-			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
-				body.applyForceToCenter(character.getAcceleration(), 0, true);
+			if (Math.abs(body.getLinearVelocity().x) <= player.getMaxSpeed()) {
+				body.applyForceToCenter(player.getAcceleration(), 0, true);
 			}
 
-		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && character.isGrounded()) {
-			character.getStateMachine().changeState(Jumping.instance());
-		} else if (character.isGrounded()) {
+		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && player.isGrounded()) {
+			player.getStateMachine().changeState(JumpingState.instance());
+		} else if (player.isGrounded()) {
 			/* Go idle if no keys pressed */
-			character.getStateMachine().changeState(Idle.instance());
+			player.getStateMachine().changeState(IdleState.instance());
 		}
 
 	}
 
 	@Override
 	public void exit(Object object) {
-		character.getCurrentAnimation().stop();
+		super.exit(object);
+		player.getCurrentAnimation().stop();
 	}
 
-	public static Running instance() {
+	public static RunningState instance() {
 		return instance;
 	}
 

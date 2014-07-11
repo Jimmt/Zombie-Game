@@ -171,6 +171,7 @@ public class Character extends Box2DObject {
 		// TODO Add a way to access limb joint weapon, and simply swap them
 		return weapon;
 	}
+	
 
 	/**
 	 * Sets the current animation the character should be using from a

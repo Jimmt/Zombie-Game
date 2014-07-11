@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.ai.state;
+package com.jumpbuttonstudios.zombiegame.ai.state.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.gibbo.gameutil.ai.state.State;
-import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class Jumping implements State {
+public class JumpingState extends PlayerState {
 
-	private static Jumping instance = new Jumping();
-
-	/** Player instance */
-	Character character;
+	private static JumpingState instance = new JumpingState();
 
 	/** Previous gun pivot point */
 	Vector2 tmp = new Vector2();
@@ -54,41 +49,41 @@ public class Jumping implements State {
 
 	@Override
 	public void enter(Object object) {
-		character = (Character) object;
+		super.enter(object);
 
 		/* Set the previous facing direction from the characters current */
-		prevFacing = character.getFacing();
+		prevFacing = player.getFacing();
 
 		/* Set the animation as jumping */
-		character.setCurrentAnimation("jumping");
+		player.setCurrentAnimation("jumping");
 
 		/* Make the character jump */
-		character.jump();
+		player.jump();
 
 		// setting correct jumping animation position
-		if (character.getFacing() == Facing.RIGHT) {
-			character.getCurrentAnimation().setX(-0.25f);
+		if (player.getFacing() == Facing.RIGHT) {
+			player.getCurrentAnimation().setX(-0.25f);
 
 		}
-		if (character.getFacing() == Facing.LEFT) {
-			character.getCurrentAnimation().setX(-0.25f);
+		if (player.getFacing() == Facing.LEFT) {
+			player.getCurrentAnimation().setX(-0.25f);
 		}
 
 		/* Store the old pivot points in a tmp place */
-		tmp.set(character.getArm().getBodyPivot().getRelativePos());
-		tmp2.set(character.getArm().getWeapon().getMuzzle().getPivot()
+		tmp.set(player.getArm().getBodyPivot().getRelativePos());
+		tmp2.set(player.getArm().getWeapon().getMuzzle().getPivot()
 				.getRelativePos());
 	}
 
 	@Override
 	public void execute(Object object) {
-		character = (Character) object;
-		Body body = character.getBody();
+		super.execute(object);
+		Body body = player.getBody();
 
 		/* Sets the pivots up to adjust position in the air */
-		character.getArm().getBodyPivot().getRelativePos()
+		player.getArm().getBodyPivot().getRelativePos()
 				.set(tmp.x + 0.25f, tmp.y - 0.285f);
-		character.getArm().getWeapon().getMuzzle().getPivot().getRelativePos()
+		player.getArm().getWeapon().getMuzzle().getPivot().getRelativePos()
 				.set(tmp2.x + 0.25f, tmp2.y - 0.285f);
 
 		/*
@@ -111,7 +106,7 @@ public class Jumping implements State {
 		 */
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			/* Keep below max speed */
-			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
+			if (Math.abs(body.getLinearVelocity().x) <= player.getMaxSpeed()) {
 				body.applyForceToCenter(-damp, 0, true);
 			}
 			/*
@@ -121,7 +116,7 @@ public class Jumping implements State {
 			 */
 		} else if (Gdx.input.isKeyPressed(Keys.D)) {
 			/* Keep below max speed */
-			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
+			if (Math.abs(body.getLinearVelocity().x) <= player.getMaxSpeed()) {
 				body.applyForceToCenter(damp, 0, true);
 			}
 		}
@@ -132,32 +127,33 @@ public class Jumping implements State {
 		 * collision along the bottom of the fixture, it is much better and less
 		 * buggy
 		 */
-		if (character.getBody().getLinearVelocity().y == 0) {
-			character.setGrounded(true);
+		if (player.getBody().getLinearVelocity().y == 0) {
+			player.setGrounded(true);
 			/* Go back to an idle state */
-			character.getStateMachine().changeState(Idle.instance());
+			player.getStateMachine().changeState(IdleState.instance());
 		}
 
 	}
 
 	@Override
 	public void exit(Object object) {
-		character = (Character) object;
+		super.exit(object);
+			
 		/*
 		 * Check if the character is facing the same way he was when he jumped,
 		 * if not we flip the pivot values
 		 */
-		if (character.getFacing() != prevFacing){
+		if (player.getFacing() != prevFacing){
 			tmp.set(-tmp.x, tmp.y);
 			tmp2.set(-tmp2.x, tmp2.y);
 		}
 		/* Finally reset the pivots to their original positions */
-		character.getArm().getBodyPivot().getRelativePos().set(tmp);
-		character.getArm().getWeapon().getMuzzle().getPivot().getRelativePos()
+		player.getArm().getBodyPivot().getRelativePos().set(tmp);
+		player.getArm().getWeapon().getMuzzle().getPivot().getRelativePos()
 		.set(tmp2);
 	}
 
-	public static Jumping instance() {
+	public static JumpingState instance() {
 		return instance;
 	}
 

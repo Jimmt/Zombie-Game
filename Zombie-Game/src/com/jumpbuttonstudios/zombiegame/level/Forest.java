@@ -15,6 +15,7 @@ import com.jumpbuttonstudios.zombiegame.Constants;
  * background images
  * 
  * @author Stephen Gibson
+ * @author Jimmt
  * 
  */
 public class Forest extends Box2DObject {
@@ -65,7 +66,8 @@ public class Forest extends Box2DObject {
 
 		/* Create the ground */
 		createBody(world, BodyType.StaticBody, new Vector2(16, 0.5f), false);
-		createPolyFixture(groundWidth, groundHeight, 0, 0, 0, false);
+		createPolyFixture(groundWidth, groundHeight, 0, 0.50f, 0, false);
+		body.setUserData(this);
 
 	}
 

@@ -64,11 +64,13 @@ public class Bullet extends Box2DObject {
 
 	public void create(Vector2 direction) {
 
-		createBody(Level.world, BodyType.DynamicBody, Vector2.Zero, false);
-		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2, 0.05f,
+		createBody(Level.getWorld(), BodyType.DynamicBody, Vector2.Zero, false);
+		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2, 0.075f,
 				0, 0, false);
 		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
+//		fd.filter.groupIndex = 0;
+//		getBody().getFixtureList().get(0).setFilterData(fd.filter);
 
 		// set bullet to extended arm position
 		getBody()
@@ -102,6 +104,7 @@ public class Bullet extends Box2DObject {
 												BULLET_SPREAD
 														* weapon.getAccuracyMultiplier()
 														* MathUtils.degRad))));
+		body.setUserData(this);
 
 //		getBody().setLinearVelocity(
 //				direction.nor().scl(weapon.getMuzzleVelocity()));

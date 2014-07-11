@@ -16,12 +16,15 @@
 
 package com.jumpbuttonstudios.zombiegame.level;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.gibbo.gameutil.box2d.Box2DFactory;
+import com.jumpbuttonstudios.zombiegame.GameContactListener;
+import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
+import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
 /**
@@ -31,34 +34,45 @@ import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
  */
 public class Level {
 
-	/** The Box2D world for the current level */
-	public static World world = new World(new Vector2(0, -10f), true);
+	/**
+	 * The Box2D factory used to hold the world and delete box2d related stuff,
+	 * fixtures and what not
+	 */
+	public static Box2DFactory factory = new Box2DFactory(0, -9.8f, true);
 
 	/** All the bullets present in the game */
 	public static Array<Bullet> bullets = new Array<Bullet>();
 
-	/** The player present in the game */
-	public Player player;
+	/** All characters present in the level */
+	private Array<Character> characters = new Array<Character>();
 
-	/** The ground */
+	/** The game scene */
 	public Forest forest;
 
 	public Level() {
 
-		forest = new Forest(world);
-		player = new Player(world);
-
+		/* Create the forest scenery */
+		forest = new Forest(getWorld());
+		/* Add a player to the first index in the array */
+		characters.add(new Player(getWorld()));
+		
+		/* Just a test zombie, move on :D */
+		characters.add(new Zombie(getWorld(), getPlayer(), -10, 2));
+		
+		/* Set up a contact listener */
+		getWorld().setContactListener(new GameContactListener(this));
 	}
 
 	/**
-	 * Update the level logic and simualte physics
+	 * Update the level logic and simulate physics
 	 * 
 	 * @param delta
 	 */
 	public void update(float delta) {
-		world.step(1f / 60f, 5, 8);
-
-		player.update(delta);
+		getWorld().step(1f / 60f, 5, 8);
+		
+		/* Update the Box2D factory so things get deleted */
+		factory.update();
 
 		/*
 		 * Update all the defined pivots to keep them updated in world
@@ -68,6 +82,40 @@ public class Level {
 			if (pivot.getParentCharacter() != null)
 				pivot.update();
 		}
+
+		/*
+		 * Update all the games characters, this includes the player which is
+		 * always first in the array
+		 */
+		for (Character player : characters) {
+			player.update(delta);
+		}
+
+	}
+	
+	/**
+	 * 
+	 * @return the world stored in the {@link Box2DFactory}
+	 */
+	public static World getWorld(){
+		return factory.getWorld();
+	}
+	
+	/**
+	 * 
+	 * @return all the characters in the level
+	 */
+	public Array<Character> getCharacters() {
+		return characters;
+	}
+
+	/**
+	 * 
+	 * @return the character instance, this is the first entry in the array of
+	 *         characters
+	 */
+	public Player getPlayer() {
+		return (Player) characters.first();
 	}
 
 }

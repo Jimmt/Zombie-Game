@@ -147,7 +147,6 @@ public abstract class Weapon {
 			muzzleFlash.setOrigin(muzzleFlash.getWidth() / 2,
 					muzzleFlash.getHeight() / 2);
 			
-			System.out.println(direction.angle());
 
 			// making muzzle flash appear at the tip of the gun
 			muzzleFlash
@@ -159,8 +158,6 @@ public abstract class Weapon {
 									- (muzzleFlash.getHeight() / 2)) + (MathUtils
 									.sinDeg(direction.angle()))
 									* muzzle.getDistance()));
-//			muzzleFlash.setPosition((muzzle.getPivot().x - (muzzleFlash.getWidth() / 2)), (muzzle.getPivot().y
-//					- (muzzleFlash.getHeight() / 2)));
 			muzzleFlash.setRotation(direction.angle());
 
 			/* Create a bullet from the template */
