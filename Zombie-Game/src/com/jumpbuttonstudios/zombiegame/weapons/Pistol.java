@@ -17,7 +17,7 @@
 package com.jumpbuttonstudios.zombiegame.weapons;
 
 import com.gibbo.gameutil.time.TimeConversion;
-import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 
 /**
  * 
@@ -25,8 +25,8 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
  */
 public class Pistol extends Weapon {
 
-	public Pistol(String path, Character owner) {
-		super(path, owner);
+	public Pistol() {
+		super();
 
 		clipSize = 7;
 		muzzleVelocity = 50; // Tweak later and get proper/appropriate number
@@ -35,7 +35,7 @@ public class Pistol extends Weapon {
 		accuracyMultiplier = 20;
 		
 		bullet = new Bullet("Guns/M1911/Bullet.png", this);
-		muzzle = new Muzzle(this, 0, .70f, 0f, 0, 1.5f);
+		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.65f, 1.6f);
 		
 		
 

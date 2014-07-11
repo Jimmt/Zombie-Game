@@ -17,7 +17,7 @@
 package com.jumpbuttonstudios.zombiegame.weapons;
 
 import com.gibbo.gameutil.time.TimeConversion;
-import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 
 /**
  * 
@@ -25,8 +25,7 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
  */
 public class AK74U extends Weapon {
 
-	public AK74U(String path, Character owner) {
-		super(path, owner);
+	public AK74U() {
 		
 		clipSize = 45;
 		muzzleVelocity = 35; // Tweak later and get proper/appropriate number
@@ -35,7 +34,8 @@ public class AK74U extends Weapon {
 		accuracyMultiplier = 30;
 		
 		bullet = new Bullet("Guns/AK74u/Bullet.png", this);
-		muzzle = new Muzzle(this, 0, .9f, 0f, 0, 2.15f);
+//		muzzle = new Muzzle(this, 0, .9f, 0f, 0, 2.15f);
+		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0f, 2.15f);
 		
 	}
 

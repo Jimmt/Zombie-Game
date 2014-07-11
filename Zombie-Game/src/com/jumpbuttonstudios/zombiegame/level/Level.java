@@ -19,6 +19,8 @@ package com.jumpbuttonstudios.zombiegame.level;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
+import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
@@ -28,36 +30,43 @@ import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
  * @author Stephen Gibson
  */
 public class Level {
-	
+
 	/** The Box2D world for the current level */
 	public static World world = new World(new Vector2(0, -10f), true);
-	
+
 	/** All the bullets present in the game */
 	public static Array<Bullet> bullets = new Array<Bullet>();
-	
+
 	/** The player present in the game */
 	public Player player;
-	
+
 	/** The ground */
 	public Forest forest;
 
 	public Level() {
-		
+
 		forest = new Forest(world);
 		player = new Player(world);
-		
+
 	}
-	
+
 	/**
 	 * Update the level logic and simualte physics
+	 * 
 	 * @param delta
 	 */
-	public void update(float delta){
-		world.step(1f/60f, 5, 8);
-		
+	public void update(float delta) {
+		world.step(1f / 60f, 5, 8);
+
 		player.update(delta);
-		
-		for(Bullet bullet : bullets){
+
+		/*
+		 * Update all the defined pivots to keep them updated in world
+		 * coordinats
+		 */
+		for (PivotJoint pivot : Pivots.getPivotJoints().values()) {
+			if (pivot.getParentCharacter() != null)
+				pivot.update();
 		}
 	}
 

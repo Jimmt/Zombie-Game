@@ -56,15 +56,6 @@ public class Running implements State {
 			if(character.getFacing() == Facing.RIGHT)
 				character.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP_REVERSED);
 
-			/* Check if character changed directed */
-			if (character.getFacing() == Facing.RIGHT
-					&& !character.getCurrentAnimation().isFlipX()) {
-//				character.getCurrentAnimation().flipFrames(true, false);
-				if(!character.getArms().isFlippedX()){
-//					character.getArms().flip();
-				}
-			}
-
 			/* Keep below max speed */
 			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
 				body.applyForceToCenter(-character.getAcceleration(), 0, true);
@@ -72,17 +63,6 @@ public class Running implements State {
 
 		} else if (Gdx.input.isKeyPressed(Keys.D)) {
 			
-			if(character.getFacing() == Facing.LEFT)
-				character.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP_REVERSED);
-
-			/* Check if character changed directed */
-			if (character.getFacing() == Facing.LEFT
-					&& character.getCurrentAnimation().isFlipX()) {
-//				character.getCurrentAnimation().flipFrames(true, false);
-				if(character.getArms().isFlippedX()){
-//					character.getArms().flip();
-				}
-			}
 
 			/* Keep below max speed */
 			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {

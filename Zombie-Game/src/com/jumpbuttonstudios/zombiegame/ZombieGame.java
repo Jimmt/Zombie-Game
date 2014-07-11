@@ -4,6 +4,9 @@ import com.badlogic.gdx.Game;
 import com.jumpbuttonstudios.zombiegame.screens.MenuScreen;
 
 public class ZombieGame extends Game{
+	
+	/** If the debug lines should be drawn */
+	public static boolean DEBUG = true;
 
 	
 	@Override

@@ -3,8 +3,6 @@ package com.jumpbuttonstudios.zombiegame.character.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -14,30 +12,26 @@ import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.Idle;
 import com.jumpbuttonstudios.zombiegame.ai.state.Jumping;
-import com.jumpbuttonstudios.zombiegame.character.Arms;
-import com.jumpbuttonstudios.zombiegame.character.Arms.ArmsBuilder;
+import com.jumpbuttonstudios.zombiegame.character.Arm.ArmBuilder;
 import com.jumpbuttonstudios.zombiegame.character.Character;
-import com.jumpbuttonstudios.zombiegame.character.Limb;
-import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
+import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
-import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
+/**
+ * The protagonist
+ * 
+ * @author Gibbo
+ * @author Jimmt
+ * 
+ */
 public class Player extends Character {
 
-	Arms ak;
-	Arms pistol;
-
-	public Limb frontArm;
-
-	Vector2 mouse;
-
-	float angle;
+	/** The position of the mouse cursor */
+	Vector2 mouse = new Vector2();
 
 	public Player(World world) {
 		this.world = world;
 
-		mouse = new Vector2();
-	
 		/* Create animations */
 		/* Idle animation */
 		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1,
@@ -65,37 +59,18 @@ public class Player extends Character {
 		/* Set the current animation */
 		setCurrentAnimation("idle");
 
-		/** Create arms */
-		pistol = ArmsBuilder
-				.create(this,
-						new Pistol("Guns/M1911/WithArm.png", this),
-						-0.35f,
-						0.05f,
-						0.55f,
-						0,
-						new Sprite(
-								new Texture(
-										Gdx.files
-												.internal("Sprites/Characters/Male/BodyParts/Arms/Back/Bent.png"))),
-						-28 * Constants.scale, -4 * Constants.scale);
+		/* Setup a bunch of pivot points on the body */
+		Pivots.addPivotJoint("shoulder", this, -0.08f, 0.35f);
+		Pivots.addPivotJoint("muzzle", this, -0.08f, 0.65f);
+		Pivots.addPivotJoint("M1911", null, 0.6f, 0.05f);
+		Pivots.addPivotJoint("AK74u", null, .9f, -0.30f);
 
-		ak = ArmsBuilder
-				.create(this,
-						new AK74U("Guns/AK74u/WithArm.png", this),
-						-0.35f,
-						-0.15f,
-						0.9f,
-						0,
-						new Sprite(
-								new Texture(
-										Gdx.files
-												.internal("Sprites/Characters/Male/BodyParts/Arms/Back/Bent.png"))),
-						-20 * Constants.scale, -4 * Constants.scale);
-
-		arms = pistol;
+		/* Create an arm with a pistol as the weapon */
+		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
+				Pivots.getPivotJoint("M1911"), new Pistol(),
+				"Guns/M1911/WithArm.png");
 
 		/* Setup state machine */
-		stateMachine.setDefaultState(Idle.instance());
 		stateMachine.changeState(Idle.instance());
 
 		/* Setup character properties */
@@ -109,29 +84,22 @@ public class Player extends Character {
 	public void update(float delta) {
 		super.update(delta);
 
-		if (Gdx.input.isKeyPressed(Keys.P)) {
-			arms = ak;
-		} else if (Gdx.input.isKeyPressed(Keys.O)) {
-			arms = pistol;
-		}
-
+		/* Check if the left mouse button was pressed */
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			if (arms.getWeapon() != null) {
-				arms.getWeapon().fire(arms.getDirection());
+			if (arm.getWeapon() != null) {
+				/* Fire the weapon if it is not null */
+				arm.getWeapon().fire(arm.getDirection());
 			}
 
 		}
 
-		arms.update(delta);
+		/* Update the arm */
+		arm.update(delta);
 
 	}
 
 	@Override
 	public void draw(SpriteBatch batch) {
-
-		// if (arms != null) {
-		// arms.drawBack(batch);
-		// }
 
 		if (Gdx.input.isKeyPressed(Keys.SPACE) && isGrounded())
 			getStateMachine().changeState(Jumping.instance());
@@ -150,16 +118,16 @@ public class Player extends Character {
 
 		} else {
 			super.draw(batch);
-
 		}
 
+		/* Draw the arm on top of everything else */
+		arm.draw(batch);
 
-		if (arms != null)
-			arms.drawFront(batch);
-
+		/* Set the mouse position up */
 		mouse.set(Gdx.input.getX(), Constants.HEIGHT - Gdx.input.getY());
 		mouse.scl(Constants.scale);
-		arms.rotateTowards(mouse);
+		/* Rotate the mouse towards the arm */
+		arm.rotateTowards(mouse);
 
 	}
 

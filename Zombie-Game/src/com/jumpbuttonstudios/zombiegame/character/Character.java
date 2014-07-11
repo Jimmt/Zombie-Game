@@ -45,7 +45,7 @@ public class Character extends Box2DObject {
 	/** The height of the character */
 	protected float height;
 
-	/****************************
+	/***************************
 	 *************************** 
 	 ******* Animation *********
 	 *************************** 
@@ -63,9 +63,9 @@ public class Character extends Box2DObject {
 	/** The current frame for this character */
 	protected TextureRegion currentFrame;
 
-	/****************************
+	/***************************
 	 *************************** 
-	 ******* Properties*********
+	 ********** Stats **********
 	 *************************** 
 	 **************************/
 
@@ -84,6 +84,12 @@ public class Character extends Box2DObject {
 	/** The jump power of the character */
 	protected float jumpPower;
 
+	/***************************
+	 *************************** 
+	 ******* Properties ********
+	 *************************** 
+	 **************************/
+
 	/**
 	 * 
 	 * @author Stephen Gibson
@@ -99,11 +105,21 @@ public class Character extends Box2DObject {
 	/** If the character is on the ground */
 	private boolean isGrounded = true;
 
+	/***************************
+	 *************************** 
+	 ******* Limb stuff ********
+	 *************************** 
+	 **************************/
+
 	/** The set of arms this character is using, if any */
 	protected Arms arms;
 
+	/** The characters front arm */
+	protected Arm arm;
+
 	public void update(float delta) {
-		stateMachine.update(this);
+		/* Update the state machine */
+		stateMachine.update(this);		
 
 	}
 
@@ -114,6 +130,11 @@ public class Character extends Box2DObject {
 		}
 	}
 
+	/**
+	 * Sets the bodies linear dampening to zero and applies a force to the
+	 * centre of the body on the y axis using the characters jump power, this
+	 * will also set a {@link #isGrounded} to false to prevent air jumps
+	 */
 	public void jump() {
 		body.setLinearDamping(0);
 		body.applyForceToCenter(0, jumpPower, true);
@@ -135,8 +156,10 @@ public class Character extends Box2DObject {
 	 */
 	public Vector2 addAnimation(AnimatedBox2DSprite animation, String name) {
 		this.animations.put(name, animation);
-		return new Vector2(animation.getAnimatedSprite().getWidth(), animation.getAnimatedSprite().getHeight());
+		return new Vector2(animation.getAnimatedSprite().getWidth(), animation
+				.getAnimatedSprite().getHeight());
 	}
+
 
 	/**
 	 * Swap the weapons in the characters weapon limbjoint
@@ -195,6 +218,10 @@ public class Character extends Box2DObject {
 		this.facing = facing;
 	}
 
+	public Arm getArm() {
+		return arm;
+	}
+
 	public Arms getArms() {
 		return arms;
 	}
@@ -236,7 +263,7 @@ public class Character extends Box2DObject {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

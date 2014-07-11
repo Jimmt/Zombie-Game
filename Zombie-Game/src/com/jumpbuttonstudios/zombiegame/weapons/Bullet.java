@@ -64,9 +64,9 @@ public class Bullet extends Box2DObject {
 
 	public void create(Vector2 direction) {
 
-		createBody(Level.world, BodyType.DynamicBody, weapon.muzzlePos, false);
+		createBody(Level.world, BodyType.DynamicBody, Vector2.Zero, false);
 		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2, 0.05f,
-				0, 0, true);
+				0, 0, false);
 		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
 
@@ -79,17 +79,8 @@ public class Bullet extends Box2DObject {
 						weapon.muzzle.getPivot().y
 								+ (MathUtils.sinDeg(direction.angle()) * weapon.muzzle
 										.getDistance()),
-						weapon.getOwner().getArms().getDirection().angle()
+						weapon.getParentArm().getDirection().angle()
 								* MathUtils.degreesToRadians);
-
-		System.out.println((MathUtils.cosDeg(direction.angle()
-				+ MathUtils.random(
-						-BULLET_SPREAD
-								* weapon.getAccuracyMultiplier()
-								* MathUtils.degRad,
-						BULLET_SPREAD
-								* weapon.getAccuracyMultiplier()
-								* MathUtils.degRad))));
 
 		getBody()
 				.setLinearVelocity(
