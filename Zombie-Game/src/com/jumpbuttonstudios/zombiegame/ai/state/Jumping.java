@@ -37,11 +37,14 @@ public class Jumping implements State {
 
 	/** Previous gun anchor point */
 	Vector2 tmp = new Vector2();
-	
+
 	/** How much drag is in the air */
 	float drag = 1.5f;
-	
-	/** How much the player can dampening the movement and control movement in the air */
+
+	/**
+	 * How much the player can dampening the movement and control movement in
+	 * the air
+	 */
 	float damp = 5;
 
 	@Override
@@ -56,14 +59,14 @@ public class Jumping implements State {
 															// jumping animation
 															// position
 			if (character.getCurrentAnimation().isFlipX()) {
-//				character.getCurrentAnimation().flipFrames(true, false);
+				// character.getCurrentAnimation().flipFrames(true, false);
 
 			}
 
 		}
 		if (character.getFacing() == Facing.LEFT) {
 			if (!character.getCurrentAnimation().isFlipX()) {
-//				character.getCurrentAnimation().flipFrames(true, false);
+				// character.getCurrentAnimation().flipFrames(true, false);
 			}
 			character.getCurrentAnimation().setX(-0.25f);
 		}
@@ -76,19 +79,12 @@ public class Jumping implements State {
 		character = (Character) object;
 		Body body = character.getBody();
 
-		if (character.getFacing() == Facing.LEFT) {
-			character.getArms().getFrontAnchor()
-					.set(tmp.x - 0.15f, tmp.y - 0.285f);
-		} else {
-			character.getArms().getFrontAnchor()
-					.set(tmp.x + 0.25f, tmp.y - 0.285f);
+		character.getArms().getFrontAnchor().set(tmp.x + 0.25f, tmp.y - 0.285f);
 
-		}
-		
-		if(body.getLinearVelocity().x > 0)
+		if (body.getLinearVelocity().x > 0)
 			body.applyForceToCenter(-drag, 0, true);
-		
-		if(body.getLinearVelocity().x < 0)
+
+		if (body.getLinearVelocity().x < 0)
 			body.applyForceToCenter(drag, 0, true);
 
 		if (Gdx.input.isKeyPressed(Keys.A)) {
@@ -97,7 +93,7 @@ public class Jumping implements State {
 				body.applyForceToCenter(-damp, 0, true);
 				System.out.println("here");
 			}
-		}else if (Gdx.input.isKeyPressed(Keys.D)) {
+		} else if (Gdx.input.isKeyPressed(Keys.D)) {
 			/* Keep below max speed */
 			if (Math.abs(body.getLinearVelocity().x) <= character.getMaxSpeed()) {
 				body.applyForceToCenter(damp, 0, true);

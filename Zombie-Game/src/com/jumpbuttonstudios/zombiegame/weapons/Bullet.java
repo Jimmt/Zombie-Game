@@ -46,7 +46,7 @@ public class Bullet extends Box2DObject {
 	 * The spread of a the bullet, every bullet suffers the same spread and is
 	 * adjusted with the guns accuracy
 	 */
-	final float BULLET_SPREAD = 2;
+	final float BULLET_SPREAD = 8;
 
 	/** The bullets sprite */
 	private Sprite sprite;
@@ -54,8 +54,9 @@ public class Bullet extends Box2DObject {
 	public Bullet(String spritePath, Weapon weapon) {
 		this.weapon = weapon;
 		sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
-		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight() * Constants.scale);
-		
+		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight()
+				* Constants.scale);
+
 	}
 
 	private Bullet() {
@@ -64,17 +65,56 @@ public class Bullet extends Box2DObject {
 	public void create(Vector2 direction) {
 
 		createBody(Level.world, BodyType.DynamicBody, weapon.muzzlePos, false);
-		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2, 0.05f, 0, 0, true);
+		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2, 0.05f,
+				0, 0, true);
+		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
-		getBody().setTransform(weapon.muzzlePos, weapon.getOwner().getArms().getDirection().angle() * MathUtils.degreesToRadians);
-		getBody().applyForceToCenter(weapon.getMuzzleVelocity() * 
-				MathUtils.cosDeg(weapon.getOwner().getArms().getDirection()
-						.angle()),
-						weapon.getMuzzleVelocity() * MathUtils.sinDeg(weapon.getOwner().getArms().getDirection()
-						.angle()), true);
-		getBody().setLinearVelocity(direction.nor().scl(100));
-	
-	
+
+		// set bullet to extended arm position
+		getBody()
+				.setTransform(
+						weapon.muzzle.getPivot().x
+								+ (MathUtils.cosDeg(direction.angle()) * weapon.muzzle
+										.getDistance()),
+						weapon.muzzle.getPivot().y
+								+ (MathUtils.sinDeg(direction.angle()) * weapon.muzzle
+										.getDistance()),
+						weapon.getOwner().getArms().getDirection().angle()
+								* MathUtils.degreesToRadians);
+
+		System.out.println((MathUtils.cosDeg(direction.angle()
+				+ MathUtils.random(
+						-BULLET_SPREAD
+								* weapon.getAccuracyMultiplier()
+								* MathUtils.degRad,
+						BULLET_SPREAD
+								* weapon.getAccuracyMultiplier()
+								* MathUtils.degRad))));
+
+		getBody()
+				.setLinearVelocity(
+						weapon.getMuzzleVelocity()
+								* (MathUtils.cosDeg(direction.angle()
+										+ MathUtils.random(
+												-BULLET_SPREAD
+														* weapon.getAccuracyMultiplier()
+														* MathUtils.degRad,
+												BULLET_SPREAD
+														* weapon.getAccuracyMultiplier()
+														* MathUtils.degRad))),
+						weapon.getMuzzleVelocity()
+								* (MathUtils.sinDeg(direction.angle()
+										+ MathUtils.random(
+												-BULLET_SPREAD
+														* weapon.getAccuracyMultiplier()
+														* MathUtils.degRad,
+												BULLET_SPREAD
+														* weapon.getAccuracyMultiplier()
+														* MathUtils.degRad))));
+
+//		getBody().setLinearVelocity(
+//				direction.nor().scl(weapon.getMuzzleVelocity()));
+
 	}
 
 	public void update() {
@@ -86,7 +126,8 @@ public class Bullet extends Box2DObject {
 	public void draw(SpriteBatch batch) {
 		if (sprite != null) {
 			sprite.setOrigin(width / 2, height / 2);
-			sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
+			sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2,
+					body.getPosition().y - sprite.getHeight() / 2);
 			sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 			sprite.draw(batch);
 		}

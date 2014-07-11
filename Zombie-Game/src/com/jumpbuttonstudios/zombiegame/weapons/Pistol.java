@@ -29,10 +29,13 @@ public class Pistol extends Weapon {
 		super(path, owner);
 
 		clipSize = 7;
-		muzzleVelocity = 1; // Tweak later and get proper/appropriate number
-		rof = TimeConversion.secondToNanos(0.25f); // Tweak later
+		muzzleVelocity = 50; // Tweak later and get proper/appropriate number
+		rof = TimeConversion.secondToNanos(0.35f); // Tweak later
+		recoil = 15;
+		accuracyMultiplier = 20;
 		
 		bullet = new Bullet("Guns/M1911/Bullet.png", this);
+		muzzle = new Muzzle(this, 0, .70f, 0f, 0, 1.5f);
 		
 		
 

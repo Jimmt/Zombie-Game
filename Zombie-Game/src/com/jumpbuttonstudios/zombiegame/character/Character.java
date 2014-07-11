@@ -25,8 +25,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gibbo.gameutil.ai.state.StateMachine;
+import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
-import com.jumpbuttonstudios.zombiegame.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 /**
@@ -108,6 +108,7 @@ public class Character extends Box2DObject {
 	}
 
 	public void draw(SpriteBatch batch) {
+		/* If the character has an animaton, draw it's frames */
 		if (currentAnimation != null) {
 			currentAnimation.draw(batch, getBody());
 		}
@@ -230,6 +231,12 @@ public class Character extends Box2DObject {
 
 	public void setGrounded(boolean isGrounded) {
 		this.isGrounded = isGrounded;
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

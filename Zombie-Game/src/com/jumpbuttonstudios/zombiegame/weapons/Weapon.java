@@ -15,6 +15,7 @@ import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
 import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.screens.LevelScreen;
 
 /**
  * 
@@ -22,7 +23,7 @@ import com.jumpbuttonstudios.zombiegame.level.Level;
  * @author Jimmt
  * 
  */
-public class Weapon {
+public abstract class Weapon {
 
 	/** The character that owns this weapon */
 	protected Character owner;
@@ -60,13 +61,20 @@ public class Weapon {
 	/** How many bullets the gun can hold */
 	protected int clipSize;
 
+	/** The recoil force */
+	protected float recoil;
+
 	/** The accuracy multiplier of this gun */
+	protected float accuracyMultiplier;
 
 	/***************************
 	 *************************** 
 	 ***** Firing Mechanics*****
 	 *************************** 
 	 **************************/
+
+	/** The muzzle of the gun */
+	protected Muzzle muzzle;
 
 	/** The bullet this weapon uses to fire */
 	protected Bullet bullet;
@@ -77,15 +85,18 @@ public class Weapon {
 	/** The last time the gun fired */
 	private double lastShot;
 
+	/** The direction the barrel is facing */
+	private Vector2 direction;
+
 	public Weapon(String path, Character owner) {
 		this.owner = owner;
 		sprite = new Sprite(new Texture(Gdx.files.internal(path)));
-		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight() * Constants.scale);
+		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight()
+				* Constants.scale);
 
-		muzzleFlash = AnimationBuilder.create(1, 1, 3, Constants.scale, Constants.scale,
-				"Effect/Gunfire.png", null);
+		muzzleFlash = AnimationBuilder.create(0.030f, 1, 3, Constants.scale,
+				Constants.scale, "Effect/Gunfire.png", null);
 		muzzleFlash.getAnimation().setPlayMode(Animation.NORMAL);
-		muzzleFlash.stop();
 		muzzleFlash.setKeepSize(true);
 
 	}
@@ -107,52 +118,82 @@ public class Weapon {
 		if (muzzleFlash.isPlaying()) {
 			muzzleFlash.setSize(1, 1);
 			muzzleFlash.draw(batch);
-		} else if (muzzleFlash.isAnimationFinished()) {
+			owner.getArms()
+					.getFrontArm()
+					.setRotation(
+							owner.getFacing() == Facing.LEFT ? owner.getArms()
+									.getFrontArm().getRotation() - 10 : owner
+									.getArms().getFrontArm().getRotation() + 10);
 		}
+		if (muzzleFlash.isAnimationFinished()) {
+			muzzleFlash.stop();
+		}
+
 	}
 
 	/**
 	 * Fire the weapon
 	 */
 	public void fire(Vector2 direction) {
+		this.direction = direction;
 		if (canFire) {
+			Vector2 tmp = owner.getArms().getFrontAnchor();
 			Sprite s = owner.getArms().getFrontArm();
-			if (owner.getFacing() == Facing.RIGHT) {
-				muzzlePos.set((s.getX() + s.getOriginX()) + bullet.getSprite().getWidth() / 2
-						+ (MathUtils.cosDeg(direction.angle()) * 1.5f), (s.getY() + s.getOriginY())
-						+ bullet.getSprite().getHeight() / 2
-						+ (MathUtils.sinDeg(direction.angle()) * 1.5f));
-// muzzlePos.set(
-// owner.getBody().getPosition().x
-// + (MathUtils.cosDeg(direction.angle()) * 1.4f),
-// owner.getBody().getPosition().y
-// + (MathUtils.cosDeg(direction.angle()) * 0.35f));
-			} else {
-				muzzlePos.set((s.getX() + s.getOriginX()) + bullet.getSprite().getWidth() / 2
-						+ (MathUtils.cosDeg(direction.angle()) * 1.5f), (s.getY() + s.getOriginY())
-						+ bullet.getSprite().getHeight() / 2
-						+ (MathUtils.sinDeg(direction.angle()) * 1.5f));
-// muzzlePos.set(
-// owner.getBody().getPosition().x
-// + (MathUtils.cosDeg(direction.angle()) * 1.4f),
-// owner.getBody().getPosition().y
-// + -(MathUtils.cosDeg(direction.angle()) * 0.35f));
 
-			}
-			Vector2 pos = new Vector2(muzzlePos.x, muzzlePos.y);
+			/* Every time we fire, we must update the muzzle's position relative to the pivot */
+			muzzle.update(direction);
+
+			/* Set the origin of the muzzle flash sprite in the middle */
+			muzzleFlash.setOrigin(muzzleFlash.getWidth() / 2,
+					muzzleFlash.getHeight() / 2);
+
+			// making muzzle flash appear at the tip of the gun
+			muzzleFlash
+					.setPosition(
+							(muzzle.getPivot().x - (muzzleFlash.getWidth() / 2) + (MathUtils
+									.cosDeg(direction.angle()) * muzzle
+									.getDistance())),
+							(muzzle.getPivot().y
+									- (muzzleFlash.getHeight() / 2) + (MathUtils
+									.sinDeg(direction.angle()))
+									* muzzle.getDistance()));
 			muzzleFlash.setRotation(direction.angle());
-			muzzleFlash.setOrigin(0, 0);
+
+			/* Create a bullet from the template */
 			Bullet bullet = this.bullet.clone();
+			/* We create the Box2D stuff with this method */
 			bullet.create(direction);
+			/* Add it to our array of bullets for updating and drawing */
 			Level.bullets.add(bullet);
+			/* Set the las shot as now, so the rof works */
 			lastShot = TimeUtils.nanoTime();
+			/* We can no longer fire, dug */
 			canFire = false;
+			/* Play the muzzle flash animation */
 			muzzleFlash.play();
+			
+			/* Check if the player is below max speed, if so we can apply a little kickback from the weapon */
+			if (Math.abs(owner.getBody().getLinearVelocity().x) <= owner
+					.getMaxSpeed())
+				owner.getBody().applyForceToCenter(
+						owner.getFacing() == Facing.RIGHT ? -recoil : recoil,
+						0, true);
+			
+			/* Shake the screen a little */
+			LevelScreen.b2dCam.startShake(0.15f, 0.05f, 0.25f);
 		}
+	}
+
+	public Muzzle getMuzzle() {
+		return muzzle;
 	}
 
 	public AnimatedSprite getMuzzleFlash() {
 		return muzzleFlash;
+	}
+
+	public float getAccuracyMultiplier() {
+		return accuracyMultiplier;
 	}
 
 	public float getMuzzleVelocity() {
