@@ -23,20 +23,18 @@ import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
  * 
  * @author Stephen Gibson
  */
-public class AK74U extends Weapon {
+public class Dragunov extends Weapon {
 
-	public AK74U() {
+	public Dragunov() {
 		
-		clipSize = 45;
-		muzzleVelocity = 35; // Tweak later and get proper/appropriate number
-//		rof = TimeConversion.secondToNanos(0.092f); // Tweak later
-		rof = TimeConversion.secondToNanos(0.092f); // Tweak later
-		recoil = 25;
+		clipSize = 10;
+		muzzleVelocity = 120; // Tweak later and get proper/appropriate number
+		rof = TimeConversion.secondToNanos(1f); // Tweak later
+		recoil = 180;
 		accuracyMultiplier = 30;
 		
-		bullet = new Bullet("Guns/AK74u/Bullet.png", this);
-		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.90f, 2.15f);
-		
+		bullet = new Bullet("Guns/Dragunov/Bullet.png", this);
+		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0.1f, 0.75f, 2.15f);
 	}
 
 

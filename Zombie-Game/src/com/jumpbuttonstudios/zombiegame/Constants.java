@@ -12,4 +12,12 @@ public class Constants {
 	
 	public static float WIDTH_SCALE = 32;
 	public static float HEIGHT_SCALE = 18;
+	
+	public static void set(int width, int height){
+		Constants.WIDTH = width;
+		Constants.HEIGHT = height;
+		UNIT_WIDTH = WIDTH * scale;
+		UNIT_HEIGHT = HEIGHT * scale;
+		
+	}
 }

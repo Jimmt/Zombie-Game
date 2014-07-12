@@ -17,6 +17,7 @@
 package com.jumpbuttonstudios.zombiegame.weapons;
 
 import com.badlogic.gdx.math.Vector2;
+import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 
 /**
  * The muzzle is the end of the gun barrel, it handles the flipping of the pivot
@@ -26,38 +27,39 @@ import com.badlogic.gdx.math.Vector2;
  * @author Stephen Gibson
  */
 public class Muzzle {
-	
+
 	/** The parent of this muzzle */
 	Weapon parent;
-	
-	/** The pivot point the muzzle rotates around*/
-	private Vector2 pivot = new Vector2();
-	
+
+	/** The pivot point the muzzle rotates around */
+	private PivotJoint pivot;
+
 	/** The offset in the X axis for rotation */
 	float offsetX;
-	
+
 	/** The offset in the Y axis for rotation */
 	float offsetY;
-	
+
 	/** X position on the body */
 	float x;
 	/** Y position on the body */
 	float y;
-	
+
 	/** The distance the end of the barrel is from our pivot point */
 	private float dst;
 
-	public Muzzle(Weapon parent, float x, float y, float offsetX, float offsetY, float distance) {
+	public Muzzle(Weapon parent, PivotJoint pivot, float x, float y,
+			float distance) {
 		this.parent = parent;
+		this.pivot = pivot;
 		this.x = x;
 		this.y = y;
-		pivot.set(parent.getOwner().getX() + x, parent.getOwner().getY() + y);
 		this.dst = distance;
 	}
-	
-	
-	public void update(Vector2 direction){
-		pivot.set(parent.getOwner().getX() + x, parent.getOwner().getY() + y);
+
+	public void update(Vector2 direction) {
+		pivot.set(parent.getParentArm().getParentCharacter().getX() + x,
+				parent.getParentArm().getParentCharacter().getY() + y);
 		
 		/*
 		 * Check what side of the screen the angle is on by checking degree
@@ -67,27 +69,34 @@ public class Muzzle {
 
 			/*
 			 * Check if parent was flipped, we want to flip it back, here we
-			 * adjust the pivot so that the muzzle positions correctly, we do this here
-			 * so it only executes once as a flip can only occur once
+			 * adjust the pivot so that the muzzle positions correctly, we do
+			 * this here so it only executes once as a flip can only occur once
 			 */
-			if (parent.getSprite().isFlipY()) {
-				pivot.x = -pivot.x - offsetX;
+			if (parent.getParentArm().getSprite().isFlipY()) {
 			}
 		} else {
 			/*
 			 * Check if front arm was not flipped, we want to flip it, here we
-			 * adjust the pivot so that the muzzle positions correctly, we do this here
-			 * so it only executes once as a flip can only occur once
+			 * adjust the pivot so that the muzzle positions correctly, we do
+			 * this here so it only executes once as a flip can only occur once
 			 */
-			if (!parent.getSprite().isFlipY()) {
-				pivot.x = -pivot.x - offsetX;
+			if (!parent.getParentArm().getSprite().isFlipY()) {
 			}
 		}
 	}
-	public Vector2 getPivot() {
+
+	/**
+	 * 
+	 * @return the Weapon this muzzle belongs to
+	 */
+	public Weapon getParentWeapon() {
+		return parent;
+	}
+
+	public PivotJoint getPivot() {
 		return pivot;
 	}
-	
+
 	public float getDistance() {
 		return dst;
 	}

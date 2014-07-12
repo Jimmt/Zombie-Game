@@ -2,18 +2,16 @@ package com.jumpbuttonstudios.zombiegame.weapons;
 
 import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
-import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
+import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.screens.LevelScreen;
 
@@ -25,8 +23,8 @@ import com.jumpbuttonstudios.zombiegame.screens.LevelScreen;
  */
 public abstract class Weapon {
 
-	/** The character that owns this weapon */
-	protected Character owner;
+	/** The arm that is holding this weapon */
+	protected Arm parent;
 
 	/***************************
 	 *************************** 
@@ -36,12 +34,7 @@ public abstract class Weapon {
 
 	/** The muzzle flash for all weapons */
 	private AnimatedSprite muzzleFlash;
-
-	/** The Sprite of the weapon */
-	protected Sprite sprite;
-
-	/** The end of the barrel or the muzzle */
-	protected Vector2 muzzlePos = new Vector2();
+	
 
 	/***************************
 	 *************************** 
@@ -69,6 +62,15 @@ public abstract class Weapon {
 
 	/***************************
 	 *************************** 
+	 ** Rotation and position **
+	 *************************** 
+	 **************************/
+
+	/** The origin of rotation and position */
+	protected PivotJoint pivot;
+
+	/***************************
+	 *************************** 
 	 ***** Firing Mechanics*****
 	 *************************** 
 	 **************************/
@@ -86,13 +88,9 @@ public abstract class Weapon {
 	private double lastShot;
 
 	/** The direction the barrel is facing */
-	private Vector2 direction;
+	Vector2 direction;
 
-	public Weapon(String path, Character owner) {
-		this.owner = owner;
-		sprite = new Sprite(new Texture(Gdx.files.internal(path)));
-		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight()
-				* Constants.scale);
+	public Weapon() {
 
 		muzzleFlash = AnimationBuilder.create(0.030f, 1, 3, Constants.scale,
 				Constants.scale, "Effect/Gunfire.png", null);
@@ -118,12 +116,11 @@ public abstract class Weapon {
 		if (muzzleFlash.isPlaying()) {
 			muzzleFlash.setSize(1, 1);
 			muzzleFlash.draw(batch);
-			owner.getArms()
-					.getFrontArm()
+			parent.getSprite()
 					.setRotation(
-							owner.getFacing() == Facing.LEFT ? owner.getArms()
-									.getFrontArm().getRotation() - 10 : owner
-									.getArms().getFrontArm().getRotation() + 10);
+							parent.getParentCharacter().getFacing() == Facing.LEFT ? parent
+									.getSprite().getRotation() - 10 : parent
+									.getSprite().getRotation() + 10);
 		}
 		if (muzzleFlash.isAnimationFinished()) {
 			muzzleFlash.stop();
@@ -137,24 +134,28 @@ public abstract class Weapon {
 	public void fire(Vector2 direction) {
 		this.direction = direction;
 		if (canFire) {
-			Vector2 tmp = owner.getArms().getFrontAnchor();
-			Sprite s = owner.getArms().getFrontArm();
-
-			/* Every time we fire, we must update the muzzle's position relative to the pivot */
+			/* Set the parent to this */
+			muzzle.parent = this;
+			
+			/*
+			 * Every time we fire, we must update the muzzle's position relative
+			 * to the pivot
+			 */
 			muzzle.update(direction);
 
 			/* Set the origin of the muzzle flash sprite in the middle */
 			muzzleFlash.setOrigin(muzzleFlash.getWidth() / 2,
 					muzzleFlash.getHeight() / 2);
+			
 
 			// making muzzle flash appear at the tip of the gun
 			muzzleFlash
 					.setPosition(
-							(muzzle.getPivot().x - (muzzleFlash.getWidth() / 2) + (MathUtils
+							((muzzle.getPivot().x - (muzzleFlash.getWidth() / 2)) + (MathUtils
 									.cosDeg(direction.angle()) * muzzle
 									.getDistance())),
-							(muzzle.getPivot().y
-									- (muzzleFlash.getHeight() / 2) + (MathUtils
+							((muzzle.getPivot().y
+									- (muzzleFlash.getHeight() / 2)) + (MathUtils
 									.sinDeg(direction.angle()))
 									* muzzle.getDistance()));
 			muzzleFlash.setRotation(direction.angle());
@@ -171,14 +172,20 @@ public abstract class Weapon {
 			canFire = false;
 			/* Play the muzzle flash animation */
 			muzzleFlash.play();
-			
-			/* Check if the player is below max speed, if so we can apply a little kickback from the weapon */
-			if (Math.abs(owner.getBody().getLinearVelocity().x) <= owner
+
+			/*
+			 * Check if the player is below max speed, if so we can apply a
+			 * little kickback from the weapon
+			 */
+			if (Math.abs(parent.getParentCharacter().getBody()
+					.getLinearVelocity().x) <= parent.getParentCharacter()
 					.getMaxSpeed())
-				owner.getBody().applyForceToCenter(
-						owner.getFacing() == Facing.RIGHT ? -recoil : recoil,
-						0, true);
-			
+				parent.getParentCharacter()
+						.getBody()
+						.applyForceToCenter(
+								parent.getParentCharacter().getFacing() == Facing.RIGHT ? -recoil
+										: recoil, 0, true);
+
 			/* Shake the screen a little */
 			LevelScreen.b2dCam.startShake(0.15f, 0.05f, 0.25f);
 		}
@@ -200,12 +207,16 @@ public abstract class Weapon {
 		return muzzleVelocity;
 	}
 
-	public Sprite getSprite() {
-		return sprite;
+	public void setParentArm(Arm parent) {
+		this.parent = parent;
 	}
 
-	public Character getOwner() {
-		return owner;
+	/**
+	 * 
+	 * @return the Arm this Weapon belongs to
+	 */
+	public Arm getParentArm() {
+		return parent;
 	}
 
 }

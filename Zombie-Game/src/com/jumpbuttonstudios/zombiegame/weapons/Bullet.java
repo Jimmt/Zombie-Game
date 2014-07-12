@@ -23,8 +23,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 
 /**
@@ -64,11 +66,19 @@ public class Bullet extends Box2DObject {
 
 	public void create(Vector2 direction) {
 
-		createBody(Level.world, BodyType.DynamicBody, weapon.muzzlePos, false);
-		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2, 0.05f,
-				0, 0, true);
+		createBody(Level.getWorld(), BodyType.DynamicBody, Vector2.Zero, false);
+		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2,
+				0.075f, 0, 0, false);
 		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
+
+		Filter filter = fixture.getFilterData();
+		filter.categoryBits = (short) CollisionFilters.BULLET
+				;
+		filter.maskBits = (short) (CollisionFilters.GROUND
+				 | CollisionFilters.ZOMBIE | CollisionFilters.BOUNDARY
+				);
+		getBody().getFixtureList().get(0).setFilterData(filter);
 
 		// set bullet to extended arm position
 		getBody()
@@ -79,17 +89,8 @@ public class Bullet extends Box2DObject {
 						weapon.muzzle.getPivot().y
 								+ (MathUtils.sinDeg(direction.angle()) * weapon.muzzle
 										.getDistance()),
-						weapon.getOwner().getArms().getDirection().angle()
+						weapon.getParentArm().getDirection().angle()
 								* MathUtils.degreesToRadians);
-
-		System.out.println((MathUtils.cosDeg(direction.angle()
-				+ MathUtils.random(
-						-BULLET_SPREAD
-								* weapon.getAccuracyMultiplier()
-								* MathUtils.degRad,
-						BULLET_SPREAD
-								* weapon.getAccuracyMultiplier()
-								* MathUtils.degRad))));
 
 		getBody()
 				.setLinearVelocity(
@@ -111,9 +112,10 @@ public class Bullet extends Box2DObject {
 												BULLET_SPREAD
 														* weapon.getAccuracyMultiplier()
 														* MathUtils.degRad))));
+		body.setUserData(this);
 
-//		getBody().setLinearVelocity(
-//				direction.nor().scl(weapon.getMuzzleVelocity()));
+		// getBody().setLinearVelocity(
+		// direction.nor().scl(weapon.getMuzzleVelocity()));
 
 	}
 

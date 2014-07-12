@@ -3,6 +3,7 @@ package com.jumpbuttonstudios.zombiegame.screens;
 import box2dLight.RayHandler;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -12,19 +13,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.gibbo.gameutil.camera.ActionOrthoCamera;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
 
 public abstract class AbstractScreen implements Screen {
 	protected ZombieGame zg;
-	protected Stage stage;
+	protected Stage stage, defenseStage;
 	protected OrthographicCamera cam;
 	private World world;
 	private Skin skin;
@@ -36,10 +35,12 @@ public abstract class AbstractScreen implements Screen {
 	protected ShapeRenderer sr;
 	protected RayHandler rh;
 	private FPSLogger logger;
+	protected InputMultiplexer multiplexer;
 
 	public AbstractScreen(ZombieGame zg) {
 		this.zg = zg;
 		stage = new Stage(Constants.WIDTH, Constants.HEIGHT, true);
+		defenseStage = new Stage(Constants.WIDTH, Constants.HEIGHT, true);
 		cam = (OrthographicCamera) stage.getCamera();
 		
 		batch = new SpriteBatch();
@@ -107,12 +108,14 @@ public abstract class AbstractScreen implements Screen {
 	public void render(float delta) {
 
 		stage.act(delta);
+		defenseStage.act(delta);
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		stage.draw();
+		defenseStage.draw();
 
 		if (rh != null)
 			rh.updateAndRender();

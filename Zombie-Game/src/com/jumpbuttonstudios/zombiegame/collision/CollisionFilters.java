@@ -14,31 +14,20 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.weapons;
-
-import com.gibbo.gameutil.time.TimeConversion;
-import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
+package com.jumpbuttonstudios.zombiegame.collision;
 
 /**
+ * All the collision filters available to use
  * 
  * @author Stephen Gibson
  */
-public class Pistol extends Weapon {
+public class CollisionFilters {
 
-	public Pistol() {
-		super();
+	public static short GROUND = 0x0001;
+	public static short ZOMBIE = 0x0002; 
+	public static short PLAYER  = 0x0004;
+	public static short BULLET = 0x0008;
+	public static short BOUNDARY = 0x00016;
 
-		clipSize = 7;
-		muzzleVelocity = 5; // Tweak later and get proper/appropriate number
-		rof = TimeConversion.secondToNanos(0.35f); // Tweak later
-		recoil = 15;
-		accuracyMultiplier = 20;
-		
-		bullet = new Bullet("Guns/M1911/Bullet.png", this);
-		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.65f, 1.6f);
-		
-		
-
-	}
 
 }

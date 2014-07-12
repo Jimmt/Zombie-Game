@@ -79,7 +79,6 @@ public class Arms {
 		worldCoords.scl(Constants.scale);
 		tmp.set(worldCoords.x, worldCoords.y);
 		}
-//		tmp.set(4.8f, 1.5f);
 
 		direction = vec.sub(tmp).nor();
 
@@ -115,8 +114,9 @@ public class Arms {
 			 */
 			if (frontArm.isFlipY()) {
 				frontArm.flip(false, true); 
-				frontAnchor.x = -frontAnchor.x - offsetX;
-				frontAnchor.y = -frontAnchor.y - offsetY;
+				frontAnchor.x = -frontAnchor.x;
+				frontAnchor.y = -frontAnchor.y;
+				offsetY = -offsetY;
 			}
 		} else {
 			/*
@@ -143,8 +143,9 @@ public class Arms {
 			 */
 			if (!frontArm.isFlipY()) {
 				frontArm.flip(false, true);
-				frontAnchor.x = -frontAnchor.x - offsetX;
-				frontAnchor.y = -frontAnchor.y - offsetY;
+				frontAnchor.x = -frontAnchor.x;
+				frontAnchor.y = -frontAnchor.y;
+				offsetY = -offsetY;
 			}
 		}
 
@@ -170,10 +171,9 @@ public class Arms {
 
 		/* Check if the weapon is null, if the weapon is null */
 		if (weapon != null) {
-			Sprite weapon = this.weapon.getSprite();
-			weapon.setPosition(parent.getX() + frontAnchor.x, parent.getY()
-					+ frontAnchor.y);
-			weapon.draw(batch);
+//			getWeapon().getSprite().setPosition(parent.getX() + frontAnchor.x, parent.getY()
+//					+ frontAnchor.y);
+			getWeapon().draw(batch);
 		} else {
 			frontArm.setSize(frontArm.getWidth() * Constants.scale,
 					frontArm.getHeight() * Constants.scale);
@@ -347,7 +347,7 @@ public class Arms {
 			arms.offsetY = offsetY;
 			arms.setFrontAnchor(frontAnchorX, frontAnchorY);
 			arms.setBackAnchor(backAnchorX, backAnchorY);
-			arms.setArmSprites(frontWeapon.getSprite(), backArm);
+//			arms.setArmSprites(frontWeapon.getSprite(), backArm);
 			arms.attachWeapon(frontWeapon);
 			return arms;
 		}

@@ -14,67 +14,64 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.ai.state;
+package com.jumpbuttonstudios.zombiegame.ai.state.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.gibbo.gameutil.ai.state.State;
-import com.jumpbuttonstudios.zombiegame.character.Character;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class Idle implements State {
+public class IdleState extends PlayerState {
 
 	/** Single instance */
-	private static Idle instance = new Idle();
+	private static IdleState instance = new IdleState();
 
-	/** Character instance */
-	Character character;
 
 	@Override
 	public void enter(Object object) {
-		character = (Character) object;
+		super.enter(object);
 
-		character.setCurrentAnimation("idle");
-		if (character.getBody().getLinearVelocity().x < 0) {
-			if (!character.getCurrentAnimation().isFlipX()) {
+		player.setCurrentAnimation("idle");
+		if (player.getBody().getLinearVelocity().x < 0) {
+			if (!player.getCurrentAnimation().isFlipX()) {
 //				character.getCurrentAnimation().flipFrames(true, false);
 			}
 		} else {
-			if (character.getCurrentAnimation().isFlipX()) {
+			if (player.getCurrentAnimation().isFlipX()) {
 //				character.getCurrentAnimation().flipFrames(true, false);
 			}
 
 		}
-		character.getBody().setLinearDamping(10);
+		player.getBody().setLinearDamping(10);
 
 	}
 
 	@Override
 	public void execute(Object object) {
-		character = (Character) object;
+		super.execute(object);
 
-		if (character.getBody().getLinearVelocity().y == 0) {
-			character.setGrounded(true);
+		if (player.getBody().getLinearVelocity().y == 0) {
+			player.setGrounded(true);
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
-			character.getStateMachine().changeState(Running.instance());
-		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && character.isGrounded()) {
-			character.getStateMachine().changeState(Jumping.instance());
+			player.getStateMachine().changeState(RunningState.instance());
+		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && player.isGrounded()) {
+			player.getStateMachine().changeState(JumpingState.instance());
 		}
 
 	}
 
 	@Override
 	public void exit(Object object) {
-		character.getBody().setLinearDamping(0);
+		super.execute(object);
+		player.getBody().setLinearDamping(0);
 
 	}
 
-	public static Idle instance() {
+	public static IdleState instance() {
 		return instance;
 	}
 
