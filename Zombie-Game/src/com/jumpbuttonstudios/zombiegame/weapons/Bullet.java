@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 
 /**
@@ -65,12 +66,18 @@ public class Bullet extends Box2DObject {
 	public void create(Vector2 direction) {
 
 		createBody(Level.getWorld(), BodyType.DynamicBody, Vector2.Zero, false);
-		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2, 0.075f,
-				0, 0, false);
+		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2,
+				0.075f, 0, 0, false);
 		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
-//		fd.filter.groupIndex = 0;
-//		getBody().getFixtureList().get(0).setFilterData(fd.filter);
+
+		/* Tell box2d this is a bullet */
+		fixture.getFilterData().categoryBits = (short) CollisionFilters.BULLET
+				.getValue();
+		/* Tell box2d what this can collide with */
+		fixture.getFilterData().maskBits = (short) (CollisionFilters.GROUND
+				.getValue() | CollisionFilters.ZOMBIE.getValue() | CollisionFilters.BOUNDARY
+				.getValue());
 
 		// set bullet to extended arm position
 		getBody()
@@ -106,8 +113,8 @@ public class Bullet extends Box2DObject {
 														* MathUtils.degRad))));
 		body.setUserData(this);
 
-//		getBody().setLinearVelocity(
-//				direction.nor().scl(weapon.getMuzzleVelocity()));
+		// getBody().setLinearVelocity(
+		// direction.nor().scl(weapon.getMuzzleVelocity()));
 
 	}
 

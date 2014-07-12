@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
@@ -15,6 +16,7 @@ import com.jumpbuttonstudios.zombiegame.ai.state.player.JumpingState;
 import com.jumpbuttonstudios.zombiegame.character.Arm.ArmBuilder;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
+import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
 import com.jumpbuttonstudios.zombiegame.weapons.Dragunov;
 import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
@@ -59,6 +61,8 @@ public class Player extends Character {
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(0, 2), true);
+		
+		
 		createPolyFixture(width / 2, height / 2, 0.25f, 0.70f, 0.05f, false);
 		body.setUserData(this);
 
@@ -78,9 +82,9 @@ public class Player extends Character {
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
 				Pivots.getPivotJoint("M1911"), new Pistol(), "Guns/M1911/WithArm.png");
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("AK74u"), new AK74U(), "Guns/AK74u/WithArm.png");
-		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
 				Pivots.getPivotJoint("Dragunov"), new Dragunov(), "Guns/Dragunov/WithArm.png");
+		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
+				Pivots.getPivotJoint("AK74u"), new AK74U(), "Guns/AK74u/WithArm.png");
 
 		/* Setup state machine */
 		stateMachine.changeState(IdleState.instance());
@@ -99,6 +103,7 @@ public class Player extends Character {
 	@Override
 	public void update(float delta) {
 		super.update(delta);
+		
 
 		if (!inMenu) {
 			/* Check if the left mouse button was pressed */

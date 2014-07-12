@@ -14,31 +14,36 @@
 * limitations under the License.
 */
 
-package com.jumpbuttonstudios.zombiegame.weapons;
+package com.jumpbuttonstudios.zombiegame.ai.state.zombie;
 
-import com.gibbo.gameutil.time.TimeConversion;
-import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
+import com.gibbo.gameutil.ai.state.State;
+import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class AK74U extends Weapon {
+public class ZombieState implements State {	
 
-	public AK74U() {
-		
-		clipSize = 45;
-		muzzleVelocity = 35; // Tweak later and get proper/appropriate number
-//		rof = TimeConversion.secondToNanos(0.092f); // Tweak later
-		rof = TimeConversion.secondToNanos(0.092f); // Tweak later
-		recoil = 25;
-		accuracyMultiplier = 30;
-		
-		bullet = new Bullet("Guns/AK74u/Bullet.png", this);
-		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.90f, 2.15f);
-		
+	/** The zombie that is using this state */
+	Zombie zombie;
+
+	@Override
+	public void enter(Object object) {
+		zombie = (Zombie) object;
 	}
 
+	@Override
+	public void execute(Object object) {
+		zombie = (Zombie) object;
+
+	}
+
+	@Override
+	public void exit(Object object) {
+		zombie = (Zombie) object;
+
+	}
 
 }
 

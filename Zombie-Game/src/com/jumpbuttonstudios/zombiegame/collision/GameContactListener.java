@@ -1,4 +1,4 @@
-package com.jumpbuttonstudios.zombiegame;
+package com.jumpbuttonstudios.zombiegame.collision;
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -24,16 +24,6 @@ public class GameContactListener implements ContactListener {
 		Object A = contact.getFixtureA().getBody().getUserData();
 		Object B = contact.getFixtureB().getBody().getUserData();
 
-		if (A instanceof Zombie && B instanceof Bullet) {
-			Bullet bullet = (Bullet) B;
-			Level.bullets.removeValue(bullet, true);
-			Level.factory.deleteBody(bullet.getBody());
-		} else if (B instanceof Bullet && A instanceof Zombie) {
-			Bullet bullet = (Bullet) A;
-			Level.bullets.removeValue(bullet, true);
-			Level.factory.deleteBody(bullet.getBody());
-
-		}
 
 		if (A instanceof Zombie && B instanceof Player) {
 			Zombie zombie = (Zombie) A;
@@ -48,6 +38,8 @@ public class GameContactListener implements ContactListener {
 			zombie.getStateMachine().changeState(new AttackState());
 
 		}
+		
+		System.out.println("Bullet");
 
 	}
 
@@ -74,12 +66,43 @@ public class GameContactListener implements ContactListener {
 
 				}
 			}
+			
 		}
 
 	}
 
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
+		if (contact.getFixtureA() == null || contact.getFixtureB() == null) {
+			return;
+		} else {
+			Object A = contact.getFixtureA().getBody().getUserData();
+			Object B = contact.getFixtureB().getBody().getUserData();
+			
+			if (A == null || B == null) {
+				return;
+			} else {
+				if (A instanceof Zombie && B instanceof Bullet) {
+					Zombie zombie = (Zombie) A;
+					Bullet bullet = (Bullet) B;
+					Level.factory.deleteBody(bullet.getBody());
+					Level.bullets.removeValue(bullet, true);
+					level.getCharacters().removeValue(zombie, true);
+					Level.factory.deleteBody(zombie.getBody());
+					System.out.println("deleting bullet");
+				} else if (B instanceof Bullet && A instanceof Zombie) {
+					Bullet bullet = (Bullet) B;
+					Zombie zombie = (Zombie) A;
+					Level.factory.deleteBody(bullet.getBody());
+					Level.bullets.removeValue(bullet, true);
+					level.getCharacters().removeValue(zombie, true);
+					Level.factory.deleteBody(zombie.getBody());
+					System.out.println("deleting bullet");
+					
+			}
+			
+			}
+		}
 
 	}
 

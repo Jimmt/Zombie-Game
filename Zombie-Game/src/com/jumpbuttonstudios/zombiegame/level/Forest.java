@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 
 /**
  * The forest scene, consists of a boudary fixtures and draws the ground and
@@ -66,8 +68,16 @@ public class Forest extends Box2DObject {
 
 		/* Create the ground */
 		createBody(world, BodyType.StaticBody, new Vector2(16, 0.5f), false);
+		
 		createPolyFixture(groundWidth, groundHeight, 0, 0.50f, 0, false);
+		fd.filter.categoryBits = (short) CollisionFilters.GROUND.getValue();
+		/* Tell box2d what this can collide with */
+		fd.filter.maskBits = -1;
+		
+		
 		body.setUserData(this);
+		
+		
 
 	}
 
@@ -79,10 +89,18 @@ public class Forest extends Box2DObject {
 		middle.draw(batch);
 		right.draw(batch);
 	}
+	
+	public class Boundary extends Box2DObject{
+
+		@Override
+		public void dispose() {
+			
+		}
+		
+	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		
 	}
 }

@@ -16,15 +16,18 @@
 
 package com.jumpbuttonstudios.zombiegame.level;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.box2d.Box2DFactory;
-import com.jumpbuttonstudios.zombiegame.GameContactListener;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
+import com.jumpbuttonstudios.zombiegame.character.zombie.CrawlingZombie;
+import com.jumpbuttonstudios.zombiegame.character.zombie.WalkingZombie;
 import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
+import com.jumpbuttonstudios.zombiegame.collision.GameContactListener;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
 /**
@@ -55,12 +58,14 @@ public class Level {
 		forest = new Forest(getWorld());
 		/* Add a player to the first index in the array */
 		characters.add(new Player(getWorld()));
-		
+
 		/* Just a test zombie, move on :D */
-		characters.add(new Zombie(getWorld(), getPlayer(), -10, 2));
-		
+		characters.add(new CrawlingZombie(getWorld(), getPlayer(), -10, 2));
+		characters.add(new WalkingZombie(getWorld(), getPlayer(), -5, 2));
+
 		/* Set up a contact listener */
 		getWorld().setContactListener(new GameContactListener(this));
+
 	}
 
 	/**
@@ -70,9 +75,16 @@ public class Level {
 	 */
 	public void update(float delta) {
 		getWorld().step(1f / 60f, 5, 8);
-		
-		/* Update the Box2D factory so things get deleted */
-		factory.update();
+
+		if (MathUtils.random(0, 100) < 1) {
+			if (MathUtils.random(1, 2) == 1) {
+				characters.add(new CrawlingZombie(getWorld(), getPlayer(),-15, 2));
+			}else{
+				characters.add(new WalkingZombie(getWorld(), getPlayer(), 15, 2));
+				
+			}
+		}
+
 
 		/*
 		 * Update all the defined pivots to keep them updated in world
@@ -90,17 +102,21 @@ public class Level {
 		for (Character player : characters) {
 			player.update(delta);
 		}
+		
+
+		/* Update the Box2D factory so things get deleted */
+		factory.update();
 
 	}
-	
+
 	/**
 	 * 
 	 * @return the world stored in the {@link Box2DFactory}
 	 */
-	public static World getWorld(){
+	public static World getWorld() {
 		return factory.getWorld();
 	}
-	
+
 	/**
 	 * 
 	 * @return all the characters in the level
