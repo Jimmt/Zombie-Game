@@ -21,18 +21,13 @@ package com.jumpbuttonstudios.zombiegame.collision;
  * 
  * @author Stephen Gibson
  */
-public enum CollisionFilters {
+public class CollisionFilters {
 
-	GROUND(0x0001),ZOMBIE(0x0002), PLAYER(0x0004), BULLET(0x0008), BOUNDARY(0x00016);
+	public static short GROUND = 0x0001;
+	public static short ZOMBIE = 0x0002; 
+	public static short PLAYER  = 0x0004;
+	public static short BULLET = 0x0008;
+	public static short BOUNDARY = 0x00016;
 
-	int value;
-
-	private CollisionFilters(int value) {
-
-	}
-
-	public int getValue() {
-		return value;
-	}
 
 }

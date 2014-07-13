@@ -23,7 +23,7 @@ import com.jumpbuttonstudios.zombiegame.ZombieGame;
 
 public abstract class AbstractScreen implements Screen {
 	protected ZombieGame zg;
-	protected Stage stage, defenseStage;
+	protected Stage stage, uiStage;
 	protected OrthographicCamera cam;
 	private World world;
 	private Skin skin;
@@ -40,7 +40,7 @@ public abstract class AbstractScreen implements Screen {
 	public AbstractScreen(ZombieGame zg) {
 		this.zg = zg;
 		stage = new Stage(Constants.WIDTH, Constants.HEIGHT, true);
-		defenseStage = new Stage(Constants.WIDTH, Constants.HEIGHT, true);
+		uiStage = new Stage(Constants.WIDTH, Constants.HEIGHT, true);
 		cam = (OrthographicCamera) stage.getCamera();
 		
 		batch = new SpriteBatch();
@@ -108,14 +108,14 @@ public abstract class AbstractScreen implements Screen {
 	public void render(float delta) {
 
 		stage.act(delta);
-		defenseStage.act(delta);
+		uiStage.act(delta);
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		stage.draw();
-		defenseStage.draw();
+		uiStage.draw();
 
 		if (rh != null)
 			rh.updateAndRender();

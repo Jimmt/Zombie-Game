@@ -30,8 +30,8 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
  */
 public class WalkingZombie extends Zombie {
 
-	public WalkingZombie(World world, Character target, float x, float y) {
-		super(world, target, x, y);
+	public WalkingZombie(World world, Character target, float speed, float x, float y) {
+		super(world, target, speed, x, y);
 		
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
@@ -57,10 +57,12 @@ public class WalkingZombie extends Zombie {
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(x, y), true);
-		setCollisionFilters();
 		createPolyFixture(width / 2 - 0.25f, height / 2, 0.25f, 0.40f, 0.05f,
 				false);
 		body.setUserData(this);
+		
+		/* Set contact filters */
+		setCollisionFilters();
 
 		/* Set the current animation to idle */
 		setCurrentAnimation("walking");
@@ -72,9 +74,7 @@ public class WalkingZombie extends Zombie {
 		stateMachine.changeState(new WalkingState());
 
 		/* Setup Zombie properties */
-		maxSpeed = 1f;
 		acceleration = 8;
-
 	}
 
 }

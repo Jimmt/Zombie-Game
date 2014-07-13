@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
 
 /**
@@ -80,6 +79,7 @@ public class RunningState extends PlayerState {
 	public void exit(Object object) {
 		super.exit(object);
 		player.getCurrentAnimation().stop();
+		/* Stop the running sound */
 	}
 
 	public static RunningState instance() {

@@ -23,10 +23,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
-import com.jumpbuttonstudios.zombiegame.level.Level;
 
 /**
  * 
@@ -35,7 +35,7 @@ import com.jumpbuttonstudios.zombiegame.level.Level;
 public class Bullet extends Box2DObject {
 
 	/** The weapon that fired this bullet */
-	Weapon weapon;
+	Weapon parent;
 
 	/** Width of he bullet */
 	final float width = 0.425f;
@@ -53,63 +53,63 @@ public class Bullet extends Box2DObject {
 	private Sprite sprite;
 
 	public Bullet(String spritePath, Weapon weapon) {
-		this.weapon = weapon;
+		this.parent = weapon;
 		sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
 		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight()
 				* Constants.scale);
 
 	}
-
-	private Bullet() {
+	
+	private Bullet(){
 	}
 
 	public void create(Vector2 direction) {
 
-		createBody(Level.getWorld(), BodyType.DynamicBody, Vector2.Zero, false);
+		createBody(parent.getParentArm().getParentCharacter().getLevel().getWorld(), BodyType.DynamicBody, Vector2.Zero, false);
 		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2,
 				0.075f, 0, 0, false);
 		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
 
-		/* Tell box2d this is a bullet */
-		fixture.getFilterData().categoryBits = (short) CollisionFilters.BULLET
-				.getValue();
-		/* Tell box2d what this can collide with */
-		fixture.getFilterData().maskBits = (short) (CollisionFilters.GROUND
-				.getValue() | CollisionFilters.ZOMBIE.getValue() | CollisionFilters.BOUNDARY
-				.getValue());
+		Filter filter = fixture.getFilterData();
+		filter.categoryBits = (short) CollisionFilters.BULLET
+				;
+		filter.maskBits = (short) (CollisionFilters.GROUND
+				 | CollisionFilters.ZOMBIE | CollisionFilters.BOUNDARY
+				);
+		getBody().getFixtureList().get(0).setFilterData(filter);
 
 		// set bullet to extended arm position
 		getBody()
 				.setTransform(
-						weapon.muzzle.getPivot().x
-								+ (MathUtils.cosDeg(direction.angle()) * weapon.muzzle
+						parent.muzzle.getPivot().x
+								+ (MathUtils.cosDeg(direction.angle()) * parent.muzzle
 										.getDistance()),
-						weapon.muzzle.getPivot().y
-								+ (MathUtils.sinDeg(direction.angle()) * weapon.muzzle
+						parent.muzzle.getPivot().y
+								+ (MathUtils.sinDeg(direction.angle()) * parent.muzzle
 										.getDistance()),
-						weapon.getParentArm().getDirection().angle()
+						parent.getParentArm().getDirection().angle()
 								* MathUtils.degreesToRadians);
 
 		getBody()
 				.setLinearVelocity(
-						weapon.getMuzzleVelocity()
+						parent.getMuzzleVelocity()
 								* (MathUtils.cosDeg(direction.angle()
 										+ MathUtils.random(
 												-BULLET_SPREAD
-														* weapon.getAccuracyMultiplier()
+														* parent.getAccuracyMultiplier()
 														* MathUtils.degRad,
 												BULLET_SPREAD
-														* weapon.getAccuracyMultiplier()
+														* parent.getAccuracyMultiplier()
 														* MathUtils.degRad))),
-						weapon.getMuzzleVelocity()
+						parent.getMuzzleVelocity()
 								* (MathUtils.sinDeg(direction.angle()
 										+ MathUtils.random(
 												-BULLET_SPREAD
-														* weapon.getAccuracyMultiplier()
+														* parent.getAccuracyMultiplier()
 														* MathUtils.degRad,
 												BULLET_SPREAD
-														* weapon.getAccuracyMultiplier()
+														* parent.getAccuracyMultiplier()
 														* MathUtils.degRad))));
 		body.setUserData(this);
 
@@ -137,7 +137,7 @@ public class Bullet extends Box2DObject {
 	public Bullet clone() {
 		Bullet bullet = new Bullet();
 		bullet.sprite = sprite;
-		bullet.weapon = weapon;
+		bullet.parent = parent;
 		return bullet;
 
 	}

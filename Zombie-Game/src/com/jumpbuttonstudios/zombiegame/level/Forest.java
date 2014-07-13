@@ -69,10 +69,12 @@ public class Forest extends Box2DObject {
 		/* Create the ground */
 		createBody(world, BodyType.StaticBody, new Vector2(16, 0.5f), false);
 		
+		
 		createPolyFixture(groundWidth, groundHeight, 0, 0.50f, 0, false);
-		fd.filter.categoryBits = (short) CollisionFilters.GROUND.getValue();
-		/* Tell box2d what this can collide with */
-		fd.filter.maskBits = -1;
+		Filter filter = body.getFixtureList().get(0).getFilterData();
+		filter.categoryBits = (short) CollisionFilters.GROUND;
+		filter.maskBits = (short) (CollisionFilters.PLAYER | CollisionFilters.ZOMBIE);
+		getBody().getFixtureList().get(0).setFilterData(filter);
 		
 		
 		body.setUserData(this);

@@ -16,7 +16,6 @@
 
 package com.jumpbuttonstudios.zombiegame.level;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.box2d.Box2DFactory;
@@ -24,10 +23,8 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
-import com.jumpbuttonstudios.zombiegame.character.zombie.CrawlingZombie;
-import com.jumpbuttonstudios.zombiegame.character.zombie.WalkingZombie;
-import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
 import com.jumpbuttonstudios.zombiegame.collision.GameContactListener;
+import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
 /**
@@ -41,30 +38,35 @@ public class Level {
 	 * The Box2D factory used to hold the world and delete box2d related stuff,
 	 * fixtures and what not
 	 */
-	public static Box2DFactory factory = new Box2DFactory(0, -9.8f, true);
+	public Box2DFactory factory = new Box2DFactory(0, -9.8f, true);
 
 	/** All the bullets present in the game */
-	public static Array<Bullet> bullets = new Array<Bullet>();
+	public Array<Bullet> bullets = new Array<Bullet>();
 
 	/** All characters present in the level */
 	private Array<Character> characters = new Array<Character>();
+	
+	/** All effects currently being updated and drawn */
+	private Array<Effect> effects = new Array<Effect>();
 
 	/** The game scene */
 	public Forest forest;
+	
+	/** The wave generator for spawning zombies */
+	public WaveGenerator waveGenerator;
 
 	public Level() {
 
 		/* Create the forest scenery */
 		forest = new Forest(getWorld());
 		/* Add a player to the first index in the array */
-		characters.add(new Player(getWorld()));
-
-		/* Just a test zombie, move on :D */
-		characters.add(new CrawlingZombie(getWorld(), getPlayer(), -10, 2));
-		characters.add(new WalkingZombie(getWorld(), getPlayer(), -5, 2));
+		characters.add(new Player(this, getWorld()));
 
 		/* Set up a contact listener */
 		getWorld().setContactListener(new GameContactListener(this));
+		
+		/* Create wave generator */
+		waveGenerator = new WaveGenerator(this);
 
 	}
 
@@ -76,14 +78,9 @@ public class Level {
 	public void update(float delta) {
 		getWorld().step(1f / 60f, 5, 8);
 
-		if (MathUtils.random(0, 100) < 1) {
-			if (MathUtils.random(1, 2) == 1) {
-				characters.add(new CrawlingZombie(getWorld(), getPlayer(),-15, 2));
-			}else{
-				characters.add(new WalkingZombie(getWorld(), getPlayer(), 15, 2));
-				
-			}
-		}
+		
+		/* Update wave generator to create waves */
+		waveGenerator.update();
 
 
 		/*
@@ -113,8 +110,13 @@ public class Level {
 	 * 
 	 * @return the world stored in the {@link Box2DFactory}
 	 */
-	public static World getWorld() {
+	public World getWorld() {
 		return factory.getWorld();
+	}
+	
+	/** @return {@link #effects} */
+	public Array<Effect> getEffects() {
+		return effects;
 	}
 
 	/**
