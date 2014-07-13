@@ -18,6 +18,7 @@ package com.jumpbuttonstudios.zombiegame.ai.state.zombie;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 
 /**
  * 
@@ -65,9 +66,13 @@ public class AttackState extends ZombieState {
 			}
 		}
 
+		/* Check if the current animation is finished and if the target is out of range of the zombie */
 		if (zombie.getCurrentAnimation().getAnimatedSprite()
 				.isAnimationFinished()
 				&& !zombie.isTargetInRange()) {
+			/* Let go of the player */
+			zombie.release((Player)zombie.getTarget());
+			/* Switch back to a walking state */
 			zombie.getStateMachine().changeState(new WalkingState());
 		}
 	}
@@ -75,6 +80,7 @@ public class AttackState extends ZombieState {
 	@Override
 	public void exit(Object object) {
 		super.exit(object);
+		/* Stop the animation */
 		zombie.getCurrentAnimation().stop();
 	}
 

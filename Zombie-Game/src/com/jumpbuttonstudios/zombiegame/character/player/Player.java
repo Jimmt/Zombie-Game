@@ -17,6 +17,7 @@ import com.jumpbuttonstudios.zombiegame.character.Arm.ArmBuilder;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
+import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
 import com.jumpbuttonstudios.zombiegame.weapons.Dragunov;
 import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
@@ -41,19 +42,23 @@ public class Player extends Character {
 	 * 
 	 * @param world
 	 */
-	public Player(World world) {
+	public Player(Level level, World world) {
+		this.level = level;
 		this.world = world;
 
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
-		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1, Constants.scale,
-				Constants.scale, "still.png", null), "idle");
+		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1,
+				Constants.scale, Constants.scale, "still.png", null), "idle");
 		/* Running animation */
-		addAnimation(AnimationBuilder.createb2d(0.06f, 2, 6, Constants.scale, Constants.scale,
-				"Sprites/Characters/Male/Run/WithoutArms.png", new int[] { 11 }), "running");
+		addAnimation(AnimationBuilder.createb2d(0.06f, 2, 6, Constants.scale,
+				Constants.scale, "Sprites/Characters/Male/Run/WithoutArms.png",
+				new int[] { 11 }), "running");
 		/* Jump animation */
-		addAnimation(AnimationBuilder.createb2d(1, 1, 2, Constants.scale, Constants.scale,
-				"Sprites/Characters/Male/Jump/WithoutArms.png", null), "jumping");
+		addAnimation(AnimationBuilder.createb2d(1, 1, 2, Constants.scale,
+				Constants.scale,
+				"Sprites/Characters/Male/Jump/WithoutArms.png", null),
+				"jumping");
 
 		/* Setup the width and height from our animations sprites */
 		width = tmp.x * Constants.scale;
@@ -61,11 +66,10 @@ public class Player extends Character {
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(0, 2), true);
-		
-		
+
 		createPolyFixture(width / 2, height / 2, 0.25f, 0.70f, 0.05f, false);
 		body.setUserData(this);
-		
+
 		Filter filter = body.getFixtureList().get(0).getFilterData();
 		filter.categoryBits = (short) CollisionFilters.PLAYER;
 		filter.maskBits = (short) (CollisionFilters.GROUND | CollisionFilters.ZOMBIE);
@@ -85,11 +89,14 @@ public class Player extends Character {
 
 		/* Create an arm with a pistol as the weapon */
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("M1911"), new Pistol(), "Guns/M1911/WithArm.png");
+				Pivots.getPivotJoint("M1911"), new Pistol(),
+				"Guns/M1911/WithArm.png");
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("Dragunov"), new Dragunov(), "Guns/Dragunov/WithArm.png");
+				Pivots.getPivotJoint("AK74u"), new AK74U(),
+				"Guns/AK74u/WithArm.png");
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("AK74u"), new AK74U(), "Guns/AK74u/WithArm.png");
+				Pivots.getPivotJoint("Dragunov"), new Dragunov(),
+				"Guns/Dragunov/WithArm.png");
 
 		/* Setup state machine */
 		stateMachine.changeState(IdleState.instance());
@@ -97,7 +104,7 @@ public class Player extends Character {
 		/* Setup character properties */
 		maxSpeed = 8;
 		acceleration = 10;
-		jumpPower = 300;
+		jumpPower = 200;
 
 	}
 
@@ -108,7 +115,6 @@ public class Player extends Character {
 	@Override
 	public void update(float delta) {
 		super.update(delta);
-		
 
 		if (!inMenu) {
 			/* Check if the left mouse button was pressed */
@@ -126,6 +132,7 @@ public class Player extends Character {
 		}
 		/* Update the arm */
 		arm.update(delta);
+		
 
 	}
 
@@ -138,11 +145,13 @@ public class Player extends Character {
 		 */
 		if (currentAnimation.equals(getAnimation("running"))) {
 			if (getBody().getLinearVelocity().x < 0) {
-				currentAnimation.draw(batch, getBody().getPosition().x - 0.49f, getBody()
-						.getPosition().y, width, height, body.getAngle() * MathUtils.radDeg);
+				currentAnimation.draw(batch, getBody().getPosition().x - 0.49f,
+						getBody().getPosition().y, width, height,
+						body.getAngle() * MathUtils.radDeg);
 			} else {
-				currentAnimation.draw(batch, getBody().getPosition().x - 0.39f, getBody()
-						.getPosition().y, width, height, body.getAngle() * MathUtils.radDeg);
+				currentAnimation.draw(batch, getBody().getPosition().x - 0.39f,
+						getBody().getPosition().y, width, height,
+						body.getAngle() * MathUtils.radDeg);
 
 			}
 
@@ -160,5 +169,6 @@ public class Player extends Character {
 		arm.rotateTowards(mouse);
 
 	}
+
 
 }

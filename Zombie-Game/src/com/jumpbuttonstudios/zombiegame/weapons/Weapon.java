@@ -2,6 +2,9 @@ package com.jumpbuttonstudios.zombiegame.weapons;
 
 import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -12,7 +15,6 @@ import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
-import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.screens.LevelScreen;
 
 /**
@@ -34,7 +36,24 @@ public abstract class Weapon {
 
 	/** The muzzle flash for all weapons */
 	private AnimatedSprite muzzleFlash;
+
+	/***************************
+	 *************************** 
+	 ********* Sounds **********
+	 *************************** 
+	 **************************/
+
+	/** The gunshot sound */
+	Sound shot = Gdx.audio.newSound(Gdx.files.internal("SFX/Pistol.wav"));
 	
+	/** Preferences for the gunshot sound, Volume, Pitch and Pan */
+	protected float[] shotPref = new float[3];
+	
+//	/** The empty magazine sound */
+//	Sound empty = Gdx.audio.newSound(Gdx.files.internal("SFX/Click.wav"));
+	
+	/** The reload sound */
+	Sound reload = Gdx.audio.newSound(Gdx.files.internal("SFX/Reload.wav"));
 
 	/***************************
 	 *************************** 
@@ -51,14 +70,14 @@ public abstract class Weapon {
 	/** How far the bullet can travel before breaking up in the air */
 	protected double flightTime;
 
-	/** How many bullets the gun can hold */
-	protected int clipSize;
-
 	/** The recoil force */
 	protected float recoil;
 
 	/** The accuracy multiplier of this gun */
 	protected float accuracyMultiplier;
+
+	/** How long it takes to reload the weapon */
+	protected double reloadTime;
 
 	/***************************
 	 *************************** 
@@ -75,11 +94,17 @@ public abstract class Weapon {
 	 *************************** 
 	 **************************/
 
+	/** The magazine for the weapon */
+	protected Magazine magazine;
+
 	/** The muzzle of the gun */
 	protected Muzzle muzzle;
 
 	/** The bullet this weapon uses to fire */
 	protected Bullet bullet;
+
+	/** If the weapon is reloading */
+	private boolean reloading;
 
 	/** If the weapon can fire or not */
 	private boolean canFire = true;
@@ -87,15 +112,22 @@ public abstract class Weapon {
 	/** The last time the gun fired */
 	private double lastShot;
 
+	/** When a reload started */
+	private double reloadStart;
+
 	/** The direction the barrel is facing */
 	Vector2 direction;
 
 	public Weapon() {
 
-		muzzleFlash = AnimationBuilder.create(0.030f, 1, 3, Constants.scale,
+		muzzleFlash = AnimationBuilder.create(0.050f, 1, 3, Constants.scale,
 				Constants.scale, "Effect/Gunfire.png", null);
 		muzzleFlash.getAnimation().setPlayMode(Animation.NORMAL);
 		muzzleFlash.setKeepSize(true);
+		
+		/* All gunshots use the same pan */
+		shotPref[2] = 0.5f;
+
 
 	}
 
@@ -105,16 +137,36 @@ public abstract class Weapon {
 	 * @param delta
 	 */
 	public void update(float delta) {
-		if (TimeUtils.nanoTime() - lastShot > rof) {
-			canFire = true;
-			muzzleFlash.stop();
+		/* Check if we are reloading */
+		if (reloading) {
+			/* See if the correct time has passed for a reload */
+			if (TimeUtils.nanoTime() - reloadStart > reloadTime) {
+				reloading = false;
+				/* Create an exact copy of the original magazine */
+				magazine = magazine.clone();
+			}
+			/*
+			 * If the time since the last shot is more than rof, we can shoot
+			 * again
+			 */
+		} else {
+			if (TimeUtils.nanoTime() - lastShot > rof) {
+				canFire = true;
+				muzzleFlash.stop();
+			}
+		}
+		
+		if(!reloading && Gdx.input.isKeyPressed(Keys.R)){
+			reload.play(0.5f);
+			reloading = true;
+			reloadStart = TimeUtils.nanoTime();
 		}
 
 	}
 
 	public void draw(SpriteBatch batch) {
+		/* If the muzzle flash animation is playing, we want to draw it */
 		if (muzzleFlash.isPlaying()) {
-			muzzleFlash.setSize(1, 1);
 			muzzleFlash.draw(batch);
 			parent.getSprite()
 					.setRotation(
@@ -122,6 +174,7 @@ public abstract class Weapon {
 									.getSprite().getRotation() - 10 : parent
 									.getSprite().getRotation() + 10);
 		}
+		/* Stop the muzzle animation if it has finished */
 		if (muzzleFlash.isAnimationFinished()) {
 			muzzleFlash.stop();
 		}
@@ -133,10 +186,14 @@ public abstract class Weapon {
 	 */
 	public void fire(Vector2 direction) {
 		this.direction = direction;
-		if (canFire) {
+		/*
+		 * Check if we can fire, if we have bullets and that we are not
+		 * reloading
+		 */
+		if (canFire && !reloading) {
 			/* Set the parent to this */
 			muzzle.parent = this;
-			
+
 			/*
 			 * Every time we fire, we must update the muzzle's position relative
 			 * to the pivot
@@ -146,7 +203,6 @@ public abstract class Weapon {
 			/* Set the origin of the muzzle flash sprite in the middle */
 			muzzleFlash.setOrigin(muzzleFlash.getWidth() / 2,
 					muzzleFlash.getHeight() / 2);
-			
 
 			// making muzzle flash appear at the tip of the gun
 			muzzleFlash
@@ -154,24 +210,34 @@ public abstract class Weapon {
 							((muzzle.getPivot().x - (muzzleFlash.getWidth() / 2)) + (MathUtils
 									.cosDeg(direction.angle()) * muzzle
 									.getDistance())),
-							((muzzle.getPivot().y
-									- (muzzleFlash.getHeight() / 2)) + (MathUtils
+							((muzzle.getPivot().y - (muzzleFlash.getHeight() / 2)) + (MathUtils
 									.sinDeg(direction.angle()))
 									* muzzle.getDistance()));
 			muzzleFlash.setRotation(direction.angle());
 
+			/* Remove bullet from clip */
+			magazine.feed();
 			/* Create a bullet from the template */
 			Bullet bullet = this.bullet.clone();
 			/* We create the Box2D stuff with this method */
 			bullet.create(direction);
 			/* Add it to our array of bullets for updating and drawing */
-			Level.bullets.add(bullet);
+			parent.getParentCharacter().getLevel().bullets.add(bullet);
+
 			/* Set the las shot as now, so the rof works */
 			lastShot = TimeUtils.nanoTime();
+
 			/* We can no longer fire, dug */
 			canFire = false;
+
 			/* Play the muzzle flash animation */
 			muzzleFlash.play();
+
+			/* Make gunshot sound */
+			shot.play(0.5f, 1.35f, getParentArm().getParentCharacter()
+					.getFacing() == Facing.LEFT ? -0.5f : 0.5f);
+			shot.play(shotPref[0], shotPref[1], getParentArm().getParentCharacter()
+					.getFacing() == Facing.LEFT ? -shotPref[2] : shotPref[2]);
 
 			/*
 			 * Check if the player is below max speed, if so we can apply a
@@ -187,9 +253,16 @@ public abstract class Weapon {
 										: recoil, 0, true);
 
 			/* Shake the screen a little */
-			LevelScreen.b2dCam.startShake(0.15f, 0.05f, 0.25f);
+			LevelScreen.b2dCam.startShake(0.25f, 0.05f, 0.25f);
+			/*
+			 * Check if the magazine is empty and that we are not already
+			 * reloading
+			 */
+		} else if (magazine.getCapacity() == 0 && !reloading) {
+//			empty.play();
 		}
 	}
+	
 
 	public Muzzle getMuzzle() {
 		return muzzle;

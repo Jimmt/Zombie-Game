@@ -16,10 +16,16 @@
 
 package com.jumpbuttonstudios.zombiegame.character.zombie;
 
+import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
+import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
+import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 
 /**
@@ -27,6 +33,8 @@ import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
  * @author Stephen Gibson
  */
 public abstract class Zombie extends Character {
+	
+	
 
 	/** The target the zombie is heading towards */
 	private Character target;
@@ -34,9 +42,27 @@ public abstract class Zombie extends Character {
 	/** If the target is in range or not */
 	private boolean targetInRange = false;
 
-	public Zombie(World world, Character target, float x, float y) {
+	/**
+	 * How strong the zombie is, this determines the attack damage and how much
+	 * the player is slowed down when the zombie grabs the player. A value of 1
+	 * is normal, less than 1 is weaker and more than 1 is stronger
+	 */
+	private float strength;
+
+	/** If the zombie currently has grabbed the player */
+	private boolean grabbed = false;
+	
+	/** Blood splatter */
+	AnimatedSprite bloodSplatter;
+
+	public Zombie(World world, Character target, float speed, float x, float y) {
+		this.maxSpeed = speed;
 		this.world = world;
 		this.target = target;
+
+		bloodSplatter = AnimationBuilder.create(0.1f, 1, 5, Constants.scale, Constants.scale, "", null);
+		
+		strength = MathUtils.random(0.75f, 2);
 
 	}
 
@@ -47,34 +73,36 @@ public abstract class Zombie extends Character {
 		 * Check if we are in a walking animation, if so we need to adjust the
 		 * position of the sprite to stay within the bounding box
 		 */
-		if(currentAnimation != null){
-		if (currentAnimation.equals(getAnimation("walking"))) {
-			if (getBody().getLinearVelocity().x < 0) {
-				currentAnimation.draw(batch, getBody().getPosition().x,
-						getBody().getPosition().y, width, height,
-						body.getAngle() * MathUtils.radDeg);
+		if (currentAnimation != null) {
+			if (currentAnimation.equals(getAnimation("walking"))) {
+				if (getBody().getLinearVelocity().x < 0) {
+					currentAnimation.draw(batch, getBody().getPosition().x,
+							getBody().getPosition().y, width, height,
+							body.getAngle() * MathUtils.radDeg);
+				} else {
+					currentAnimation.draw(batch, getBody().getPosition().x,
+							getBody().getPosition().y, width, height,
+							body.getAngle() * MathUtils.radDeg);
+
+				}
+
+			} else if (currentAnimation.equals(getAnimation("attacking"))) {
+				if (getFacing() == Facing.RIGHT) {
+					currentAnimation.draw(batch,
+							getBody().getPosition().x - 0.12f, getBody()
+									.getPosition().y, width, height,
+							body.getAngle() * MathUtils.radDeg);
+				} else {
+					currentAnimation.draw(batch,
+							getBody().getPosition().x + 0.12f, getBody()
+									.getPosition().y, width, height,
+							body.getAngle() * MathUtils.radDeg);
+
+				}
 			} else {
-				currentAnimation.draw(batch, getBody().getPosition().x,
-						getBody().getPosition().y, width, height,
-						body.getAngle() * MathUtils.radDeg);
-
+				super.draw(batch);
 			}
-
-		} else if (currentAnimation.equals(getAnimation("attacking"))) {
-			if (getFacing() == Facing.RIGHT) {
-				currentAnimation.draw(batch, getBody().getPosition().x - 0.12f,
-						getBody().getPosition().y, width, height,
-						body.getAngle() * MathUtils.radDeg);
-				System.out.println("here");
-			} else {
-				currentAnimation.draw(batch, getBody().getPosition().x + 0.12f,
-						getBody().getPosition().y, width, height,
-						body.getAngle() * MathUtils.radDeg);
-
-			}
-		} else {
-			super.draw(batch);
-		}}
+		}
 
 	}
 
@@ -83,8 +111,11 @@ public abstract class Zombie extends Character {
 	 */
 	public void setCollisionFilters() {
 
-		/* Tell box2d this is a zombie */
-		fd.filter.groupIndex = -1;
+		Filter filter = body.getFixtureList().get(0).getFilterData();
+		filter.categoryBits = (short) CollisionFilters.ZOMBIE;
+		filter.maskBits = (short) (CollisionFilters.PLAYER
+				| CollisionFilters.BULLET | CollisionFilters.GROUND);
+		body.getFixtureList().get(0).setFilterData(filter);
 
 	}
 
@@ -103,6 +134,40 @@ public abstract class Zombie extends Character {
 			if (currentAnimation.isFlipX())
 				currentAnimation.flipFrames(true, false);
 		}
+	}
+
+	/**
+	 * Causes the zombie to slow the players movement by simulating a grab, this
+	 * will lower the players max speed
+	 * 
+	 * @param target
+	 */
+	public void grab(Player target) {
+		/* Lower the players speed */
+		if (target.getMaxSpeed() > 0) {
+			target.setMaxSpeed(target.getMaxSpeed() - (1f * strength));
+			grabbed = true;
+		}
+	}
+
+	/**
+	 * Releases the zombies grip, this will return a portion of the players
+	 * speed
+	 * 
+	 * @param target
+	 */
+	public void release(Player target) {
+		/* Restore the players speed */
+		target.setMaxSpeed(target.getMaxSpeed() + (1f * strength));
+		grabbed = false;
+	}
+
+	/**
+	 * 
+	 * @return if the zombie has grabbed the player
+	 */
+	public boolean isGrabbed() {
+		return grabbed;
 	}
 
 	/**

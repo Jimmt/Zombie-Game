@@ -27,6 +27,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gibbo.gameutil.ai.state.StateMachine;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
+import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 /**
@@ -36,6 +37,9 @@ import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
  * @author Stephen Gibson
  */
 public class Character extends Box2DObject {
+	
+	/** The level instance */
+	protected Level level;
 
 	/** A reference to the box2d world */
 	protected World world;
@@ -198,6 +202,10 @@ public class Character extends Box2DObject {
 	public float getX() {
 		return getBody().getPosition().x;
 	}
+	
+	public void setMaxSpeed(float maxSpeed) {
+		this.maxSpeed = maxSpeed;
+	}
 
 	public float getMaxSpeed() {
 		return maxSpeed;
@@ -259,6 +267,10 @@ public class Character extends Box2DObject {
 
 	public void setGrounded(boolean isGrounded) {
 		this.isGrounded = isGrounded;
+	}
+	
+	public Level getLevel() {
+		return level;
 	}
 
 	@Override

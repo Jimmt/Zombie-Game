@@ -35,8 +35,8 @@ import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 public class CrawlingZombie extends Zombie {
 	
 
-	public CrawlingZombie(World world, Character target, float x, float y) {
-		super(world, target, x, y);
+	public CrawlingZombie(World world, Character target, float speed, float x, float y) {
+		super(world, target, speed, x, y);
 		
 		/* Create animations */
 		/* Walking animation */
@@ -57,15 +57,13 @@ public class CrawlingZombie extends Zombie {
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(x, y), true);
-		setCollisionFilters();
 		createPolyFixture(width / 2 - 0.25f, height / 2, 0.45f, 0.40f, 0.05f,
 				false);
 		body.setUserData(this);
+		
+		/* Set contact filters up */
+		setCollisionFilters();
 
-		Filter filter = body.getFixtureList().get(0).getFilterData();
-		filter.categoryBits = (short) CollisionFilters.ZOMBIE;
-		filter.maskBits = (short) (CollisionFilters.PLAYER | CollisionFilters.BULLET | CollisionFilters.GROUND);
-		body.getFixtureList().get(0).setFilterData(filter);
 
 		/* Set the current animation to idle */
 		setCurrentAnimation("walking");
@@ -77,7 +75,6 @@ public class CrawlingZombie extends Zombie {
 		stateMachine.changeState(new WalkingState());
 
 		/* Setup Zombie properties */
-		maxSpeed = 2.7f;
 		acceleration = 8;
 	}
 	
