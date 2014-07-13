@@ -60,7 +60,7 @@ public abstract class Zombie extends Character {
 		this.world = world;
 		this.target = target;
 
-		bloodSplatter = AnimationBuilder.create(0.1f, 1, 5, Constants.scale, Constants.scale, "", null);
+//		bloodSplatter = AnimationBuilder.create(0.1f, 1, 5, Constants.scale, Constants.scale, "", null);
 		
 		strength = MathUtils.random(0.75f, 2);
 

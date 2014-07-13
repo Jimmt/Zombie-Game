@@ -8,11 +8,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.camera.ActionOrthoCamera;
 import com.jumpbuttonstudios.zombiegame.Constants;
@@ -93,6 +95,14 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 			ibs.imageUp = defenseImages.get(i).getDrawable();
 			ibs.imageDown = releaseImages.get(i).getDrawable();
 			ImageButton button = new ImageButton(ibs);
+			final String str = paths[i];
+			button.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					
+					
+				}
+			});
 			defenseButtons.add(button);
 			defenseTable.add(button);
 		}

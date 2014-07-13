@@ -16,9 +16,17 @@ public class HudTable extends Table {
 			Heart h = new Heart();
 			hearts[i] = h;
 			
-			this.add(h);
+			add(h);
 		}
 		
+		add("").expandX().fillX();
+		row();
+		add("").colspan(4).expand().fill();
+		
 
+	}
+	
+	public Heart[] getHearts(){
+		return hearts;
 	}
 }

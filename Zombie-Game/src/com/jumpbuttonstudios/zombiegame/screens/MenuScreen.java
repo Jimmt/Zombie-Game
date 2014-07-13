@@ -29,7 +29,6 @@ public class MenuScreen extends AbstractScreen {
 		startButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// load savegames
 				zg.setScreen(new LevelScreen(zg));
 			}
 		});
