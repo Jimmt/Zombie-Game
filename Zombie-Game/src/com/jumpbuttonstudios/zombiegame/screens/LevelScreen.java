@@ -1,20 +1,15 @@
 package com.jumpbuttonstudios.zombiegame.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.camera.ActionOrthoCamera;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
@@ -23,6 +18,7 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.defense.Defense;
+import com.jumpbuttonstudios.zombiegame.defense.DefenseComparator;
 import com.jumpbuttonstudios.zombiegame.defense.DefensePlacer;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
@@ -44,7 +40,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 	/** The Camera for Box2D */
 	public static ActionOrthoCamera b2dCam = new ActionOrthoCamera(16, 9);
 	
-	private DefensePlacer defensePlacer = new DefensePlacer(null);
+	private DefensePlacer defensePlacer = new DefensePlacer(level);
 
 	/** Table for creating defenses */
 	private DefenseTable defenseTable = new DefenseTable(defensePlacer, level, getSkin(), level.getWorld());
@@ -57,12 +53,16 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	private Table parentTable = new Table(getSkin());
 	
+	private DefenseComparator defenseComp;
+	
 	
 	
 	
 
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
+		
+		defenseComp = new DefenseComparator();
 
 		multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(uiStage);
@@ -94,14 +94,23 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		level.update(delta);
 		
+		defensePlacer.update(delta);
+		
 		arm = level.getPlayer().getArm();
 		hudTable.setWeapon(arm);
+		
+		if(defensePlacer.isPlacing()){
+			defenseTable.setVisible(false);
+		}
 
+		
 		if (defenseTable.isVisible()) {
 			level.getPlayer().setInMenu(true);
-		} else {
+		} else if(!defensePlacer.isPlacing() && !Gdx.input.isButtonPressed(Buttons.LEFT)){
 			level.getPlayer().setInMenu(false);
 		}
+		
+		
 
 		/* Keep camera inside the level bounds */
 		if (level.getPlayer().getX() > -5 && level.getPlayer().getX() < 17) {
@@ -120,9 +129,12 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		level.forest.draw(batch);
 		level.getPlayer().draw(batch);
 		
+		level.getDefenses().sort(defenseComp);
+		
 		for(Defense defense : level.getDefenses()){
 			defense.draw(batch);
 		}
+		
 		
 		for(Blood blood : level.getBloodEffects()){
 			blood.draw(batch);

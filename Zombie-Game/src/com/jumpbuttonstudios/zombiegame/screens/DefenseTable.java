@@ -29,8 +29,9 @@ public class DefenseTable extends Table {
 	private String[] paths = { "Block", "Door", "Floor",
 			"Ladder", "Wall" };
 	
+	
 
-	public DefenseTable(DefensePlacer defensePlacer, final Level level, Skin skin, final World world) {
+	public DefenseTable(final DefensePlacer defensePlacer, final Level level, Skin skin, final World world) {
 		super(skin);
 
 		
@@ -54,12 +55,17 @@ public class DefenseTable extends Table {
 			ibs.imageUp = defenseImages.get(i).getDrawable();
 			ibs.imageDown = releaseImages.get(i).getDrawable();
 			ImageButton button = new ImageButton(ibs);
-			final String str = paths[i];
+
 			button.addListener(new ClickListener() {
+				
+				private Defense tmp;
+				
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					Defense defense = new Defense(world, new Vector2(2, 2), 52f, 160f, "Environment/Defense/Wall/Icon.png");
-					level.getDefenses().add(defense);
+					tmp = new Defense(world, new Vector2(0, 2), 52f, 160f, "Environment/Defense/Wall/Icon.png");
+					defensePlacer.setDefense(tmp);
+					defensePlacer.setPlacing(true);
+					level.getDefenses().add(tmp);
 //					Class c = null;
 //					try {
 //						c = ClassReflection.forName("com.jumpbuttonstudios.zombiegame.defense" + str);

@@ -14,6 +14,8 @@ import com.jumpbuttonstudios.zombiegame.level.Level;
 public class Defense extends Box2DObject {
 	private Sprite sprite;
 	private Texture tmp;
+	private Vector2 temp;
+	private float scaleWidth, scaleHeight;
 	
 	public Defense(World world, Vector2 position, float width, float height, String path){
 		
@@ -21,11 +23,21 @@ public class Defense extends Box2DObject {
 		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight() * Constants.scale);
 		sprite.setPosition(position.x, position.y);
 		
-		float scaleX = width * Constants.scale;
-		float scaleY = height * Constants.scale;
+		scaleWidth = width * Constants.scale;
+		scaleHeight = height * Constants.scale;
 		
-		createBody(world, BodyType.KinematicBody, new Vector2(position.x + scaleX / 2, position.y + scaleY / 2), true);
-		createPolyFixture(scaleX / 2, scaleY / 2, 0.1f, 0.1f, 0.1f, false);
+		createBody(world, BodyType.KinematicBody, new Vector2(position.x + scaleWidth / 2, position.y + scaleHeight / 2), true);
+		createPolyFixture(scaleWidth / 2, scaleHeight / 2, 0.1f, 0.1f, 0.1f, false);
+		
+		temp = new Vector2();
+	}
+	
+	public float getWidth(){
+		return scaleWidth;
+	}
+	
+	public float getHeight(){
+		return scaleHeight;
 	}
 	
 	public void setPosition(float x, float y){
@@ -44,6 +56,8 @@ public class Defense extends Box2DObject {
 	
 	public void draw(SpriteBatch batch) {
 		sprite.draw(batch);
+		getBody().setTransform(temp.set(sprite.getX() + scaleWidth / 2, sprite.getY() + scaleHeight / 2), 0);
+		
 		
 	}
 
