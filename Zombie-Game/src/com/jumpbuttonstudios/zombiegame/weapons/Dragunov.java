@@ -26,6 +26,7 @@ import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 public class Dragunov extends Weapon {
 
 	public Dragunov() {
+		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("Dragunov"), "Guns/Dragunov/Icon.png", "Guns/Dragunov/WithArm.png");
 		
 		magazine = new Magazine(this, 10);
 		muzzleVelocity = 120;

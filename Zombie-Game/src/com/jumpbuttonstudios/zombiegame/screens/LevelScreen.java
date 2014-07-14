@@ -25,6 +25,7 @@ import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
 import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
+import com.jumpbuttonstudios.zombiegame.weapons.drops.Drop;
 
 /**
  * TODO Clean up this god awful class
@@ -138,6 +139,10 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		
 		for(Blood blood : level.getBloodEffects()){
 			blood.draw(batch);
+		}
+		
+		for(Drop drop : level.getDrops()){
+			drop.draw(batch);
 		}
 
 		for (Bullet bullet : level.bullets) {

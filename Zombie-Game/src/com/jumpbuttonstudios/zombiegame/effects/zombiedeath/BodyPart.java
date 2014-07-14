@@ -64,7 +64,7 @@ public class BodyPart extends Box2DObject {
 		sprite.setSize(width, height);
 
 		/* Set a random decay time for this body part */
-		decayTime = TimeConversion.secondToNanos(MathUtils.random(30, 40));
+		decayTime = TimeConversion.secondToNanos(MathUtils.random(5, 10));
 
 	}
 

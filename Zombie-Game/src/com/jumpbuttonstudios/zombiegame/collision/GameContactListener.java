@@ -12,6 +12,7 @@ import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.ZombieBodyParts;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
+import com.jumpbuttonstudios.zombiegame.weapons.drops.Drop;
 
 /**
  * TODO this class needs properly used and correct code written, it is very
@@ -62,10 +63,10 @@ public class GameContactListener implements ContactListener {
 			if (zombie.isGrabbed())
 				zombie.release(level.getPlayer());
 
-			if(contact.getFixtureA().getUserData() instanceof Zombie){
+			if (contact.getFixtureA().getUserData() instanceof Zombie) {
 				zombie.hurt(bullet, true);
-			}else{
-				zombie.hurt(bullet, false);				
+			} else {
+				zombie.hurt(bullet, false);
 			}
 
 			level.factory.deleteBody(bullet.getBody());
@@ -86,10 +87,10 @@ public class GameContactListener implements ContactListener {
 			if (zombie.isGrabbed())
 				zombie.release(level.getPlayer());
 
-			if(contact.getFixtureB().getUserData() instanceof Zombie){
+			if (contact.getFixtureB().getUserData() instanceof Zombie) {
 				zombie.hurt(bullet, true);
-			}else{
-				zombie.hurt(bullet, false);				
+			} else {
+				zombie.hurt(bullet, false);
 			}
 
 			level.factory.deleteBody(bullet.getBody());
@@ -103,6 +104,18 @@ public class GameContactListener implements ContactListener {
 				level.getCharacters().removeValue(zombie, true);
 				level.factory.deleteBody(zombie.getBody());
 			}
+
+		} else if (A instanceof Player && B instanceof Drop) {
+			Player player = (Player) A;
+			Drop drop = (Drop) B;
+			
+			drop.pickup(player);
+
+		} else if (A instanceof Drop && B instanceof Player) {
+			Drop drop = (Drop) A;
+			Player player = (Player) B;
+			
+			drop.pickup(player);
 
 		}
 

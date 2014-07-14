@@ -26,6 +26,7 @@ import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 public class AK74U extends Weapon {
 
 	public AK74U() {
+		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("AK74u"), "Guns/AK74u/Icon.png", "Guns/AK74u/WithArm.png");
 		
 		magazine = new Magazine(this, 45);
 		muzzleVelocity = 50;

@@ -48,7 +48,7 @@ public class HudTable extends Table {
 	
 	public void setWeapon(Arm arm){
 		this.arm = arm;
-		tmp = new Image(arm.getIcon().getTexture());
+		tmp = new Image(arm.getWeapon().getIcon().getTexture());
 		this.weapon.setDrawable(tmp.getDrawable());
 		
 		max = arm.getWeapon().getMagazine().getCapacity();

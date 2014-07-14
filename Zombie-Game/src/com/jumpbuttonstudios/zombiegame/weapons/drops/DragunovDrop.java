@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.collision;
+package com.jumpbuttonstudios.zombiegame.weapons.drops;
+
+import com.badlogic.gdx.math.Vector2;
+import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.Dragunov;
 
 /**
- * All the collision filters available to use
+ * Drops a Dragunov Sniper Rifle for a character to pickup
  * 
  * @author Stephen Gibson
  */
-public class CollisionFilters {
+public class DragunovDrop extends WeaponDrop {
 
-	public static short GROUND = 0x0001;
-	public static short ZOMBIE = 0x0002; 
-	public static short PLAYER  = 0x0004;
-	public static short BULLET = 0x0008;
-	public static short BOUNDARY = 0x00016;
-	public static short BODYPART = 0x00032;
-	public static short DROP = 0x00064;
-
+	public DragunovDrop(Level level, Vector2 position) {
+		super(level, position, new Dragunov());
+	}
 
 }

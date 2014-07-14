@@ -70,7 +70,7 @@ public class JumpingState extends PlayerState {
 		}
 
 		/* Store the old pivot points in a tmp place */
-		tmp.set(player.getArm().getBodyPivot().getRelativePos());
+		tmp.set(player.getArm().getWeapon().getBodyJoint().getRelativePos());
 		tmp2.set(player.getArm().getWeapon().getMuzzle().getPivot()
 				.getRelativePos());
 	}
@@ -81,7 +81,7 @@ public class JumpingState extends PlayerState {
 		Body body = player.getBody();
 
 		/* Sets the pivots up to adjust position in the air */
-		player.getArm().getBodyPivot().getRelativePos()
+		player.getArm().getWeapon().getBodyJoint().getRelativePos()
 				.set(tmp.x + 0.25f, tmp.y - 0.285f);
 		player.getArm().getWeapon().getMuzzle().getPivot().getRelativePos()
 				.set(tmp2.x + 0.25f, tmp2.y - 0.285f);
@@ -148,7 +148,7 @@ public class JumpingState extends PlayerState {
 			tmp2.set(-tmp2.x, tmp2.y);
 		}
 		/* Finally reset the pivots to their original positions */
-		player.getArm().getBodyPivot().getRelativePos().set(tmp);
+		player.getArm().getWeapon().getBodyJoint().getRelativePos().set(tmp);
 		player.getArm().getWeapon().getMuzzle().getPivot().getRelativePos()
 		.set(tmp2);
 	}
