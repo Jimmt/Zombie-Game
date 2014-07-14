@@ -29,11 +29,12 @@ public class Pistol extends Weapon {
 		super();
 
 		magazine = new Magazine(this, 7);
-		muzzleVelocity = 50; // Tweak later and get proper/appropriate number
+		muzzleVelocity = 40; // Tweak later and get proper/appropriate number
 		rof = TimeConversion.secondToNanos(0.35f);
 		reloadTime = TimeConversion.secondToNanos(1.25f);
 		recoil = 15;
 		accuracyMultiplier = 20;
+		damage = 8;
 		
 		shotPref[0] = 0.5f;
 		shotPref[1] = 1.35f;

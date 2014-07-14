@@ -73,7 +73,7 @@ public class Forest extends Box2DObject {
 		createPolyFixture(groundWidth, groundHeight, 0, 0.50f, 0, false);
 		Filter filter = body.getFixtureList().get(0).getFilterData();
 		filter.categoryBits = (short) CollisionFilters.GROUND;
-		filter.maskBits = (short) (CollisionFilters.PLAYER | CollisionFilters.ZOMBIE);
+		filter.maskBits = (short) (CollisionFilters.PLAYER | CollisionFilters.ZOMBIE | CollisionFilters.BODYPART);
 		getBody().getFixtureList().get(0).setFilterData(filter);
 		
 		

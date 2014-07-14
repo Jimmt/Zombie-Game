@@ -42,6 +42,15 @@ public class Bullet extends Box2DObject {
 
 	/** Height of the bullet */
 	final float height = 0.275f;
+	
+	/***************************
+	 *************************** 
+	 ********* Stats ***********
+	 *************************** 
+	 **************************/
+	
+	/** How many targets this bullet has penetrated */
+	private int penetrated;
 
 	/**
 	 * The spread of a the bullet, every bullet suffers the same spread and is
@@ -67,7 +76,7 @@ public class Bullet extends Box2DObject {
 
 		createBody(parent.getParentArm().getParentCharacter().getLevel().getWorld(), BodyType.DynamicBody, Vector2.Zero, false);
 		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2,
-				0.075f, 0, 0, false);
+				0.15f, 0, 0, false);
 		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
 
@@ -133,6 +142,7 @@ public class Bullet extends Box2DObject {
 			sprite.draw(batch);
 		}
 	}
+	
 
 	public Bullet clone() {
 		Bullet bullet = new Bullet();
@@ -140,6 +150,20 @@ public class Bullet extends Box2DObject {
 		bullet.parent = parent;
 		return bullet;
 
+	}
+	
+	/**@return {@link #penetrated} */
+	public int getPenetrated() {
+		return penetrated;
+	}
+	
+	public void setPenetrated(int penetrated) {
+		this.penetrated = penetrated;
+	}
+	
+	/**@return {@link #parent} */
+	public Weapon getParent() {
+		return parent;
 	}
 
 	public Sprite getSprite() {

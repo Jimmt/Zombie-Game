@@ -27,6 +27,9 @@ import com.gibbo.gameutil.time.TimeConversion;
  */
 public class WaveGenerator {
 
+	/** For testing purposes, turns on and off spawning */
+	public static boolean DEBUG_MODE = false;
+
 	/** Level instance */
 	Level level;
 
@@ -56,16 +59,17 @@ public class WaveGenerator {
 	 * iteration
 	 */
 	public void update() {
-		/* Check if the wave has finished */
-		if (!waveFinished()) {
-			/* Update the current wave */
-			currWave.update();
-		} else {
-			/* Check if the rest period is over */
-			if (TimeUtils.nanoTime() - finishTime > freq) {
-				nextWave();
+		if (!DEBUG_MODE)
+			/* Check if the wave has finished */
+			if (!waveFinished()) {
+				/* Update the current wave */
+				currWave.update();
+			} else {
+				/* Check if the rest period is over */
+				if (TimeUtils.nanoTime() - finishTime > freq) {
+					nextWave();
+				}
 			}
-		}
 	}
 
 	/**

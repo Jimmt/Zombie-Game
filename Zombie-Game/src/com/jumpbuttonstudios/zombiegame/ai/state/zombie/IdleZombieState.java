@@ -23,7 +23,7 @@ import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
  * 
  * @author Stephen Gibson
  */
-public class IdleState implements State {
+public class IdleZombieState implements State {
 
 	/** The zombie that is using this state */
 	Zombie zombie;

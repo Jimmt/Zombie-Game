@@ -66,12 +66,14 @@ public class ZombieSpawner {
 		/* If the type is 1, we spawn a walking zombie */
 		if (type == 1) {
 			level.getCharacters().add(
-					new WalkingZombie(level.getWorld(), level.getPlayer(),
-							MathUtils.random(2f, 2f), position.x, position.y));
+					new WalkingZombie(level, level.getWorld(), level
+							.getPlayer(), MathUtils.random(0.5f, 1.5f),
+							position.x, position.y));
 		} else {
 			/* Else we just spawn a crawler */
 			level.getCharacters().add(
-					new CrawlingZombie(level.getWorld(), level.getPlayer(), MathUtils.random(0.75f, 1.5f),
+					new CrawlingZombie(level, level.getWorld(), level
+							.getPlayer(), MathUtils.random(0.75f, 1.2f),
 							position.x, position.y));
 
 		}
@@ -79,6 +81,11 @@ public class ZombieSpawner {
 		zombiesLeft--;
 		/* Set the time of last spawn to now */
 		lastSpawn = TimeUtils.nanoTime();
+	}
+
+	/** Reduces the frequency of zombie spawns, in seconds */
+	public void reduceSpawnTime(double freq) {
+		this.freq -= TimeConversion.secondToNanos(freq);
 	}
 
 	/** @return {@link #zombiesLeft} */

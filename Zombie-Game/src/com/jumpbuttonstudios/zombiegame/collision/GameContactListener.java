@@ -1,16 +1,15 @@
 package com.jumpbuttonstudios.zombiegame.collision;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
-import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.zombie.AttackState;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
-import com.jumpbuttonstudios.zombiegame.effects.Effect;
+import com.jumpbuttonstudios.zombiegame.effects.blood.BloodPuddle;
+import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
+import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.ZombieBodyParts;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
@@ -25,6 +24,8 @@ public class GameContactListener implements ContactListener {
 
 	/* The level instance */
 	Level level;
+
+	boolean dead = false;
 
 	public GameContactListener(Level level) {
 		this.level = level;
@@ -54,6 +55,54 @@ public class GameContactListener implements ContactListener {
 
 			zombie.setTargetInRange(true);
 			zombie.getStateMachine().changeState(new AttackState());
+
+		} else if (A instanceof Zombie && B instanceof Bullet) {
+			Zombie zombie = (Zombie) A;
+			Bullet bullet = (Bullet) B;
+			if (zombie.isGrabbed())
+				zombie.release(level.getPlayer());
+
+			if(contact.getFixtureA().getUserData() instanceof Zombie){
+				zombie.hurt(bullet, true);
+			}else{
+				zombie.hurt(bullet, false);				
+			}
+
+			level.factory.deleteBody(bullet.getBody());
+			level.bullets.removeValue(bullet, true);
+
+			level.getBloodEffects().add(new BloodPuddle(zombie));
+
+			if (zombie.isDead()) {
+				level.getDeathEffects().add(
+						new DeathEffect(zombie, new ZombieBodyParts(zombie)));
+				level.getCharacters().removeValue(zombie, true);
+				level.factory.deleteBody(zombie.getBody());
+			}
+		} else if (A instanceof Bullet && B instanceof Zombie) {
+			Bullet bullet = (Bullet) A;
+			Zombie zombie = (Zombie) B;
+
+			if (zombie.isGrabbed())
+				zombie.release(level.getPlayer());
+
+			if(contact.getFixtureB().getUserData() instanceof Zombie){
+				zombie.hurt(bullet, true);
+			}else{
+				zombie.hurt(bullet, false);				
+			}
+
+			level.factory.deleteBody(bullet.getBody());
+			level.bullets.removeValue(bullet, true);
+
+			level.getBloodEffects().add(new BloodPuddle(zombie));
+
+			if (zombie.isDead()) {
+				level.getDeathEffects().add(
+						new DeathEffect(zombie, new ZombieBodyParts(zombie)));
+				level.getCharacters().removeValue(zombie, true);
+				level.factory.deleteBody(zombie.getBody());
+			}
 
 		}
 
@@ -100,42 +149,6 @@ public class GameContactListener implements ContactListener {
 			if (A == null || B == null) {
 				return;
 			} else {
-				if (A instanceof Zombie && B instanceof Bullet) {
-					Zombie zombie = (Zombie) A;
-					Bullet bullet = (Bullet) B;
-					if (zombie.isGrabbed())
-						zombie.release(level.getPlayer());
-
-					level.getEffects().add(
-							new Effect(AnimationBuilder.create(0.040f, 1, 5,
-									Constants.scale, Constants.scale,
-									"Effect/Blood/Spray.png", null), zombie
-									.getX(), zombie.getY(), bullet.getBody()
-									.getAngle() * MathUtils.radDeg));
-
-					level.factory.deleteBody(bullet.getBody());
-					level.bullets.removeValue(bullet, true);
-					level.getCharacters().removeValue(zombie, true);
-					level.factory.deleteBody(zombie.getBody());
-				} else if (A instanceof Bullet && B instanceof Zombie) {
-					Bullet bullet = (Bullet) A;
-					Zombie zombie = (Zombie) B;
-					if (zombie.isGrabbed())
-						zombie.release(level.getPlayer());
-
-					level.getEffects().add(
-							new Effect(AnimationBuilder.create(0.04f, 1, 5,
-									Constants.scale, Constants.scale,
-									"Effect/Blood/Spray.png", null), zombie
-									.getX(), zombie.getY(), bullet.getBody()
-									.getAngle() * MathUtils.radDeg));
-
-					level.factory.deleteBody(bullet.getBody());
-					level.bullets.removeValue(bullet, true);
-					level.getCharacters().removeValue(zombie, true);
-					level.factory.deleteBody(zombie.getBody());
-
-				}
 
 			}
 		}

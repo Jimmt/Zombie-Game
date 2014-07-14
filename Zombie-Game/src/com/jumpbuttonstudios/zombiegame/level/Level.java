@@ -23,8 +23,13 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
+import com.jumpbuttonstudios.zombiegame.character.zombie.CrawlingZombie;
 import com.jumpbuttonstudios.zombiegame.collision.GameContactListener;
+import com.jumpbuttonstudios.zombiegame.defense.Defense;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
+import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
+import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.BodyPart;
+import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
 /**
@@ -45,13 +50,22 @@ public class Level {
 
 	/** All characters present in the level */
 	private Array<Character> characters = new Array<Character>();
-	
+
 	/** All effects currently being updated and drawn */
 	private Array<Effect> effects = new Array<Effect>();
 
+	/** All the death effects */
+	private Array<DeathEffect> deathEffects = new Array<DeathEffect>();
+
+	/** All blood effects in the level */
+	private Array<Blood> bloodEffects = new Array<Blood>();
+
+	/** All the defense in the level */
+	private Array<Defense> defenses = new Array<Defense>();
+
 	/** The game scene */
 	public Forest forest;
-	
+
 	/** The wave generator for spawning zombies */
 	public WaveGenerator waveGenerator;
 
@@ -64,7 +78,7 @@ public class Level {
 
 		/* Set up a contact listener */
 		getWorld().setContactListener(new GameContactListener(this));
-		
+
 		/* Create wave generator */
 		waveGenerator = new WaveGenerator(this);
 
@@ -78,10 +92,8 @@ public class Level {
 	public void update(float delta) {
 		getWorld().step(1f / 60f, 5, 8);
 
-		
 		/* Update wave generator to create waves */
 		waveGenerator.update();
-
 
 		/*
 		 * Update all the defined pivots to keep them updated in world
@@ -92,6 +104,13 @@ public class Level {
 				pivot.update();
 		}
 
+		/* Check if the blood has decayed and remove it if so */
+		for (Blood blood : bloodEffects) {
+			if (blood.hasDecayed())
+				if (blood.fade(delta))
+					bloodEffects.removeValue(blood, true);
+		}
+
 		/*
 		 * Update all the games characters, this includes the player which is
 		 * always first in the array
@@ -99,11 +118,42 @@ public class Level {
 		for (Character player : characters) {
 			player.update(delta);
 		}
-		
+
+		/* Create any death effects that are waiting for the time step to finish */
+		if (!getWorld().isLocked())
+			for (DeathEffect deathEffect : deathEffects) {
+				/*
+				 * If the death effect has no body parts, remove it from the
+				 * array
+				 */
+				if (deathEffect.getBodyParts().size == 0) {
+					deathEffects.removeValue(deathEffect, true);
+				}
+				/* If the death effect has not been created, create it */
+				if (!deathEffect.isCreated()) {
+					deathEffect.create();
+				}
+				/*
+				 * Iterate over each body part and check for decay, fade them if
+				 * they have decayed then delete them
+				 */
+				for (BodyPart part : deathEffect.getBodyParts()) {
+					if (part.hasDecayed())
+						if (part.fade(delta)) {
+							factory.deleteBody(part.getBody());
+							deathEffect.getBodyParts().removeValue(part, true);
+						}
+
+				}
+			}
 
 		/* Update the Box2D factory so things get deleted */
 		factory.update();
 
+	}
+
+	public Array<Defense> getDefenses() {
+		return defenses;
 	}
 
 	/**
@@ -113,10 +163,20 @@ public class Level {
 	public World getWorld() {
 		return factory.getWorld();
 	}
-	
+
+	/** @return {@link #deathEffects} */
+	public Array<DeathEffect> getDeathEffects() {
+		return deathEffects;
+	}
+
 	/** @return {@link #effects} */
 	public Array<Effect> getEffects() {
 		return effects;
+	}
+
+	/** @return {@link #bloodEffects} */
+	public Array<Blood> getBloodEffects() {
+		return bloodEffects;
 	}
 
 	/**

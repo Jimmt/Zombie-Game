@@ -70,7 +70,7 @@ public class RunningState extends PlayerState {
 			player.getStateMachine().changeState(JumpingState.instance());
 		} else if (player.isGrounded()) {
 			/* Go idle if no keys pressed */
-			player.getStateMachine().changeState(IdleState.instance());
+			player.getStateMachine().changeState(IdlePlayerState.instance());
 		}
 
 	}

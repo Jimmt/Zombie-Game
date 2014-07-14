@@ -16,12 +16,12 @@
 
 package com.jumpbuttonstudios.zombiegame.effects;
 
+import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
+
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.jumpbuttonstudios.zombiegame.Constants;
-
-import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
 
 /**
  * 
@@ -39,20 +39,36 @@ public class Effect {
 	AnimatedSprite sprite;
 
 	/**
-	 * Create a new effect
+	 * Create a new effect that can be used as a base to duplicate the same
+	 * effect at a new position and angle
 	 * 
 	 * @param sprite
 	 * @param x
 	 * @param y
 	 * @param angle
 	 */
-	public Effect(AnimatedSprite sprite, float x, float y, float angle) {
+	public Effect(AnimatedSprite sprite) {
 		this.sprite = sprite;
+
+	}
+
+	/**
+	 * Creates a new effect using an already define effect, with a new position
+	 * and angle
+	 * 
+	 * @param base
+	 * @param x
+	 * @param y
+	 * @param angle
+	 */
+	public Effect(Effect base, float x, float y, float angle) {
+		this.sprite = new AnimatedSprite(base.sprite.getAnimation());
 		pos.set(x, y);
 		this.angle = angle;
 		sprite.play();
 		sprite.getAnimation().setPlayMode(Animation.NORMAL);
 		sprite.setKeepSize(true);
+		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight() * Constants.scale);
 	}
 
 	/**
@@ -63,10 +79,17 @@ public class Effect {
 	public void draw(SpriteBatch batch) {
 		if (sprite != null && !sprite.isAnimationFinished()) {
 			sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
-			sprite.setPosition(pos.x - sprite.getWidth() / 2, pos.y - sprite.getHeight() / 2);
+			sprite.setPosition(pos.x - sprite.getWidth() / 2,
+					pos.y - sprite.getHeight() / 2);
 			sprite.setRotation(angle);
 			sprite.draw(batch);
 		}
 	}
+
+	/** @return if the effect has finished */
+	public boolean finished() {
+		return sprite.isAnimationFinished();
+	}
+
 
 }

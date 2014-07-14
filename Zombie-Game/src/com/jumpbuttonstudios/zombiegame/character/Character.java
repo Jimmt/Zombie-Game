@@ -37,7 +37,7 @@ import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
  * @author Stephen Gibson
  */
 public class Character extends Box2DObject {
-	
+
 	/** The level instance */
 	protected Level level;
 
@@ -123,7 +123,7 @@ public class Character extends Box2DObject {
 
 	public void update(float delta) {
 		/* Update the state machine */
-		stateMachine.update(this);		
+		stateMachine.update(this);
 
 	}
 
@@ -164,7 +164,6 @@ public class Character extends Box2DObject {
 				.getAnimatedSprite().getHeight());
 	}
 
-
 	/**
 	 * Swap the weapons in the characters weapon limbjoint
 	 * 
@@ -175,7 +174,6 @@ public class Character extends Box2DObject {
 		// TODO Add a way to access limb joint weapon, and simply swap them
 		return weapon;
 	}
-	
 
 	/**
 	 * Sets the current animation the character should be using from a
@@ -202,7 +200,7 @@ public class Character extends Box2DObject {
 	public float getX() {
 		return getBody().getPosition().x;
 	}
-	
+
 	public void setMaxSpeed(float maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
@@ -268,7 +266,7 @@ public class Character extends Box2DObject {
 	public void setGrounded(boolean isGrounded) {
 		this.isGrounded = isGrounded;
 	}
-	
+
 	public Level getLevel() {
 		return level;
 	}

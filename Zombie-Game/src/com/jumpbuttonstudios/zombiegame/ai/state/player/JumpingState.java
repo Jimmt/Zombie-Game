@@ -130,7 +130,7 @@ public class JumpingState extends PlayerState {
 		if (player.getBody().getLinearVelocity().y == 0) {
 			player.setGrounded(true);
 			/* Go back to an idle state */
-			player.getStateMachine().changeState(IdleState.instance());
+			player.getStateMachine().changeState(IdlePlayerState.instance());
 		}
 
 	}
