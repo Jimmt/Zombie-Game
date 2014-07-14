@@ -23,10 +23,10 @@ import com.badlogic.gdx.Input.Keys;
  * 
  * @author Stephen Gibson
  */
-public class IdleState extends PlayerState {
+public class IdlePlayerState extends PlayerState {
 
 	/** Single instance */
-	private static IdleState instance = new IdleState();
+	private static IdlePlayerState instance = new IdlePlayerState();
 
 
 	@Override
@@ -71,7 +71,7 @@ public class IdleState extends PlayerState {
 
 	}
 
-	public static IdleState instance() {
+	public static IdlePlayerState instance() {
 		return instance;
 	}
 

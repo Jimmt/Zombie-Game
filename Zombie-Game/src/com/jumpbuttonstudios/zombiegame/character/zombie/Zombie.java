@@ -16,31 +16,61 @@
 
 package com.jumpbuttonstudios.zombiegame.character.zombie;
 
-import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
+import java.util.Vector;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
+import com.jumpbuttonstudios.zombiegame.effects.Effect;
+import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
 /**
  * 
  * @author Stephen Gibson
  */
 public abstract class Zombie extends Character {
-	
-	
 
 	/** The target the zombie is heading towards */
 	private Character target;
 
 	/** If the target is in range or not */
 	private boolean targetInRange = false;
+
+	/** If the zombie currently has grabbed the player */
+	private boolean grabbed = false;
+
+	/** If this zombies health has reached zero */
+	private boolean isDead;
+
+	/** Blood splatter */
+	Effect bloodSplatter = new Effect(AnimationBuilder.create(0.040f, 1, 5,
+			Constants.scale, Constants.scale, "Effect/Blood/Spray.png", null));
+
+	/** The sound made when a zombie dies */
+	static Sound deathSound = Gdx.audio.newSound(Gdx.files
+			.internal("SFX/ZombieDeath.wav"));
+
+	/** The offset of drawing on X */
+	float drawOffsetX = 0.12f;
+	/** The offset of drawing on Y */
+	float drawOffsetY = 0.40f;
+
+	/***************************
+	 *************************** 
+	 ********** Stats **********
+	 *************************** 
+	 **************************/
 
 	/**
 	 * How strong the zombie is, this determines the attack damage and how much
@@ -49,20 +79,24 @@ public abstract class Zombie extends Character {
 	 */
 	private float strength;
 
-	/** If the zombie currently has grabbed the player */
-	private boolean grabbed = false;
-	
-	/** Blood splatter */
-	AnimatedSprite bloodSplatter;
+	/**
+	 * The zombies health before being killed, all zombies have a base health
+	 * that is multiplied by other stats
+	 */
+	private float HP = 25;
 
-	public Zombie(World world, Character target, float speed, float x, float y) {
+	/** How much more damage a headshot will do to a zombie */
+	final float HEADSHOT_MULTPLIER = 1.25f;
+
+	public Zombie(Level level, World world, Character target, float speed,
+			float x, float y) {
+		this.level = level;
 		this.maxSpeed = speed;
 		this.world = world;
 		this.target = target;
 
-//		bloodSplatter = AnimationBuilder.create(0.1f, 1, 5, Constants.scale, Constants.scale, "", null);
-		
-		strength = MathUtils.random(0.75f, 2);
+		strength = MathUtils.random(0.75f, 1.5f);
+		HP *= strength;
 
 	}
 
@@ -77,32 +111,61 @@ public abstract class Zombie extends Character {
 			if (currentAnimation.equals(getAnimation("walking"))) {
 				if (getBody().getLinearVelocity().x < 0) {
 					currentAnimation.draw(batch, getBody().getPosition().x,
-							getBody().getPosition().y, width, height,
-							body.getAngle() * MathUtils.radDeg);
+							getBody().getPosition().y + drawOffsetY, width,
+							height, body.getAngle() * MathUtils.radDeg);
 				} else {
 					currentAnimation.draw(batch, getBody().getPosition().x,
-							getBody().getPosition().y, width, height,
+							getBody().getPosition().y + 0.5f, width, height,
 							body.getAngle() * MathUtils.radDeg);
 
 				}
 
 			} else if (currentAnimation.equals(getAnimation("attacking"))) {
 				if (getFacing() == Facing.RIGHT) {
-					currentAnimation.draw(batch,
-							getBody().getPosition().x - 0.12f, getBody()
-									.getPosition().y, width, height,
-							body.getAngle() * MathUtils.radDeg);
+					currentAnimation.draw(batch, getBody().getPosition().x
+							- drawOffsetX, getBody().getPosition().y + 0.5f,
+							width, height, body.getAngle() * MathUtils.radDeg);
 				} else {
-					currentAnimation.draw(batch,
-							getBody().getPosition().x + 0.12f, getBody()
-									.getPosition().y, width, height,
-							body.getAngle() * MathUtils.radDeg);
+					currentAnimation.draw(batch, getBody().getPosition().x
+							+ drawOffsetX, getBody().getPosition().y
+							+ drawOffsetY, width, height, body.getAngle()
+							* MathUtils.radDeg);
 
 				}
 			} else {
 				super.draw(batch);
 			}
 		}
+
+	}
+
+	/**
+	 * Removes HP from the zombie and flags it dead if HP reaches zero, it also
+	 * adds a blood splatter effect
+	 * 
+	 * @param bullet
+	 */
+	public void hurt(Bullet bullet, boolean headShot) {
+		if (HP - bullet.getParent().getDamage()
+				* (headShot == true ? HEADSHOT_MULTPLIER : 1) > 0) {
+			if (headShot) {
+				HP -= bullet.getParent().getDamage();
+			} else {
+				HP -= bullet.getParent().getDamage() * HEADSHOT_MULTPLIER;
+			}
+		} else {
+			isDead = true;
+			deathSound.play(0.75f, MathUtils.random(0.5f, 1.5f), bullet
+					.getParent().getParentArm().getParentCharacter()
+					.getFacing() == Facing.LEFT ? -0.5f : 0.5f);
+		}
+
+		bloodSplatter = new Effect(bloodSplatter, getX()
+				+ MathUtils.random(-getWidth() / 2, getWidth() / 2), getY()
+				+ MathUtils.random(-getHeight() / 2, getHeight() / 2), bullet
+				.getBody().getAngle() * MathUtils.radDeg);
+		bullet.getParent().getParentArm().getParentCharacter().getLevel()
+				.getEffects().add(bloodSplatter);
 
 	}
 
@@ -115,7 +178,9 @@ public abstract class Zombie extends Character {
 		filter.categoryBits = (short) CollisionFilters.ZOMBIE;
 		filter.maskBits = (short) (CollisionFilters.PLAYER
 				| CollisionFilters.BULLET | CollisionFilters.GROUND);
-		body.getFixtureList().get(0).setFilterData(filter);
+		for (Fixture fixture : body.getFixtureList()) {
+			fixture.setFilterData(filter);
+		}
 
 	}
 
@@ -160,6 +225,11 @@ public abstract class Zombie extends Character {
 		/* Restore the players speed */
 		target.setMaxSpeed(target.getMaxSpeed() + (1f * strength));
 		grabbed = false;
+	}
+
+	/** @return {@link #isDead} */
+	public boolean isDead() {
+		return isDead;
 	}
 
 	/**

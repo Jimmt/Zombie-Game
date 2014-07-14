@@ -52,8 +52,9 @@ public class Arm {
 	/** Direction arm is facing */
 	Vector2 direction = new Vector2(), tmp = new Vector2();
 
-	/** The sprite for the arm */
-	private Sprite sprite;
+	
+	/** Icon sprite for hud */
+	private Sprite icon;
 
 	/** The weapon for this arm, if applicable */
 	private Weapon weapon;
@@ -61,6 +62,11 @@ public class Arm {
 	/** World coordinates for facing the arm */
 	Vector3 worldCoords = new Vector3();
 
+	public Sprite getIcon(){
+		return icon;
+	}
+	
+	
 	/**
 	 * Updates the weapon and pivot point for the arm
 	 * 
@@ -81,23 +87,23 @@ public class Arm {
 			 */
 			weapon.draw(batch);
 			/* Set the origin of the sprite to match the origin pivot */
-			sprite.setOrigin(sprite.getWidth() / 2 - originPivot.x,
-					sprite.getHeight()
+			weapon.getSprite().setOrigin(weapon.getSprite().getWidth() / 2 - originPivot.x,
+					weapon.getSprite().getHeight()
 							/ 2
-							- (sprite.isFlipY() ? -originPivot.y
+							- (weapon.getSprite().isFlipY() ? -originPivot.y
 									: originPivot.y));
 			/* Set the position o the sprite to the pivots */
-			sprite.setPosition(
+			weapon.getSprite().setPosition(
 					Pivots.getPivotJoint("shoulder").x
-							- (((sprite.getWidth() / 2)) - originPivot.x),
+							- (((weapon.getSprite().getWidth() / 2)) - originPivot.x),
 					Pivots.getPivotJoint("shoulder").y
-							- (sprite.getHeight() / 2 - (sprite.isFlipY() ? -0.05f
+							- (weapon.getSprite().getHeight() / 2 - (weapon.getSprite().isFlipY() ? -0.05f
 									: 0.05f)));
 			/*
 			 * This draws the entire arm, which may or may not have a weapon in
 			 * it
 			 */
-			sprite.draw(batch);
+			weapon.getSprite().draw(batch);
 		}
 	}
 
@@ -125,13 +131,13 @@ public class Arm {
 			 * Set the origin of the sprite to rotate around the middle + an
 			 * offset in X or Y
 			 */
-			sprite.setOrigin((sprite.getWidth() / 2) - offsetX,
-					(sprite.getHeight() / 2) - offsetY);
+			weapon.getSprite().setOrigin((weapon.getSprite().getWidth() / 2) - offsetX,
+					(weapon.getSprite().getHeight() / 2) - offsetY);
 			/*
 			 * Set the rotation of the sprite to the angle from the directional
 			 * vector
 			 */
-			sprite.setRotation(direction.angle());
+			weapon.getSprite().setRotation(direction.angle());
 
 			/*
 			 * Check if the characters animation is currently flipped, if so we
@@ -146,8 +152,8 @@ public class Arm {
 			 * adjust the anchor point that the sprite sits on, we do this here
 			 * so it only executes once as a flip can only occur once
 			 */
-			if (sprite.isFlipY()) {
-				sprite.flip(false, true);
+			if (weapon.getSprite().isFlipY()) {
+				weapon.getSprite().flip(false, true);
 				bodyPivot.flipPos(true, false);
 				originPivot.flipPos(false, true);
 				weapon.getMuzzle().getPivot().flipPos(true, false);
@@ -157,9 +163,9 @@ public class Arm {
 			 * If we are facing left this block is called, it is almost
 			 * identical to the above block
 			 */
-			sprite.setOrigin((sprite.getWidth() / 2) - offsetX,
-					(sprite.getHeight() / 2) - offsetY);
-			sprite.setRotation(direction.angle());
+			weapon.getSprite().setOrigin((weapon.getSprite().getWidth() / 2) - offsetX,
+					(weapon.getSprite().getHeight() / 2) - offsetY);
+			weapon.getSprite().setRotation(direction.angle());
 
 			/*
 			 * Check if the characters animation is not flipped, if so we flip
@@ -175,8 +181,8 @@ public class Arm {
 			 * adjust the anchor point that the sprite sits on, we do this here
 			 * so it only executes once as a flip can only occur once
 			 */
-			if (!sprite.isFlipY()) {
-				sprite.flip(false, true);
+			if (!weapon.getSprite().isFlipY()) {
+				weapon.getSprite().flip(false, true);
 				bodyPivot.flipPos(true, false);
 				originPivot.flipPos(false, true);
 				weapon.getMuzzle().getPivot().flipPos(true, false);
@@ -207,10 +213,6 @@ public class Arm {
 	 */
 	public Vector2 getDirection() {
 		return direction;
-	}
-
-	public Sprite getSprite() {
-		return sprite;
 	}
 
 	public void setWeapon(Weapon weapon) {
@@ -247,14 +249,17 @@ public class Arm {
 		 * @return
 		 */
 		public static Arm create(Character parent, PivotJoint bodyPivot,
-				PivotJoint originPivot, Weapon weapon, String path) {
+				PivotJoint originPivot, Weapon weapon, String path, String iconPath) {
 			Arm arm = new Arm();
 			arm.parent = parent;
 			arm.bodyPivot = bodyPivot;
 			arm.originPivot = originPivot;
-			arm.sprite = new Sprite(new Texture(Gdx.files.internal(path)));
-			arm.sprite.setSize(arm.sprite.getWidth() * Constants.scale,
-					arm.sprite.getHeight() * Constants.scale);
+			weapon.setSprite(new Sprite(new Texture(Gdx.files.internal(path))));
+			weapon.getSprite().setSize(weapon.getSprite().getWidth() * Constants.scale,
+					weapon.getSprite().getHeight() * Constants.scale);
+			arm.icon = new Sprite(new Texture(Gdx.files.internal(iconPath)));
+			arm.icon.setSize(weapon.getSprite().getWidth() * Constants.scale,
+					weapon.getSprite().getHeight() * Constants.scale);
 			weapon.setParentArm(arm);
 			arm.weapon = weapon;
 

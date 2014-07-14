@@ -72,7 +72,7 @@ public class Muzzle {
 			 * adjust the pivot so that the muzzle positions correctly, we do
 			 * this here so it only executes once as a flip can only occur once
 			 */
-			if (parent.getParentArm().getSprite().isFlipY()) {
+			if (parent.getSprite().isFlipY()) {
 			}
 		} else {
 			/*
@@ -80,7 +80,7 @@ public class Muzzle {
 			 * adjust the pivot so that the muzzle positions correctly, we do
 			 * this here so it only executes once as a flip can only occur once
 			 */
-			if (!parent.getParentArm().getSprite().isFlipY()) {
+			if (!parent.getSprite().isFlipY()) {
 			}
 		}
 	}

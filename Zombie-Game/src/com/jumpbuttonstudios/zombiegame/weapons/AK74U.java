@@ -28,11 +28,12 @@ public class AK74U extends Weapon {
 	public AK74U() {
 		
 		magazine = new Magazine(this, 45);
-		muzzleVelocity = 35;
+		muzzleVelocity = 50;
 		rof = TimeConversion.secondToNanos(0.092f);
 		reloadTime = TimeConversion.secondToNanos(1.5f);
 		recoil = 25;
 		accuracyMultiplier = 30;
+		damage = 10;
 		
 		shotPref[0] = 0.6f;
 		shotPref[1] = 1f;

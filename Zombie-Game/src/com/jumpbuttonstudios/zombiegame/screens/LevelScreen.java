@@ -1,27 +1,28 @@
 package com.jumpbuttonstudios.zombiegame.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.camera.ActionOrthoCamera;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
+import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
+import com.jumpbuttonstudios.zombiegame.defense.Defense;
+import com.jumpbuttonstudios.zombiegame.defense.DefenseComparator;
+import com.jumpbuttonstudios.zombiegame.defense.DefensePlacer;
+import com.jumpbuttonstudios.zombiegame.effects.Effect;
+import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
+import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 
@@ -38,86 +39,47 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	/** The Camera for Box2D */
 	public static ActionOrthoCamera b2dCam = new ActionOrthoCamera(16, 9);
+	
+	private DefensePlacer defensePlacer = new DefensePlacer(level);
 
 	/** Table for creating defenses */
-	private Table defenseTable = new Table(getSkin());
-
-	/** Array of defense icons */
-	private Array<Image> defenseImages = new Array<Image>();
-
-	/** Array of released defense icons */
-	private Array<Image> releaseImages = new Array<Image>();
-
-	private Array<ImageButton> defenseButtons = new Array<ImageButton>();
-
-	private String[] paths = { "Block/Released", "Door/Released",
-			"Floor/Released", "Ladder/Released", "Wall/Released" };
-
-	private String[] pressedPaths = { "Block/Pressed", "Door/Pressed",
-			"Floor/Pressed", "Ladder/Pressed", "Wall/Pressed" };
+	private DefenseTable defenseTable = new DefenseTable(defensePlacer, level, getSkin(), level.getWorld());
 
 	private Image grid;
+	
+	private Arm arm;
 
 	private HudTable hudTable = new HudTable(getSkin());
 
 	private Table parentTable = new Table(getSkin());
+	
+	private DefenseComparator defenseComp;
+	
+	
+	
+	
 
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
+		
+		defenseComp = new DefenseComparator();
 
 		multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(uiStage);
 		multiplexer.addProcessor(this);
 
-		// adding each pressed/released image
-		for (String string : paths) {
-			Image i = new Image(new Texture("UI/Icons/"
-					+ Gdx.files.internal(string + ".png")));
-			defenseImages.add(i);
-		}
-		for (String string : pressedPaths) {
-			Image i = new Image(new Texture("UI/Icons/"
-					+ Gdx.files.internal(string + ".png")));
-			releaseImages.add(i);
-		}
-
-		grid = new Image(new Texture(Gdx.files.internal("UI/Grid.png")));
-
-		defenseTable.setFillParent(true);
-		defenseTable.setVisible(false);
-
-		defenseTable.add("Defenses");
-		defenseTable.row();
-
-		// Add pressed and released images to each imageButton
-		for (int i = 0; i < defenseImages.size; i++) {
-			ImageButtonStyle ibs = new ImageButtonStyle();
-			ibs.imageUp = defenseImages.get(i).getDrawable();
-			ibs.imageDown = releaseImages.get(i).getDrawable();
-			ImageButton button = new ImageButton(ibs);
-			final String str = paths[i];
-			button.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					
-					
-				}
-			});
-			defenseButtons.add(button);
-			defenseTable.add(button);
-		}
-
-		defenseTable.debug();
+		
 		hudTable.debug();
+		
+	
 
 		uiStage.addActor(defenseTable);
 
 		parentTable.setFillParent(true);
 		parentTable.add(hudTable).expand().fill();
-		
 
 		stage.addActor(parentTable);
-
+		
 	}
 
 	@Override
@@ -131,12 +93,24 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		super.render(delta);
 
 		level.update(delta);
+		
+		defensePlacer.update(delta);
+		
+		arm = level.getPlayer().getArm();
+		hudTable.setWeapon(arm);
+		
+		if(defensePlacer.isPlacing()){
+			defenseTable.setVisible(false);
+		}
 
+		
 		if (defenseTable.isVisible()) {
 			level.getPlayer().setInMenu(true);
-		} else {
+		} else if(!defensePlacer.isPlacing() && !Gdx.input.isButtonPressed(Buttons.LEFT)){
 			level.getPlayer().setInMenu(false);
 		}
+		
+		
 
 		/* Keep camera inside the level bounds */
 		if (level.getPlayer().getX() > -5 && level.getPlayer().getX() < 17) {
@@ -144,7 +118,6 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 					+ level.getPlayer().getWidth() / 2, 2), 0, 2.5f);
 		}
 
-		/* Enable shake if not already */
 		if (!b2dCam.shakeEnabled())
 			b2dCam.enableShake(true);
 
@@ -155,6 +128,17 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		level.forest.draw(batch);
 		level.getPlayer().draw(batch);
+		
+		level.getDefenses().sort(defenseComp);
+		
+		for(Defense defense : level.getDefenses()){
+			defense.draw(batch);
+		}
+		
+		
+		for(Blood blood : level.getBloodEffects()){
+			blood.draw(batch);
+		}
 
 		for (Bullet bullet : level.bullets) {
 			bullet.draw(batch);
@@ -162,6 +146,18 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		for (Character player : level.getCharacters()) {
 			player.draw(batch);
+		}
+
+		for (Effect effect : level.getEffects()) {
+			effect.draw(batch);
+			if(effect.finished()){
+				level.getEffects().removeValue(effect, true);
+			}
+		}
+		
+		for(DeathEffect deathEffect : level.getDeathEffects()){
+			if(deathEffect.isCreated())
+				deathEffect.draw(batch);
 		}
 
 		batch.end();
@@ -192,11 +188,13 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 			sr.end();
 
+			Table.drawDebug(stage);
+			Table.drawDebug(uiStage);
 		}
+
 		stage.draw();
 		uiStage.draw();
-		Table.drawDebug(stage);
-		Table.drawDebug(uiStage);
+
 	}
 
 	@Override

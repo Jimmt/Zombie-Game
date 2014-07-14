@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.collision;
+package com.jumpbuttonstudios.zombiegame.weapons.drops;
+
+import com.jumpbuttonstudios.zombiegame.character.Arm;
+import com.jumpbuttonstudios.zombiegame.level.Level;
 
 /**
- * All the collision filters available to use
+ * Base class for all weapon drops, a weapon drop stores a weapon and upon
+ * picking up, it is passed to the player
  * 
  * @author Stephen Gibson
  */
-public class CollisionFilters {
+public class WeaponDrop {
+	
+	Arm arm;
 
-	public static short GROUND = 0x0001;
-	public static short ZOMBIE = 0x0002; 
-	public static short PLAYER  = 0x0004;
-	public static short BULLET = 0x0008;
-	public static short BOUNDARY = 0x00016;
-	public static short BODYPART = 0x00032;
+	public WeaponDrop(Level level) {
 
+	}
 
 }

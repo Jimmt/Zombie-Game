@@ -23,6 +23,7 @@ import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.zombie.WalkingState;
 import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.level.Level;
 
 /**
  * 
@@ -30,8 +31,8 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
  */
 public class WalkingZombie extends Zombie {
 
-	public WalkingZombie(World world, Character target, float speed, float x, float y) {
-		super(world, target, speed, x, y);
+	public WalkingZombie(Level level, World world, Character target, float speed, float x, float y) {
+		super(level, world, target, speed, x, y);
 		
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
@@ -57,9 +58,13 @@ public class WalkingZombie extends Zombie {
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(x, y), true);
-		createPolyFixture(width / 2 - 0.25f, height / 2, 0.25f, 0.40f, 0.05f,
+		createPolyFixture(width / 2 - 0.25f, (height / 2) - drawOffsetY, 0.25f, 0.40f, 0.05f,
 				false);
+		createCircleFixture(new Vector2(0, 1.1f), 0.45f, 0, 0.5f, 0, 0, false);
 		body.setUserData(this);
+		
+		/** Set the heads user data to this */
+		body.getFixtureList().get(1).setUserData(this);
 		
 		/* Set contact filters */
 		setCollisionFilters();

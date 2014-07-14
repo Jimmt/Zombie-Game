@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.collision;
+package com.jumpbuttonstudios.zombiegame.effects.blood;
+
+import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
+import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.character.Character;
 
 /**
- * All the collision filters available to use
  * 
  * @author Stephen Gibson
  */
-public class CollisionFilters {
+public class BloodTrail extends Blood {
 
-	public static short GROUND = 0x0001;
-	public static short ZOMBIE = 0x0002; 
-	public static short PLAYER  = 0x0004;
-	public static short BULLET = 0x0008;
-	public static short BOUNDARY = 0x00016;
-	public static short BODYPART = 0x00032;
-
+	public BloodTrail(Character parent) {
+		super(parent, AnimationBuilder.create(1, 1, 1, Constants.scale,
+				Constants.scale, "Effect/Blood/Trail.png", null));
+		
+		sprite.setPosition(
+				(parent.getX() - sprite.getWidth() / 2), (parent.getY()
+						- parent.getHeight() / 2));
+	}
+	
 
 }

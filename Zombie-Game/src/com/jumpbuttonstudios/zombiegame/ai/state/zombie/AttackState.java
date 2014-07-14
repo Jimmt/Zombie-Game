@@ -46,7 +46,6 @@ public class AttackState extends ZombieState {
 		/* First check which direction the zombie is facing */
 		if (zombie.getFacing() == Facing.RIGHT) {
 			/* If the target x is less than the zombie x, we have to turn him */
-			System.out.println("Target " + zombie.getTarget().getX() + "Zombie " + zombie.getX());
 			if (zombie.getTarget().getX() > zombie.getX()) {
 				zombie.setFacing(Facing.LEFT);
 				/* Check if the current animation needs flipped */

@@ -28,11 +28,13 @@ public class Dragunov extends Weapon {
 	public Dragunov() {
 		
 		magazine = new Magazine(this, 10);
-		muzzleVelocity = 120; // Tweak later and get proper/appropriate number
-		rof = TimeConversion.secondToNanos(1f); // Tweak later
+		muzzleVelocity = 120;
+		rof = TimeConversion.secondToNanos(1.2f); // Tweak later
 		reloadTime = TimeConversion.secondToNanos(1.8f);
 		recoil = 180;
 		accuracyMultiplier = 30;
+		damage = 18	;
+		penetration = 3;
 		
 		shotPref[0] = 0.85f;
 		shotPref[1] = 0.5f;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -34,6 +35,9 @@ public abstract class Weapon {
 	 *************************** 
 	 **************************/
 
+	/** The sprite for the weapon */
+	private Sprite sprite;
+
 	/** The muzzle flash for all weapons */
 	private AnimatedSprite muzzleFlash;
 
@@ -45,13 +49,13 @@ public abstract class Weapon {
 
 	/** The gunshot sound */
 	Sound shot = Gdx.audio.newSound(Gdx.files.internal("SFX/Pistol.wav"));
-	
+
 	/** Preferences for the gunshot sound, Volume, Pitch and Pan */
 	protected float[] shotPref = new float[3];
-	
-//	/** The empty magazine sound */
-//	Sound empty = Gdx.audio.newSound(Gdx.files.internal("SFX/Click.wav"));
-	
+
+	// /** The empty magazine sound */
+	Sound empty = Gdx.audio.newSound(Gdx.files.internal("SFX/Click2.wav"));
+
 	/** The reload sound */
 	Sound reload = Gdx.audio.newSound(Gdx.files.internal("SFX/Reload.wav"));
 
@@ -60,6 +64,9 @@ public abstract class Weapon {
 	 ********* Stats ***********
 	 *************************** 
 	 **************************/
+
+	/** The guns damage */
+	protected float damage;
 
 	/** How fast the guns rate of fire is */
 	protected double rof;
@@ -78,6 +85,9 @@ public abstract class Weapon {
 
 	/** How long it takes to reload the weapon */
 	protected double reloadTime;
+
+	/** How many penetrations a bullet is capable of when fired from this weapon */
+	protected int penetration;
 
 	/***************************
 	 *************************** 
@@ -124,11 +134,14 @@ public abstract class Weapon {
 				Constants.scale, "Effect/Gunfire.png", null);
 		muzzleFlash.getAnimation().setPlayMode(Animation.NORMAL);
 		muzzleFlash.setKeepSize(true);
-		
+
 		/* All gunshots use the same pan */
 		shotPref[2] = 0.5f;
 
+	}
 
+	public Magazine getMagazine() {
+		return magazine;
 	}
 
 	/**
@@ -141,6 +154,8 @@ public abstract class Weapon {
 		if (reloading) {
 			/* See if the correct time has passed for a reload */
 			if (TimeUtils.nanoTime() - reloadStart > reloadTime) {
+				/** Play reloaded sound */
+				reload.play(0.5f);
 				reloading = false;
 				/* Create an exact copy of the original magazine */
 				magazine = magazine.clone();
@@ -149,15 +164,14 @@ public abstract class Weapon {
 			 * If the time since the last shot is more than rof, we can shoot
 			 * again
 			 */
-		} else {
+		} else if (!reloading) {
 			if (TimeUtils.nanoTime() - lastShot > rof) {
 				canFire = true;
 				muzzleFlash.stop();
 			}
 		}
-		
-		if(!reloading && Gdx.input.isKeyPressed(Keys.R)){
-			reload.play(0.5f);
+
+		if (!reloading && Gdx.input.isKeyPressed(Keys.R)) {
 			reloading = true;
 			reloadStart = TimeUtils.nanoTime();
 		}
@@ -168,11 +182,11 @@ public abstract class Weapon {
 		/* If the muzzle flash animation is playing, we want to draw it */
 		if (muzzleFlash.isPlaying()) {
 			muzzleFlash.draw(batch);
-			parent.getSprite()
+			getSprite()
 					.setRotation(
-							parent.getParentCharacter().getFacing() == Facing.LEFT ? parent
-									.getSprite().getRotation() - 10 : parent
-									.getSprite().getRotation() + 10);
+							parent.getParentCharacter().getFacing() == Facing.LEFT ? getSprite()
+									.getRotation() - 10 : getSprite()
+									.getRotation() + 10);
 		}
 		/* Stop the muzzle animation if it has finished */
 		if (muzzleFlash.isAnimationFinished()) {
@@ -190,7 +204,7 @@ public abstract class Weapon {
 		 * Check if we can fire, if we have bullets and that we are not
 		 * reloading
 		 */
-		if (canFire && !reloading) {
+		if (canFire && !reloading && magazine.getCapacity() > 0) {
 			/* Set the parent to this */
 			muzzle.parent = this;
 
@@ -236,8 +250,11 @@ public abstract class Weapon {
 			/* Make gunshot sound */
 			shot.play(0.5f, 1.35f, getParentArm().getParentCharacter()
 					.getFacing() == Facing.LEFT ? -0.5f : 0.5f);
-			shot.play(shotPref[0], shotPref[1], getParentArm().getParentCharacter()
-					.getFacing() == Facing.LEFT ? -shotPref[2] : shotPref[2]);
+			shot.play(
+					shotPref[0],
+					shotPref[1],
+					getParentArm().getParentCharacter().getFacing() == Facing.LEFT ? -shotPref[2]
+							: shotPref[2]);
 
 			/*
 			 * Check if the player is below max speed, if so we can apply a
@@ -259,10 +276,20 @@ public abstract class Weapon {
 			 * reloading
 			 */
 		} else if (magazine.getCapacity() == 0 && !reloading) {
-//			empty.play();
+			canFire = false;
+			empty.play();
+			reloading = true;
+			reloadStart = TimeUtils.nanoTime();
 		}
 	}
-	
+
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
+	}
+
+	public Sprite getSprite() {
+		return sprite;
+	}
 
 	public Muzzle getMuzzle() {
 		return muzzle;
@@ -282,6 +309,16 @@ public abstract class Weapon {
 
 	public void setParentArm(Arm parent) {
 		this.parent = parent;
+	}
+
+	/** @return {@link #penetration} */
+	public int getPenetration() {
+		return penetration;
+	}
+
+	/** @return {@link #damage} */
+	public float getDamage() {
+		return damage;
 	}
 
 	/**

@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
-import com.jumpbuttonstudios.zombiegame.ai.state.player.IdleState;
+import com.jumpbuttonstudios.zombiegame.ai.state.player.IdlePlayerState;
 import com.jumpbuttonstudios.zombiegame.ai.state.player.JumpingState;
 import com.jumpbuttonstudios.zombiegame.character.Arm.ArmBuilder;
 import com.jumpbuttonstudios.zombiegame.character.Character;
@@ -45,6 +45,8 @@ public class Player extends Character {
 	public Player(Level level, World world) {
 		this.level = level;
 		this.world = world;
+		
+		
 
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
@@ -89,20 +91,20 @@ public class Player extends Character {
 
 		/* Create an arm with a pistol as the weapon */
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
+				Pivots.getPivotJoint("Dragunov"), new Dragunov(),
+				"Guns/Dragunov/WithArm.png", "Guns/Dragunov/Icon.png");
+		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
 				Pivots.getPivotJoint("M1911"), new Pistol(),
-				"Guns/M1911/WithArm.png");
+				"Guns/M1911/WithArm.png", "Guns/M1911/Icon.png");
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
 				Pivots.getPivotJoint("AK74u"), new AK74U(),
-				"Guns/AK74u/WithArm.png");
-		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("Dragunov"), new Dragunov(),
-				"Guns/Dragunov/WithArm.png");
+				"Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
 
 		/* Setup state machine */
-		stateMachine.changeState(IdleState.instance());
+		stateMachine.changeState(IdlePlayerState.instance());
 
 		/* Setup character properties */
-		maxSpeed = 8;
+		maxSpeed = 7;
 		acceleration = 10;
 		jumpPower = 200;
 
