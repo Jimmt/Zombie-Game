@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.effects.zombiedeath;
+package com.jumpbuttonstudios.zombiegame.effects.death;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -64,7 +64,7 @@ public class BodyPart extends Box2DObject {
 		sprite.setSize(width, height);
 
 		/* Set a random decay time for this body part */
-		decayTime = TimeConversion.secondToNanos(MathUtils.random(30, 40));
+		decayTime = TimeConversion.secondToNanos(MathUtils.random(5, 10));
 
 	}
 

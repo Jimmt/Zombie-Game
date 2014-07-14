@@ -5,6 +5,7 @@ import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,6 +35,9 @@ public abstract class Weapon {
 	 ******** Graphics *********
 	 *************************** 
 	 **************************/
+
+	/** Icon sprite for hud */
+	private Sprite icon;
 
 	/** The sprite for the weapon */
 	private Sprite sprite;
@@ -95,8 +99,11 @@ public abstract class Weapon {
 	 *************************** 
 	 **************************/
 
-	/** The origin of rotation and position */
-	protected PivotJoint pivot;
+	/** The joint where the weapon will be pivoted around */
+	protected PivotJoint bodyJoint;
+
+	/** The origin point for rotation and position */
+	protected PivotJoint originJoint;
 
 	/***************************
 	 *************************** 
@@ -128,7 +135,7 @@ public abstract class Weapon {
 	/** The direction the barrel is facing */
 	Vector2 direction;
 
-	public Weapon() {
+	protected Weapon() {
 
 		muzzleFlash = AnimationBuilder.create(0.050f, 1, 3, Constants.scale,
 				Constants.scale, "Effect/Gunfire.png", null);
@@ -137,6 +144,32 @@ public abstract class Weapon {
 
 		/* All gunshots use the same pan */
 		shotPref[2] = 0.5f;
+
+	}
+
+	/**
+	 * Creates a new weapon with define pivot points for the body and the origin
+	 * 
+	 * @param bodyJoint
+	 * @param originJoint
+	 */
+	Weapon(PivotJoint bodyJoint, PivotJoint originJoint, String iconPath,
+			String spritePath) {
+		this();
+
+		/* Set the icon for this weapon */
+		this.icon = new Sprite(new Texture(Gdx.files.internal(iconPath)));
+		this.icon.setSize(this.icon.getWidth() * Constants.scale,
+				this.icon.getHeight() * Constants.scale);
+
+		/* Set the weapon sprite */
+		this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
+		this.sprite.setSize(this.sprite.getWidth() * Constants.scale,
+				this.sprite.getHeight() * Constants.scale);
+
+		/* Setup the pivot joints for position and rotation */
+		this.bodyJoint = bodyJoint;
+		this.originJoint = originJoint;
 
 	}
 
@@ -152,13 +185,16 @@ public abstract class Weapon {
 	public void update(float delta) {
 		/* Check if we are reloading */
 		if (reloading) {
-			/* See if the correct time has passed for a reload */
-			if (TimeUtils.nanoTime() - reloadStart > reloadTime) {
-				/** Play reloaded sound */
-				reload.play(0.5f);
-				reloading = false;
-				/* Create an exact copy of the original magazine */
-				magazine = magazine.clone();
+			/* Check if the character has any magazines left */
+			if (parent.getParentCharacter().getMagazines().size != 0) {
+				/* See if the correct time has passed for a reload */
+				if (TimeUtils.nanoTime() - reloadStart > reloadTime) {
+					/** Play reloaded sound */
+					reload.play(0.5f);
+					reloading = false;
+					/* Create an exact copy of the original magazine */
+					magazine = parent.getParentCharacter().getMagazines().pop();
+				}
 			}
 			/*
 			 * If the time since the last shot is more than rof, we can shoot
@@ -171,7 +207,8 @@ public abstract class Weapon {
 			}
 		}
 
-		if (!reloading && Gdx.input.isKeyPressed(Keys.R)) {
+		if (!reloading && parent.getParentCharacter().getMagazines().size != 0
+				&& Gdx.input.isKeyPressed(Keys.R)) {
 			reloading = true;
 			reloadStart = TimeUtils.nanoTime();
 		}
@@ -283,10 +320,16 @@ public abstract class Weapon {
 		}
 	}
 
+	/** @return {@link #icon} */
+	public Sprite getIcon() {
+		return icon;
+	}
+
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
+	/** @return {@link #sprite} */
 	public Sprite getSprite() {
 		return sprite;
 	}
@@ -319,6 +362,32 @@ public abstract class Weapon {
 	/** @return {@link #damage} */
 	public float getDamage() {
 		return damage;
+	}
+
+	/**
+	 * 
+	 * @param originJoint
+	 */
+	public void setOriginJoint(PivotJoint originJoint) {
+		this.originJoint = originJoint;
+	}
+
+	/** @return {@link #originJoint} */
+	public PivotJoint getOriginJoint() {
+		return originJoint;
+	}
+
+	/**
+	 * 
+	 * @param bodyJoint
+	 */
+	public void setBodyJoint(PivotJoint bodyJoint) {
+		this.bodyJoint = bodyJoint;
+	}
+
+	/** @return {@link #bodyJoint} */
+	public PivotJoint getBodyJoint() {
+		return bodyJoint;
 	}
 
 	/**

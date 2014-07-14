@@ -26,7 +26,8 @@ import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 public class Pistol extends Weapon {
 
 	public Pistol() {
-		super();
+		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("M1911"),
+				"Guns/M1911/Icon.png", "Guns/M1911/WithArm.png");
 
 		magazine = new Magazine(this, 7);
 		muzzleVelocity = 40; // Tweak later and get proper/appropriate number
@@ -35,15 +36,13 @@ public class Pistol extends Weapon {
 		recoil = 15;
 		accuracyMultiplier = 20;
 		damage = 8;
-		
+
 		shotPref[0] = 0.5f;
 		shotPref[1] = 1.35f;
-				
-		
+
 		bullet = new Bullet("Guns/M1911/Bullet.png", this);
-		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.65f, 1.6f);
-		
-		
+		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.65f,
+				1.6f);
 
 	}
 

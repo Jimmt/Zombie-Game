@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jumpbuttonstudios.zombiegame.effects.zombiedeath;
+package com.jumpbuttonstudios.zombiegame.effects.death;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;

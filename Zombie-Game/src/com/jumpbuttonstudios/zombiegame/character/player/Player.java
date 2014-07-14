@@ -19,7 +19,6 @@ import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
-import com.jumpbuttonstudios.zombiegame.weapons.Dragunov;
 import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
 
 /**
@@ -30,6 +29,7 @@ import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
  * 
  */
 public class Player extends Character {
+
 
 	/** The position of the mouse cursor */
 	Vector2 mouse = new Vector2();
@@ -45,8 +45,6 @@ public class Player extends Character {
 	public Player(Level level, World world) {
 		this.level = level;
 		this.world = world;
-		
-		
 
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
@@ -74,7 +72,7 @@ public class Player extends Character {
 
 		Filter filter = body.getFixtureList().get(0).getFilterData();
 		filter.categoryBits = (short) CollisionFilters.PLAYER;
-		filter.maskBits = (short) (CollisionFilters.GROUND | CollisionFilters.ZOMBIE);
+		filter.maskBits = (short) (CollisionFilters.GROUND | CollisionFilters.ZOMBIE | CollisionFilters.DROP);
 		body.getFixtureList().get(0).setFilterData(filter);
 
 		/* Character starts facing right */
@@ -82,7 +80,7 @@ public class Player extends Character {
 		/* Set the current animation */
 		setCurrentAnimation("idle");
 
-		/* Setup a bunch of pivot points on the body */
+		/* Setup a bunch of pivot points for the player */
 		Pivots.addPivotJoint("shoulder", this, -0.08f, 0.35f);
 		Pivots.addPivotJoint("muzzle", this, -0.08f, 0.65f);
 		Pivots.addPivotJoint("M1911", null, 0.6f, 0.05f);
@@ -90,15 +88,15 @@ public class Player extends Character {
 		Pivots.addPivotJoint("Dragunov", null, .9f, 0);
 
 		/* Create an arm with a pistol as the weapon */
-		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("Dragunov"), new Dragunov(),
-				"Guns/Dragunov/WithArm.png", "Guns/Dragunov/Icon.png");
+		// arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
+		// Pivots.getPivotJoint("Dragunov"), new Dragunov(),
+		// "Guns/Dragunov/WithArm.png", "Guns/Dragunov/Icon.png");
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
 				Pivots.getPivotJoint("M1911"), new Pistol(),
 				"Guns/M1911/WithArm.png", "Guns/M1911/Icon.png");
-		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("AK74u"), new AK74U(),
-				"Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
+		 arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
+		 Pivots.getPivotJoint("AK74u"), new AK74U(),
+		 "Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
 
 		/* Setup state machine */
 		stateMachine.changeState(IdlePlayerState.instance());
@@ -134,7 +132,6 @@ public class Player extends Character {
 		}
 		/* Update the arm */
 		arm.update(delta);
-		
 
 	}
 

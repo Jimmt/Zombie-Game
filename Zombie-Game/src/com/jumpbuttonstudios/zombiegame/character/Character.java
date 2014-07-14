@@ -24,10 +24,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.ai.state.StateMachine;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.Magazine;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 /**
@@ -107,7 +109,10 @@ public class Character extends Box2DObject {
 	protected Facing facing;
 
 	/** If the character is on the ground */
-	private boolean isGrounded = true;
+	private boolean isGrounded = true;	
+
+	/** All the character this player has for their particular weapon */
+	Array<Magazine> magazines = new Array<Magazine>();
 
 	/***************************
 	 *************************** 
@@ -224,14 +229,21 @@ public class Character extends Box2DObject {
 	public void setFacing(Facing facing) {
 		this.facing = facing;
 	}
+	
+
+	/** @return {@link #magazines} */
+	public Array<Magazine> getMagazines() {
+		return magazines;
+	}
+	
+	public void setArm(Arm arm) {
+		this.arm = arm;
+	}
 
 	public Arm getArm() {
 		return arm;
 	}
 
-	public Arms getArms() {
-		return arms;
-	}
 
 	public void setArms(Arms arms) {
 		this.arms = arms;

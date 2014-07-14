@@ -23,14 +23,14 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
-import com.jumpbuttonstudios.zombiegame.character.zombie.CrawlingZombie;
 import com.jumpbuttonstudios.zombiegame.collision.GameContactListener;
 import com.jumpbuttonstudios.zombiegame.defense.Defense;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
-import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.BodyPart;
-import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
+import com.jumpbuttonstudios.zombiegame.effects.death.BodyPart;
+import com.jumpbuttonstudios.zombiegame.effects.death.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
+import com.jumpbuttonstudios.zombiegame.weapons.drops.Drop;
 
 /**
  * The level class holds entities in the level, controls spawning and what not
@@ -59,6 +59,9 @@ public class Level {
 
 	/** All blood effects in the level */
 	private Array<Blood> bloodEffects = new Array<Blood>();
+
+	/** All drops present in the level */
+	private Array<Drop> drops = new Array<Drop>();
 
 	/** All the defense in the level */
 	private Array<Defense> defenses = new Array<Defense>();
@@ -95,6 +98,9 @@ public class Level {
 		/* Update wave generator to create waves */
 		waveGenerator.update();
 
+		/* Update the Box2D factory so things get deleted */
+		factory.update();
+
 		/*
 		 * Update all the defined pivots to keep them updated in world
 		 * coordinats
@@ -111,6 +117,21 @@ public class Level {
 					bloodEffects.removeValue(blood, true);
 		}
 
+		/* Update all the drops in the level */
+		for (Drop drop : drops) {
+			if(!drop.isCreated())
+				drop.create();
+			if (drop.isPickedUp()){
+				drops.removeValue(drop, true);
+				factory.deleteBody(drop.getBody());
+			}else if(drop.hasExpired())
+				if(drop.fade(delta)){
+					drops.removeValue(drop, true);
+					factory.deleteBody(drop.getBody());
+				}
+					
+		}
+
 		/*
 		 * Update all the games characters, this includes the player which is
 		 * always first in the array
@@ -119,39 +140,36 @@ public class Level {
 			player.update(delta);
 		}
 
-		/* Create any death effects that are waiting for the time step to finish */
-		if (!getWorld().isLocked())
-			for (DeathEffect deathEffect : deathEffects) {
-				/*
-				 * If the death effect has no body parts, remove it from the
-				 * array
-				 */
-				if (deathEffect.getBodyParts().size == 0) {
-					deathEffects.removeValue(deathEffect, true);
-				}
-				/* If the death effect has not been created, create it */
-				if (!deathEffect.isCreated()) {
-					deathEffect.create();
-				}
-				/*
-				 * Iterate over each body part and check for decay, fade them if
-				 * they have decayed then delete them
-				 */
-				for (BodyPart part : deathEffect.getBodyParts()) {
-					if (part.hasDecayed())
-						if (part.fade(delta)) {
-							factory.deleteBody(part.getBody());
-							deathEffect.getBodyParts().removeValue(part, true);
-						}
-
-				}
+		/* Update death effects and their body parts */
+		for (DeathEffect deathEffect : deathEffects) {
+			/*
+			 * If the death effect has no body parts, remove it from the array
+			 */
+			if (deathEffect.getBodyParts().size == 0) {
+				deathEffects.removeValue(deathEffect, true);
 			}
+			/* If the death effect has not been created, create it */
+			if (!deathEffect.isCreated()) {
+				deathEffect.create();
+			}
+			/*
+			 * Iterate over each body part and check for decay, fade them if
+			 * they have decayed then delete them
+			 */
+			for (BodyPart part : deathEffect.getBodyParts()) {
+				if (part.hasDecayed())
+					if (part.fade(delta)) {
+						factory.deleteBody(part.getBody());
+						deathEffect.getBodyParts().removeValue(part, true);
+					}
 
-		/* Update the Box2D factory so things get deleted */
-		factory.update();
+			}
+		}
+		;
 
 	}
 
+	/** @return {@link #defenses} */
 	public Array<Defense> getDefenses() {
 		return defenses;
 	}
@@ -177,6 +195,11 @@ public class Level {
 	/** @return {@link #bloodEffects} */
 	public Array<Blood> getBloodEffects() {
 		return bloodEffects;
+	}
+
+	/** @return {@link #drops} */
+	public Array<Drop> getDrops() {
+		return drops;
 	}
 
 	/**

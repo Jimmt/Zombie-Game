@@ -21,7 +21,7 @@ import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
  * 
  */
 public class Forest extends Box2DObject {
-	
+
 	/** The sprites of the ground */
 	private Sprite left, middle, right;
 	/** The background images */
@@ -47,12 +47,18 @@ public class Forest extends Box2DObject {
 				Gdx.files.internal("Environment/BG/Right.png")));
 
 		/* Scale sprites */
-		left.setSize(left.getWidth() * Constants.scale, left.getHeight() * Constants.scale);
-		middle.setSize(middle.getWidth() * Constants.scale, middle.getHeight() * Constants.scale);
-		right.setSize(right.getWidth() * Constants.scale, right.getHeight() * Constants.scale);
-		backgroundLeft.setSize(backgroundLeft.getWidth() * Constants.scale, backgroundLeft.getHeight() * Constants.scale);
-		backgroundMiddle.setSize(backgroundMiddle.getWidth() * Constants.scale, backgroundMiddle.getHeight() * Constants.scale);
-		backgroundRight.setSize(backgroundRight.getWidth() * Constants.scale, backgroundRight.getHeight() * Constants.scale);
+		left.setSize(left.getWidth() * Constants.scale, left.getHeight()
+				* Constants.scale);
+		middle.setSize(middle.getWidth() * Constants.scale, middle.getHeight()
+				* Constants.scale);
+		right.setSize(right.getWidth() * Constants.scale, right.getHeight()
+				* Constants.scale);
+		backgroundLeft.setSize(backgroundLeft.getWidth() * Constants.scale,
+				backgroundLeft.getHeight() * Constants.scale);
+		backgroundMiddle.setSize(backgroundMiddle.getWidth() * Constants.scale,
+				backgroundMiddle.getHeight() * Constants.scale);
+		backgroundRight.setSize(backgroundRight.getWidth() * Constants.scale,
+				backgroundRight.getHeight() * Constants.scale);
 
 		/* Position sprites */
 		left.setPosition(0 - left.getWidth(), -1);
@@ -67,19 +73,16 @@ public class Forest extends Box2DObject {
 		groundHeight = 0.5f;
 
 		/* Create the ground */
-		createBody(world, BodyType.StaticBody, new Vector2(16, 0.5f), false);
-		
-		
+		createBody(world, BodyType.StaticBody, new Vector2(16, 00f), false);
+
 		createPolyFixture(groundWidth, groundHeight, 0, 0.50f, 0, false);
 		Filter filter = body.getFixtureList().get(0).getFilterData();
 		filter.categoryBits = (short) CollisionFilters.GROUND;
-		filter.maskBits = (short) (CollisionFilters.PLAYER | CollisionFilters.ZOMBIE | CollisionFilters.BODYPART);
+		filter.maskBits = (short) (CollisionFilters.PLAYER
+				| CollisionFilters.ZOMBIE | CollisionFilters.BODYPART | CollisionFilters.DROP);
 		getBody().getFixtureList().get(0).setFilterData(filter);
-		
-		
+
 		body.setUserData(this);
-		
-		
 
 	}
 
@@ -91,18 +94,18 @@ public class Forest extends Box2DObject {
 		middle.draw(batch);
 		right.draw(batch);
 	}
-	
-	public class Boundary extends Box2DObject{
+
+	public class Boundary extends Box2DObject {
 
 		@Override
 		public void dispose() {
-			
+
 		}
-		
+
 	}
 
 	@Override
 	public void dispose() {
-		
+
 	}
 }

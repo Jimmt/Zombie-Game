@@ -16,8 +16,6 @@
 
 package com.jumpbuttonstudios.zombiegame.character.zombie;
 
-import java.util.Vector;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,6 +32,8 @@ import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
+import com.jumpbuttonstudios.zombiegame.weapons.drops.AmmoDrop;
+import com.jumpbuttonstudios.zombiegame.weapons.drops.DragunovDrop;
 
 /**
  * 
@@ -158,6 +158,7 @@ public abstract class Zombie extends Character {
 			deathSound.play(0.75f, MathUtils.random(0.5f, 1.5f), bullet
 					.getParent().getParentArm().getParentCharacter()
 					.getFacing() == Facing.LEFT ? -0.5f : 0.5f);
+			level.getDrops().add(new AmmoDrop(getLevel(), new Vector2(getX(), getY())));
 		}
 
 		bloodSplatter = new Effect(bloodSplatter, getX()
