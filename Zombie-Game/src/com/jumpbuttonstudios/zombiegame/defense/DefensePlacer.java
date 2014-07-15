@@ -27,18 +27,29 @@ public class DefensePlacer {
 
 		if (placing) {
 			mouse.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+			//unproject screen coordinates to world coordinates
 			LevelScreen.b2dCam.unproject(mouse);
+			
+			//round to nearest integer
 			rounded.set((int) (mouse.x), (int) (mouse.y));
 			defense.getBody().setActive(false);
 			defense.getSprite().setX(rounded.x);
 			defense.getSprite().setY(rounded.y);
+			
+			//ghost sprite
 			defense.getSprite().setAlpha(0.5f);
 			level.getPlayer().setInMenu(true);
 			
 			if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+				
+				//revert 'ghost' sprite to normal alpha
 				defense.getSprite().setAlpha(1.0f);
+				
+				//enable collisions
 				defense.getBody().setActive(true);
 				defense.setPosition(rounded.x, rounded.y);
+				
+				//no longer placing, no need to track mouse movement further
 				placing = false;
 				level.getPlayer().setInMenu(true);
 				

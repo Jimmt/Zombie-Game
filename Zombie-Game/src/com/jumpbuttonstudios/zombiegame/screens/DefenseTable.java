@@ -1,5 +1,7 @@
 package com.jumpbuttonstudios.zombiegame.screens;
 
+import java.lang.reflect.Method;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -34,38 +36,71 @@ public class DefenseTable extends Table {
 	public DefenseTable(final DefensePlacer defensePlacer, final Level level, Skin skin, final World world) {
 		super(skin);
 
-		
+
+		//loading the images that are released buttons (normal)
 		for (String string : paths) {
 			Image i = new Image(new Texture("UI/Icons/" + Gdx.files.internal(string + "/Released.png")));
 			defenseImages.add(i);
 		}
+		
+		//loading the images that are pressed icons
 		for (String string : paths) {
 			Image i = new Image(new Texture("UI/Icons/" + Gdx.files.internal(string + "/Pressed.png")));
 			releaseImages.add(i);
 		}
 
+		//for proper sizing/positioning
 		setFillParent(true);
 		setVisible(false);
 
 		add("Defenses");
 		row();
 
+		
+		//add the released/pressed image for each ImageButton
 		for (int i = 0; i < defenseImages.size; i++) {
 			ImageButtonStyle ibs = new ImageButtonStyle();
 			ibs.imageUp = defenseImages.get(i).getDrawable();
 			ibs.imageDown = releaseImages.get(i).getDrawable();
 			ImageButton button = new ImageButton(ibs);
-
+			
+			//name of defense
+			final String str = paths[i];
+			
 			button.addListener(new ClickListener() {
 				
 				private Defense tmp;
 				
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					tmp = new Defense(world, new Vector2(0, 2), 52f, 160f, "Environment/Defense/Wall/Icon.png");
+					Class c = null;
+					try {
+						c = ClassReflection.forName("com.jumpbuttonstudios.zombiegame.defense.DefenseDimensions");
+					} catch (ReflectionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Class b = c.getEnumConstants()[0].getClass();
+					Method mth;
+					try {
+						mth = b.getDeclaredMethod("getWidth");
+					} catch (NoSuchMethodException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Float f = (Float) mth.invoke(c.getEnumConstants()[0]);
+					System.out.println(b);
+					
+					
+					//load specific defense images for each defense
+					tmp = new Defense(world, new Vector2(0, 2), 52f, 160f, "Environment/Defense/" + str + "/Icon.png");
 					defensePlacer.setDefense(tmp);
 					defensePlacer.setPlacing(true);
 					level.getDefenses().add(tmp);
+					
 //					Class c = null;
 //					try {
 //						c = ClassReflection.forName("com.jumpbuttonstudios.zombiegame.defense" + str);

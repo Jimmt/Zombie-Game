@@ -67,6 +67,8 @@ public class WeaponDrop extends Drop {
 		}
 		
 		pickedUp = true;
+		
+		pickup.play();
 
 	}
 

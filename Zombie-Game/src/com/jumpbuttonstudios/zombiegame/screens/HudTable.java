@@ -26,6 +26,7 @@ public class HudTable extends Table {
 		
 		setFillParent(true);
 
+		//add the hearts ui
 		for (int i = 0; i < hearts.length; i++) {
 			Heart h = new Heart();
 			hearts[i] = h;

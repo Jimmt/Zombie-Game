@@ -22,7 +22,7 @@ import com.jumpbuttonstudios.zombiegame.defense.DefenseComparator;
 import com.jumpbuttonstudios.zombiegame.defense.DefensePlacer;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
-import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
+import com.jumpbuttonstudios.zombiegame.effects.death.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 import com.jumpbuttonstudios.zombiegame.weapons.drops.Drop;
@@ -46,12 +46,16 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 	/** Table for creating defenses */
 	private DefenseTable defenseTable = new DefenseTable(defensePlacer, level, getSkin(), level.getWorld());
 
+	
 	private Image grid;
 	
+	/** Player's arm, needed for weapon UI */
 	private Arm arm;
 
+	/** Heads up display table, contains health UI and weapon UI*/
 	private HudTable hudTable = new HudTable(getSkin());
 
+	/** Parent table, in case anything else needs to be added*/
 	private Table parentTable = new Table(getSkin());
 	
 	private DefenseComparator defenseComp;

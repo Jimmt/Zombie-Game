@@ -27,8 +27,8 @@ import com.jumpbuttonstudios.zombiegame.collision.GameContactListener;
 import com.jumpbuttonstudios.zombiegame.defense.Defense;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
-import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.BodyPart;
-import com.jumpbuttonstudios.zombiegame.effects.zombiedeath.DeathEffect;
+import com.jumpbuttonstudios.zombiegame.effects.death.BodyPart;
+import com.jumpbuttonstudios.zombiegame.effects.death.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 import com.jumpbuttonstudios.zombiegame.weapons.drops.Drop;
 

@@ -56,6 +56,8 @@ public class Defense extends Box2DObject {
 	
 	public void draw(SpriteBatch batch) {
 		sprite.draw(batch);
+		
+		//set Body to Sprite, because we move around the Sprite in DefensePlacer
 		getBody().setTransform(temp.set(sprite.getX() + scaleWidth / 2, sprite.getY() + scaleHeight / 2), 0);
 		
 		

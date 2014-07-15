@@ -153,19 +153,20 @@ public abstract class Weapon {
 	 * @param bodyJoint
 	 * @param originJoint
 	 */
-	Weapon(PivotJoint bodyJoint, PivotJoint originJoint, String iconPath, String spritePath) {
+	Weapon(PivotJoint bodyJoint, PivotJoint originJoint, String iconPath,
+			String spritePath) {
 		this();
 
 		/* Set the icon for this weapon */
 		this.icon = new Sprite(new Texture(Gdx.files.internal(iconPath)));
 		this.icon.setSize(this.icon.getWidth() * Constants.scale,
 				this.icon.getHeight() * Constants.scale);
-		
+
 		/* Set the weapon sprite */
 		this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
-		this.sprite.setSize(this.icon.getWidth() * Constants.scale,
-				this.icon.getHeight() * Constants.scale);
-		
+		this.sprite.setSize(this.sprite.getWidth() * Constants.scale,
+				this.sprite.getHeight() * Constants.scale);
+
 		/* Setup the pivot joints for position and rotation */
 		this.bodyJoint = bodyJoint;
 		this.originJoint = originJoint;

@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 
@@ -40,6 +41,10 @@ public class AmmoDrop extends Drop {
 
 		/* Randomly select a number of magazines */
 		magazines = MathUtils.random(1, 5);
+		
+		/* Set the size of the icon */
+		this.icon.setSize(icon.getWidth() * Constants.scale, icon.getHeight()
+				* Constants.scale);
 
 	}
 
@@ -53,6 +58,8 @@ public class AmmoDrop extends Drop {
 		}
 		
 		pickedUp = true;
+		
+		pickup.play();
 	}
 
 

@@ -18,6 +18,7 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
 import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
 
 /**
@@ -93,9 +94,9 @@ public class Player extends Character {
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
 				Pivots.getPivotJoint("M1911"), new Pistol(),
 				"Guns/M1911/WithArm.png", "Guns/M1911/Icon.png");
-		// arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-		// Pivots.getPivotJoint("AK74u"), new AK74U(),
-		// "Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
+		 arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
+		 Pivots.getPivotJoint("AK74u"), new AK74U(),
+		 "Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
 
 		/* Setup state machine */
 		stateMachine.changeState(IdlePlayerState.instance());

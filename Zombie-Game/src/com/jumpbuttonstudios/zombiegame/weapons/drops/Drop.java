@@ -16,6 +16,8 @@
 
 package com.jumpbuttonstudios.zombiegame.weapons.drops;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -25,7 +27,6 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.gibbo.gameutil.time.TimeConversion;
-import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
@@ -47,6 +48,10 @@ public abstract class Drop extends Box2DObject {
 	/** The position of this drop */
 	protected Vector2 position;
 
+	/** The sound made when something is picked up */
+	protected Sound pickup = Gdx.audio.newSound(Gdx.files
+			.internal("SFX/Pickup.wav"));
+
 	/** If the drop has been picked up */
 	protected boolean pickedUp = false;
 
@@ -64,10 +69,6 @@ public abstract class Drop extends Box2DObject {
 		this.position = position;
 		this.icon = icon;
 
-		/* Set the size of the icon */
-		this.icon.setSize(icon.getWidth() * Constants.scale, icon.getHeight()
-				* Constants.scale);
-
 		/* Give the expire time a bit of randomness */
 		expireTime = TimeConversion.secondToNanos(MathUtils.random(15, 20));
 		/* Set the create time to now */
@@ -81,11 +82,13 @@ public abstract class Drop extends Box2DObject {
 	 * @param bach
 	 */
 	public void draw(SpriteBatch batch) {
-		icon.setOrigin(icon.getWidth() / 2, icon.getHeight() / 2);
-		icon.setPosition(body.getPosition().x - (icon.getWidth() / 2),
-				body.getPosition().y - (icon.getHeight() / 2));
-		icon.setRotation(body.getAngle() * MathUtils.radDeg);
-		icon.draw(batch);
+		if (icon != null) {
+			icon.setOrigin(icon.getWidth() / 2, icon.getHeight() / 2);
+			icon.setPosition(body.getPosition().x - (icon.getWidth() / 2),
+					body.getPosition().y - (icon.getHeight() / 2));
+			icon.setRotation(body.getAngle() * MathUtils.radDeg);
+			icon.draw(batch);
+		}
 	}
 
 	/**
@@ -110,7 +113,7 @@ public abstract class Drop extends Box2DObject {
 	}
 
 	/** @return when this drops sprite has an alpha of zero */
-	public boolean fade(float delta){
+	public boolean fade(float delta) {
 		icon.setAlpha(icon.getColor().a - 0.1f * delta);
 		if (icon.getColor().a <= 0)
 			return true;

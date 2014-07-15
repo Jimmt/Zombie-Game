@@ -73,7 +73,7 @@ public class Forest extends Box2DObject {
 		groundHeight = 0.5f;
 
 		/* Create the ground */
-		createBody(world, BodyType.StaticBody, new Vector2(16, 0.5f), false);
+		createBody(world, BodyType.StaticBody, new Vector2(16, 00f), false);
 
 		createPolyFixture(groundWidth, groundHeight, 0, 0.50f, 0, false);
 		Filter filter = body.getFixtureList().get(0).getFilterData();

@@ -20,6 +20,7 @@ package com.jumpbuttonstudios.zombiegame.collision;
  * All the collision filters available to use
  * 
  * @author Stephen Gibson
+ * @author Jimmt
  */
 public class CollisionFilters {
 

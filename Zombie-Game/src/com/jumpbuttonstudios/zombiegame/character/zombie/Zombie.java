@@ -33,6 +33,7 @@ import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 import com.jumpbuttonstudios.zombiegame.weapons.drops.AmmoDrop;
+import com.jumpbuttonstudios.zombiegame.weapons.drops.DragunovDrop;
 
 /**
  * 
