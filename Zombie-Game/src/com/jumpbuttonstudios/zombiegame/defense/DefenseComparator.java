@@ -2,6 +2,10 @@ package com.jumpbuttonstudios.zombiegame.defense;
 
 import java.util.Comparator;
 
+/**
+ * @author Jimmt
+ */
+
 public class DefenseComparator implements Comparator<Defense> {
 
 	/** If -1 is returned, a < b, if 0, a = b, if 1, a > b.

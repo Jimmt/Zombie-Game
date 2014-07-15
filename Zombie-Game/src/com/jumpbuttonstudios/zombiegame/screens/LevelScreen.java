@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.gibbo.gameutil.camera.ActionOrthoCamera;
@@ -20,6 +21,7 @@ import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.defense.Defense;
 import com.jumpbuttonstudios.zombiegame.defense.DefenseComparator;
 import com.jumpbuttonstudios.zombiegame.defense.DefensePlacer;
+import com.jumpbuttonstudios.zombiegame.defense.Door;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.effects.blood.Blood;
 import com.jumpbuttonstudios.zombiegame.effects.death.DeathEffect;
@@ -40,43 +42,43 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	/** The Camera for Box2D */
 	public static ActionOrthoCamera b2dCam = new ActionOrthoCamera(16, 9);
-	
+
 	private DefensePlacer defensePlacer = new DefensePlacer(level);
 
 	/** Table for creating defenses */
-	private DefenseTable defenseTable = new DefenseTable(defensePlacer, level, getSkin(), level.getWorld());
+	private DefenseTable defenseTable = new DefenseTable(defensePlacer, level, getSkin(),
+			level.getWorld());
 
-	
 	private Image grid;
-	
+
 	/** Player's arm, needed for weapon UI */
 	private Arm arm;
 
-	/** Heads up display table, contains health UI and weapon UI*/
+	/** Heads up display table, contains health UI and weapon UI */
 	private HudTable hudTable = new HudTable(getSkin());
 
-	/** Parent table, in case anything else needs to be added*/
+	/** Parent table, in case anything else needs to be added */
 	private Table parentTable = new Table(getSkin());
-	
+
+	/** For comparing defenses x/y for rendering order in array */
 	private DefenseComparator defenseComp;
-	
-	
-	
-	
+
+	/** Vector3 for projecting doors */
+	private Vector3 temp;
+
+	/** Door mouse is overlapping */
+	private Door overlapDoor;
 
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
-		
+
 		defenseComp = new DefenseComparator();
 
 		multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(uiStage);
 		multiplexer.addProcessor(this);
 
-		
 		hudTable.debug();
-		
-	
 
 		uiStage.addActor(defenseTable);
 
@@ -84,7 +86,10 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		parentTable.add(hudTable).expand().fill();
 
 		stage.addActor(parentTable);
+
+		temp = new Vector3();
 		
+		level.getPlayer().setHealth(3f);
 	}
 
 	@Override
@@ -98,24 +103,26 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		super.render(delta);
 
 		level.update(delta);
-		
+
 		defensePlacer.update(delta);
-		
+
 		arm = level.getPlayer().getArm();
 		hudTable.setWeapon(arm);
-		
-		if(defensePlacer.isPlacing()){
+
+		if (defensePlacer.isPlacing()) {
 			defenseTable.setVisible(false);
 		}
-
 		
-		if (defenseTable.isVisible()) {
-			level.getPlayer().setInMenu(true);
-		} else if(!defensePlacer.isPlacing() && !Gdx.input.isButtonPressed(Buttons.LEFT)){
-			level.getPlayer().setInMenu(false);
+		for(int i = 0; i < hudTable.getHearts().length - level.getPlayer().getHealth(); i++){
+			hudTable.getHearts()[hudTable.getHearts().length - 1 - i].setEmpty(true);
 		}
 		
-		
+
+		if (defenseTable.isVisible()) {
+			level.getPlayer().setInMenu(true);
+		} else if (!defensePlacer.isPlacing() && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			level.getPlayer().setInMenu(false);
+		}
 
 		/* Keep camera inside the level bounds */
 		if (level.getPlayer().getX() > -5 && level.getPlayer().getX() < 17) {
@@ -133,19 +140,18 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		level.forest.draw(batch);
 		level.getPlayer().draw(batch);
-		
+
 		level.getDefenses().sort(defenseComp);
-		
-		for(Defense defense : level.getDefenses()){
+
+		for (Defense defense : level.getDefenses()) {
 			defense.draw(batch);
 		}
-		
-		
-		for(Blood blood : level.getBloodEffects()){
+
+		for (Blood blood : level.getBloodEffects()) {
 			blood.draw(batch);
 		}
-		
-		for(Drop drop : level.getDrops()){
+
+		for (Drop drop : level.getDrops()) {
 			drop.draw(batch);
 		}
 
@@ -159,13 +165,13 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		for (Effect effect : level.getEffects()) {
 			effect.draw(batch);
-			if(effect.finished()){
+			if (effect.finished()) {
 				level.getEffects().removeValue(effect, true);
 			}
 		}
-		
-		for(DeathEffect deathEffect : level.getDeathEffects()){
-			if(deathEffect.isCreated())
+
+		for (DeathEffect deathEffect : level.getDeathEffects()) {
+			if (deathEffect.isCreated())
 				deathEffect.draw(batch);
 		}
 
@@ -175,8 +181,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 			debugRenderer.render(level.getWorld(), b2dCam.combined);
 			sr.setProjectionMatrix(b2dCam.combined);
 			sr.begin(ShapeType.Point);
-			sr.setColor(MathUtils.random(0, 1), MathUtils.random(0, 1),
-					MathUtils.random(0, 1), 0);
+			sr.setColor(MathUtils.random(0, 1), MathUtils.random(0, 1), MathUtils.random(0, 1), 0);
 			for (PivotJoint pivot : Pivots.getPivotJoints().values()) {
 				sr.point(pivot.x, pivot.y, 0);
 			}
@@ -233,7 +238,29 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
+		if (button == Buttons.RIGHT) {
+
+			for (Defense defense : level.getDefenses()) {
+				temp.set(defense.getSprite().getX(), defense.getSprite().getX(), 0);
+				b2dCam.project(temp);
+
+				/** Check if mouse overlaps with any doors */
+				if (defense instanceof Door) {
+					if (screenX > temp.x
+							&& screenX < temp.x + defense.getSprite().getWidth() / Constants.scale
+							&& (Constants.HEIGHT - screenY) < temp.y
+							&& (Constants.HEIGHT - screenY) > temp.y - defense.getSprite().getY()
+									/ Constants.scale) {
+
+						/** Operate the door; open if closed and vice versa */
+						((Door) defense).operate();
+
+					} else {
+
+					}
+				}
+			}
+		}
 		return false;
 	}
 

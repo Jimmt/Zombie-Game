@@ -51,6 +51,8 @@ public class GameContactListener implements ContactListener {
 			Player player = (Player) A;
 			Zombie zombie = (Zombie) B;
 
+			player.modHealth(-1f);
+			
 			if (!zombie.isGrabbed())
 				zombie.grab(player);
 

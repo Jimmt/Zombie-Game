@@ -2,12 +2,17 @@ package com.jumpbuttonstudios.zombiegame.defense;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.screens.LevelScreen;
+
+/**
+ * @author Jimmt
+ */
 
 public class DefensePlacer {
 
@@ -33,8 +38,8 @@ public class DefensePlacer {
 			//round to nearest integer
 			rounded.set((int) (mouse.x), (int) (mouse.y));
 			defense.getBody().setActive(false);
-			defense.getSprite().setX(rounded.x);
-			defense.getSprite().setY(rounded.y);
+			defense.setPosition(rounded.x, rounded.y);
+
 			
 			//ghost sprite
 			defense.getSprite().setAlpha(0.5f);
@@ -53,6 +58,12 @@ public class DefensePlacer {
 				placing = false;
 				level.getPlayer().setInMenu(true);
 				
+			}
+			if(Gdx.input.isKeyPressed(Keys.ESCAPE)){
+				placing = false;
+				level.getPlayer().setInMenu(false);
+				defense.destroy(level.getWorld());
+				level.getDefenses().removeValue(defense, false);
 			}
 			
 			

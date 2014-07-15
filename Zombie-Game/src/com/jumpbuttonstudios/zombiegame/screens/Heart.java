@@ -4,6 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+/**
+ * @author Jimmt
+ */
+
 public class Heart extends Image {
 	private Image full, empty;
 	private Texture tmp;

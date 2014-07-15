@@ -47,10 +47,9 @@ public abstract class Drop extends Box2DObject {
 
 	/** The position of this drop */
 	protected Vector2 position;
-
+	
 	/** The sound made when something is picked up */
-	protected Sound pickup = Gdx.audio.newSound(Gdx.files
-			.internal("SFX/Pickup.wav"));
+	protected Sound pickup = Gdx.audio.newSound(Gdx.files.internal("SFX/Pickup.wav"));
 
 	/** If the drop has been picked up */
 	protected boolean pickedUp = false;
@@ -69,6 +68,8 @@ public abstract class Drop extends Box2DObject {
 		this.position = position;
 		this.icon = icon;
 
+
+
 		/* Give the expire time a bit of randomness */
 		expireTime = TimeConversion.secondToNanos(MathUtils.random(15, 20));
 		/* Set the create time to now */
@@ -82,13 +83,11 @@ public abstract class Drop extends Box2DObject {
 	 * @param bach
 	 */
 	public void draw(SpriteBatch batch) {
-		if (icon != null) {
-			icon.setOrigin(icon.getWidth() / 2, icon.getHeight() / 2);
-			icon.setPosition(body.getPosition().x - (icon.getWidth() / 2),
-					body.getPosition().y - (icon.getHeight() / 2));
-			icon.setRotation(body.getAngle() * MathUtils.radDeg);
-			icon.draw(batch);
-		}
+		icon.setOrigin(icon.getWidth() / 2, icon.getHeight() / 2);
+		icon.setPosition(body.getPosition().x - (icon.getWidth() / 2),
+				body.getPosition().y - (icon.getHeight() / 2));
+		icon.setRotation(body.getAngle() * MathUtils.radDeg);
+		icon.draw(batch);
 	}
 
 	/**
@@ -113,7 +112,7 @@ public abstract class Drop extends Box2DObject {
 	}
 
 	/** @return when this drops sprite has an alpha of zero */
-	public boolean fade(float delta) {
+	public boolean fade(float delta){
 		icon.setAlpha(icon.getColor().a - 0.1f * delta);
 		if (icon.getColor().a <= 0)
 			return true;

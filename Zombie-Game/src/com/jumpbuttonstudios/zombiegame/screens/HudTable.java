@@ -8,6 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.jumpbuttonstudios.zombiegame.character.Arm;
 
+/**
+ * @author Jimmt
+ */
+
 public class HudTable extends Table {
 	private Heart[] hearts = new Heart[3];
 	private Image weapon, tmp, bullet;
@@ -26,7 +30,7 @@ public class HudTable extends Table {
 		
 		setFillParent(true);
 
-		//add the hearts ui
+		/** add the hearts ui */
 		for (int i = 0; i < hearts.length; i++) {
 			Heart h = new Heart();
 			hearts[i] = h;
@@ -34,10 +38,15 @@ public class HudTable extends Table {
 			add(h);
 		}
 		
+		/** add the weapon sprite, make the cell fill all the horizontal space that's not occupied by hearts, then align weapon sprite to 
+		 * the right of the cell */
+		
 		add(weapon).expandX().right();
 		add(bullet);
 		add(bulletCount);
 		row();
+		
+		/** Spacing hack, spans 4 columns */
 		add("").colspan(4).expand().fill();
 
 	}
