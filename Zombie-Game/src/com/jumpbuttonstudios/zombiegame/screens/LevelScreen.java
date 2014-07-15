@@ -246,6 +246,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 				/** Check if mouse overlaps with any doors */
 				if (defense instanceof Door) {
+					System.out.println(defense);
 					if (screenX > temp.x
 							&& screenX < temp.x + defense.getSprite().getWidth() / Constants.scale
 							&& (Constants.HEIGHT - screenY) < temp.y
