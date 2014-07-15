@@ -125,6 +125,25 @@ public class Character extends Box2DObject {
 
 	/** The characters front arm */
 	protected Arm arm;
+	
+	/** The character's health */
+	protected float health;
+	
+	public void modHealth(float amt){
+		if((health + amt) > 0){
+		health += amt;
+		} else {
+			health = 0;
+		}
+	}
+	
+	public void setHealth(float health){
+		this.health = health;
+	}
+	
+	public float getHealth(){
+		return health;
+	}
 
 	public void update(float delta) {
 		/* Update the state machine */

@@ -5,4 +5,13 @@ libs/
 target/
 *.class
 *.jar
+/.gitignore
+/README.md
+/ZombieGame.gwt.xml
+/box2dLight
+/build.xml
 /com
+/pom.xml
+/shaders
+/src
+/test

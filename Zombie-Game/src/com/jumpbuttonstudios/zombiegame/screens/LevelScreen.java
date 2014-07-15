@@ -88,6 +88,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		stage.addActor(parentTable);
 
 		temp = new Vector3();
+		
+		level.getPlayer().setHealth(3f);
 	}
 
 	@Override
@@ -110,6 +112,11 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		if (defensePlacer.isPlacing()) {
 			defenseTable.setVisible(false);
 		}
+		
+		for(int i = 0; i < hudTable.getHearts().length - level.getPlayer().getHealth(); i++){
+			hudTable.getHearts()[hudTable.getHearts().length - 1 - i].setEmpty(true);
+		}
+		
 
 		if (defenseTable.isVisible()) {
 			level.getPlayer().setInMenu(true);

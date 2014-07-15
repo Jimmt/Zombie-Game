@@ -116,6 +116,7 @@ public class Player extends Character {
 	public void update(float delta) {
 		super.update(delta);
 
+		
 		if (!inMenu) {
 			/* Check if the left mouse button was pressed */
 			if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
