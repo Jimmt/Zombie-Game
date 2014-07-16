@@ -8,12 +8,13 @@ public class ZombieGame extends Game{
 	
 	/** If the debug lines should be drawn */
 	public static boolean DEBUG = true;
+	
 
 	
 	@Override
 	public void create() {		
 		setScreen(new SplashScreen(this));
-		
+		DEBUG = false;
 	}
 
 	@Override

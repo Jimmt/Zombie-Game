@@ -30,7 +30,7 @@ public class MenuScreen extends AbstractScreen {
 		
 		
 		
-
+		
 		TextButton startButton = new TextButton("Start", getSkin());
 		startButton.addListener(new ClickListener() {
 			@Override

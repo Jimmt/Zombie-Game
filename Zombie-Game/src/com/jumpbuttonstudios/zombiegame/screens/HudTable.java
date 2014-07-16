@@ -43,6 +43,7 @@ public class HudTable extends Table {
 		
 		add(weapon).expandX().right();
 		add(bullet);
+		bullet.setScale(2.0f);
 		add(bulletCount);
 		row();
 		
