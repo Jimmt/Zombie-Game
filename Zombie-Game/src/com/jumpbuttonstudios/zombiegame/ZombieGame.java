@@ -2,6 +2,7 @@ package com.jumpbuttonstudios.zombiegame;
 
 import com.badlogic.gdx.Game;
 import com.jumpbuttonstudios.zombiegame.screens.MenuScreen;
+import com.jumpbuttonstudios.zombiegame.screens.SplashScreen;
 
 public class ZombieGame extends Game{
 	
@@ -11,7 +12,7 @@ public class ZombieGame extends Game{
 	
 	@Override
 	public void create() {		
-		setScreen(new MenuScreen(this));
+		setScreen(new SplashScreen(this));
 		
 	}
 

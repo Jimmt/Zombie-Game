@@ -9,6 +9,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -34,6 +35,8 @@ public abstract class AbstractScreen implements Screen {
 	private Table table;
 	protected ShapeRenderer sr;
 	protected RayHandler rh;
+	protected Pixmap cursor;
+	protected Pixmap redCursor;
 	private FPSLogger logger;
 	protected InputMultiplexer multiplexer;
 

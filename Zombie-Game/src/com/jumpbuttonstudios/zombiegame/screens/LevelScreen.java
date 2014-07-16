@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -69,7 +70,6 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 	/** Door mouse is overlapping */
 	private Door overlapDoor;
 
-
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
 
@@ -91,13 +91,18 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		temp = new Vector3();
 
 		level.getPlayer().setHealth(3f);
-		
+
 	}
 
 	@Override
 	public void show() {
 		super.show();
 		Gdx.input.setInputProcessor(multiplexer);
+
+		cursor = new Pixmap(Gdx.files.internal("UI/Cursors/potGreen.png"));
+		redCursor = new Pixmap(Gdx.files.internal("UI/Cursors/potRed.png"));
+		Gdx.input.setCursorImage(cursor, 32, 32);
+
 	}
 
 	@Override
@@ -202,7 +207,6 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 			}
 
 			sr.end();
-			
 
 			Table.drawDebug(stage);
 			Table.drawDebug(uiStage);
@@ -249,14 +253,14 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 					temp.set(screenX, screenY, 0);
 					b2dCam.unproject(temp);
 
-		
 					if (temp.x > defense.getSprite().getX()
 							&& temp.x < defense.getSprite().getX() + defense.getSprite().getWidth()) {
 						if (temp.y > defense.getSprite().getY()
-								&& temp.y < defense.getSprite().getY() + defense.getSprite().getHeight()) {
+								&& temp.y < defense.getSprite().getY()
+										+ defense.getSprite().getHeight()) {
 							/** Operate the door; open if closed and vice versa */
 							((Door) defense).operate();
-							
+
 						}
 					} else {
 
