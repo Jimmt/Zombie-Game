@@ -31,6 +31,7 @@ import com.jumpbuttonstudios.zombiegame.effects.death.BodyPart;
 import com.jumpbuttonstudios.zombiegame.effects.death.DeathEffect;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
 import com.jumpbuttonstudios.zombiegame.weapons.drops.Drop;
+import com.jumpbuttonstudios.zombiegame.weapons.drops.DropSpawner;
 
 /**
  * The level class holds entities in the level, controls spawning and what not
@@ -70,7 +71,10 @@ public class Level {
 	public Forest forest;
 
 	/** The wave generator for spawning zombies */
-	public WaveGenerator waveGenerator;
+	WaveGenerator waveGenerator;
+	
+	/** Drop spawner */
+	private DropSpawner dropSpawner;
 
 	public Level() {
 
@@ -84,6 +88,9 @@ public class Level {
 
 		/* Create wave generator */
 		waveGenerator = new WaveGenerator(this);
+		
+		/** Create drop spawner */
+		dropSpawner = new DropSpawner(this);
 
 	}
 
@@ -167,6 +174,11 @@ public class Level {
 		}
 		;
 
+	}
+	
+	/** @return {@link #dropSpawner} */
+	public DropSpawner getDropSpawner() {
+		return dropSpawner;
 	}
 
 	/** @return {@link #defenses} */

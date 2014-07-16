@@ -186,14 +186,14 @@ public abstract class Weapon {
 		/* Check if we are reloading */
 		if (reloading) {
 			/* Check if the character has any magazines left */
-			if (parent.getParentCharacter().getMagazines().size != 0) {
+			if (parent.getParentCharacter().getPrimaryMagazines().size != 0) {
 				/* See if the correct time has passed for a reload */
 				if (TimeUtils.nanoTime() - reloadStart > reloadTime) {
 					/** Play reloaded sound */
 					reload.play(0.5f);
 					reloading = false;
 					/* Create an exact copy of the original magazine */
-					magazine = parent.getParentCharacter().getMagazines().pop();
+					magazine = parent.getParentCharacter().getPrimaryMagazines().pop();
 				}
 			}
 			/*
@@ -207,7 +207,7 @@ public abstract class Weapon {
 			}
 		}
 
-		if (!reloading && parent.getParentCharacter().getMagazines().size != 0
+		if (!reloading && parent.getParentCharacter().getPrimaryMagazines().size != 0
 				&& Gdx.input.isKeyPressed(Keys.R)) {
 			reloading = true;
 			reloadStart = TimeUtils.nanoTime();

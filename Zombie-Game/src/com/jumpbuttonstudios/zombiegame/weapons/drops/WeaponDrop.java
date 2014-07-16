@@ -18,9 +18,11 @@ package com.jumpbuttonstudios.zombiegame.weapons.drops;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.Magazine;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 /**
@@ -31,6 +33,9 @@ public class WeaponDrop extends Drop {
 
 	/** The weapon in this drop */
 	Weapon weapon;
+	
+	/** Some magazines for the weapon within the drop */
+	Array<Magazine> magazines = new Array<Magazine>();
 
 	/**
 	 * Creates a new weapon drop
@@ -45,6 +50,11 @@ public class WeaponDrop extends Drop {
 	public WeaponDrop(Level level, Vector2 position, Weapon weapon) {
 		super(level, position, weapon.getIcon());
 		this.weapon = weapon;
+		
+		/* Adds between 2 and 4 extra mags to the weapon in this drop */
+		int count = MathUtils.random(2, 4);
+		for(int mags = 0; mags < count; mags++)
+			magazines.add(weapon.getMagazine().clone());
 	}
 
 
@@ -60,14 +70,14 @@ public class WeaponDrop extends Drop {
 		 * magazines for it
 		 */
 		((Player) parent).getArm().changeWeapon(weapon);
-
-		int randomMags = MathUtils.random(1, 3);
-		for (int x = 1; x < randomMags; x++) {
-			parent.getMagazines().add(weapon.getMagazine().clone());
-		}
 		
+		/* Add the magazines from this weapon drop to the character picking up the drop */
+		parent.getSecondaryMagazines().addAll(magazines);
+
+		/* Set this weapon drop as picked up */
 		pickedUp = true;
 		
+		/* Play the pickup sound */
 		pickup.play();
 
 	}

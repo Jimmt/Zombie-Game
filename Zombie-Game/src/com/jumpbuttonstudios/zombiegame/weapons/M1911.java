@@ -23,13 +23,13 @@ import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
  * 
  * @author Stephen Gibson
  */
-public class Pistol extends Weapon {
+public class M1911 extends Weapon {
 
-	public Pistol() {
+	public M1911() {
 		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("M1911"),
 				"Guns/M1911/Icon.png", "Guns/M1911/WithArm.png");
 
-		magazine = new Magazine(this, 7);
+		magazine = new M1911Magazine(this);
 		muzzleVelocity = 40; // Tweak later and get proper/appropriate number
 		rof = TimeConversion.secondToNanos(0.35f);
 		reloadTime = TimeConversion.secondToNanos(1.25f);
@@ -43,6 +43,20 @@ public class Pistol extends Weapon {
 		bullet = new Bullet("Guns/M1911/Bullet.png", this);
 		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.65f,
 				1.6f);
+
+	}
+
+	/**
+	 * Specific magazine for M1911
+	 * 
+	 * @author Gibbo
+	 * 
+	 */
+	public class M1911Magazine extends Magazine {
+
+		public M1911Magazine(Weapon parent) {
+			super(parent, 7);
+		}
 
 	}
 

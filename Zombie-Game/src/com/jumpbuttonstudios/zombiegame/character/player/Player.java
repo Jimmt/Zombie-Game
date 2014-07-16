@@ -18,8 +18,7 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
-import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
-import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
+import com.jumpbuttonstudios.zombiegame.weapons.M1911;
 
 /**
  * The protagonist
@@ -29,7 +28,6 @@ import com.jumpbuttonstudios.zombiegame.weapons.Pistol;
  * 
  */
 public class Player extends Character {
-
 
 	/** The position of the mouse cursor */
 	Vector2 mouse = new Vector2();
@@ -72,7 +70,8 @@ public class Player extends Character {
 
 		Filter filter = body.getFixtureList().get(0).getFilterData();
 		filter.categoryBits = (short) CollisionFilters.PLAYER;
-		filter.maskBits = (short) (CollisionFilters.GROUND | CollisionFilters.ZOMBIE | CollisionFilters.DROP);
+		filter.maskBits = (short) (CollisionFilters.GROUND
+				| CollisionFilters.ZOMBIE | CollisionFilters.DROP);
 		body.getFixtureList().get(0).setFilterData(filter);
 
 		/* Character starts facing right */
@@ -91,12 +90,16 @@ public class Player extends Character {
 		// arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
 		// Pivots.getPivotJoint("Dragunov"), new Dragunov(),
 		// "Guns/Dragunov/WithArm.png", "Guns/Dragunov/Icon.png");
+		// arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
+		// Pivots.getPivotJoint("AK74u"), new AK74U(),
+		// "Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
+
 		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("M1911"), new Pistol(),
+				Pivots.getPivotJoint("M1911"), new M1911(),
 				"Guns/M1911/WithArm.png", "Guns/M1911/Icon.png");
-		 arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-		 Pivots.getPivotJoint("AK74u"), new AK74U(),
-		 "Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
+
+		for (int x = 0; x < 3; x++)
+			getPrimaryMagazines().add(arm.getWeapon().getMagazine().clone());
 
 		/* Setup state machine */
 		stateMachine.changeState(IdlePlayerState.instance());
@@ -116,7 +119,6 @@ public class Player extends Character {
 	public void update(float delta) {
 		super.update(delta);
 
-		
 		if (!inMenu) {
 			/* Check if the left mouse button was pressed */
 			if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
@@ -169,6 +171,5 @@ public class Player extends Character {
 		arm.rotateTowards(mouse);
 
 	}
-
 
 }

@@ -43,6 +43,19 @@ public class Dragunov extends Weapon {
 		bullet = new Bullet("Guns/Dragunov/Bullet.png", this);
 		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0.1f, 0.75f, 2.15f);
 	}
+	
+	/**
+	 * Specific magazine for the Dragunov
+	 * @author Gibbo
+	 *
+	 */
+	public class DragunovMagazine extends Magazine{
+
+		public DragunovMagazine(Weapon parent) {
+			super(parent, 10);
+		}
+		
+	}
 
 
 }

@@ -53,7 +53,7 @@ public class AmmoDrop extends Drop {
 	public void pickup(Character parent) {
 		/* Give the character x amount of magazines */
 		for (int x = 1; x < magazines; x++) {
-			parent.getMagazines().add(
+			parent.getPrimaryMagazines().add(
 					parent.getArm().getWeapon().getMagazine().clone());
 		}
 		

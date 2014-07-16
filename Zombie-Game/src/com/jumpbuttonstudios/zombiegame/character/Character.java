@@ -109,10 +109,13 @@ public class Character extends Box2DObject {
 	protected Facing facing;
 
 	/** If the character is on the ground */
-	private boolean isGrounded = true;	
+	private boolean isGrounded = true;
 
-	/** All the character this player has for their particular weapon */
-	Array<Magazine> magazines = new Array<Magazine>();
+	/** All the character this player has for their primary weapon */
+	Array<Magazine> primaryMags = new Array<Magazine>();
+
+	/** All the character this player has for their secondary weapon */
+	Array<Magazine> secondaryMags = new Array<Magazine>();
 
 	/***************************
 	 *************************** 
@@ -125,23 +128,23 @@ public class Character extends Box2DObject {
 
 	/** The characters front arm */
 	protected Arm arm;
-	
+
 	/** The character's health */
 	protected float health;
-	
-	public void modHealth(float amt){
-		if((health + amt) > 0){
-		health += amt;
+
+	public void modHealth(float amt) {
+		if ((health + amt) > 0) {
+			health += amt;
 		} else {
 			health = 0;
 		}
 	}
-	
-	public void setHealth(float health){
+
+	public void setHealth(float health) {
 		this.health = health;
 	}
-	
-	public float getHealth(){
+
+	public float getHealth() {
 		return health;
 	}
 
@@ -248,13 +251,17 @@ public class Character extends Box2DObject {
 	public void setFacing(Facing facing) {
 		this.facing = facing;
 	}
-	
 
-	/** @return {@link #magazines} */
-	public Array<Magazine> getMagazines() {
-		return magazines;
+	/** @return {@link #secondaryMags} */
+	public Array<Magazine> getSecondaryMagazines() {
+		return secondaryMags;
 	}
-	
+
+	/** @return {@link #primaryMags} */
+	public Array<Magazine> getPrimaryMagazines() {
+		return primaryMags;
+	}
+
 	public void setArm(Arm arm) {
 		this.arm = arm;
 	}
@@ -262,7 +269,6 @@ public class Character extends Box2DObject {
 	public Arm getArm() {
 		return arm;
 	}
-
 
 	public void setArms(Arms arms) {
 		this.arms = arms;

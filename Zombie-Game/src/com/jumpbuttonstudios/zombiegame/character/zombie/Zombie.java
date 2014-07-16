@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
@@ -32,8 +31,6 @@ import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.effects.Effect;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Bullet;
-import com.jumpbuttonstudios.zombiegame.weapons.drops.AmmoDrop;
-import com.jumpbuttonstudios.zombiegame.weapons.drops.DragunovDrop;
 
 /**
  * 
@@ -83,7 +80,7 @@ public abstract class Zombie extends Character {
 	 * The zombies health before being killed, all zombies have a base health
 	 * that is multiplied by other stats
 	 */
-	private float HP = 25;
+	private float HP = 15;
 
 	/** How much more damage a headshot will do to a zombie */
 	final float HEADSHOT_MULTPLIER = 1.25f;
@@ -138,6 +135,7 @@ public abstract class Zombie extends Character {
 		}
 
 	}
+	
 
 	/**
 	 * Removes HP from the zombie and flags it dead if HP reaches zero, it also
@@ -158,7 +156,7 @@ public abstract class Zombie extends Character {
 			deathSound.play(0.75f, MathUtils.random(0.5f, 1.5f), bullet
 					.getParent().getParentArm().getParentCharacter()
 					.getFacing() == Facing.LEFT ? -0.5f : 0.5f);
-			level.getDrops().add(new AmmoDrop(getLevel(), new Vector2(getX(), getY())));
+			level.getDropSpawner().notify(this);
 		}
 
 		bloodSplatter = new Effect(bloodSplatter, getX()

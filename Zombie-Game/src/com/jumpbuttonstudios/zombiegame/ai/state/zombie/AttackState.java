@@ -65,14 +65,21 @@ public class AttackState extends ZombieState {
 			}
 		}
 
-		/* Check if the current animation is finished and if the target is out of range of the zombie */
+		/*
+		 * Check if the current animation is finished and if the target is out
+		 * of range of the zombie
+		 */
 		if (zombie.getCurrentAnimation().getAnimatedSprite()
 				.isAnimationFinished()
 				&& !zombie.isTargetInRange()) {
 			/* Let go of the player */
-			zombie.release((Player)zombie.getTarget());
+			zombie.release((Player) zombie.getTarget());
 			/* Switch back to a walking state */
 			zombie.getStateMachine().changeState(new WalkingState());
+		} else if (zombie.getCurrentAnimation().getAnimatedSprite()
+				.isAnimationFinished() && zombie.isTargetInRange()) {
+			// TODO We should put damage to target here, this means the damage
+			// happens at the end of the attack animation
 		}
 	}
 

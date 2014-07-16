@@ -29,7 +29,7 @@ public class AK74U extends Weapon {
 		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("AK74u"),
 				"Guns/AK74u/Icon.png", "Guns/AK74u/WithArm.png");
 
-		magazine = new Magazine(this, 45);
+		magazine = new AK74UMagazine(this);
 		muzzleVelocity = 50;
 		rof = TimeConversion.secondToNanos(0.092f);
 		reloadTime = TimeConversion.secondToNanos(1.5f);
@@ -44,6 +44,19 @@ public class AK74U extends Weapon {
 		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.90f,
 				2.15f);
 
+	}
+	
+	/**
+	 * Specific magazine for the AK47U
+	 * @author Gibbo
+	 *
+	 */
+	public class AK74UMagazine extends Magazine{
+
+		public AK74UMagazine(Weapon parent) {
+			super(parent, 45);
+		}
+		
 	}
 
 }
