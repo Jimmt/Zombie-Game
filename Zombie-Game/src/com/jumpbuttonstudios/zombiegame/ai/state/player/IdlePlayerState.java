@@ -18,21 +18,26 @@ package com.jumpbuttonstudios.zombiegame.ai.state.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.gibbo.gameutil.ai.state.State;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class IdlePlayerState extends PlayerState {
+public class IdlePlayerState implements State<Player> {
 
 	/** Single instance */
 	private static IdlePlayerState instance = new IdlePlayerState();
 
 
-	@Override
-	public void enter(Object object) {
-		super.enter(object);
 
+	public static IdlePlayerState instance() {
+		return instance;
+	}
+
+	@Override
+	public void enter(Player player) {
 		player.setCurrentAnimation("idle");
 		if (player.getBody().getLinearVelocity().x < 0) {
 			if (!player.getCurrentAnimation().isFlipX()) {
@@ -45,12 +50,11 @@ public class IdlePlayerState extends PlayerState {
 
 		}
 		player.getBody().setLinearDamping(10);
-
+		
 	}
 
 	@Override
-	public void execute(Object object) {
-		super.execute(object);
+	public void execute(Player player) {
 
 		if (player.getBody().getLinearVelocity().y == 0) {
 			player.setGrounded(true);
@@ -61,18 +65,13 @@ public class IdlePlayerState extends PlayerState {
 		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && player.isGrounded()) {
 			player.getStateMachine().changeState(JumpingState.instance());
 		}
-
+		
 	}
 
 	@Override
-	public void exit(Object object) {
-		super.execute(object);
+	public void exit(Player player) {
 		player.getBody().setLinearDamping(0);
-
-	}
-
-	public static IdlePlayerState instance() {
-		return instance;
+		
 	}
 
 }

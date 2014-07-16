@@ -120,5 +120,44 @@ public class AnimationBuilder {
 		/* Return an animation */
 		return animSprite;
 	}
+	
+	public static AnimatedSprite create(float time, int rows, int cols,
+			float scaleX, float scaleY, Texture texture, int[] blankFrames) {
+		/* The sprite sheet */
+		Texture sheet;
+		/* Key frames */
+		Array<Sprite> frames = new Array<Sprite>();
+		;
+
+		/* Set the sheet to the one provided */
+		sheet = texture;
+
+		/* Split up the sprite sheet into segments */
+		TextureRegion[][] temp = TextureRegion.split(sheet, sheet.getWidth()
+				/ cols, sheet.getHeight() / rows);
+
+		/* Fill the frames array with sprites that we split from the sheet */
+		for (int j = 0; j < rows; j++) {
+			for (int i = 0; i < cols; i++) {
+				frames.add(new Sprite(temp[j][i]));
+
+			}
+		}
+
+		/** Remove blank frames */
+		if (blankFrames != null)
+			for (int blank = 0; blank < blankFrames.length; blank++) {
+				frames.removeIndex(blankFrames[blank]);
+			}
+
+		Animation animation = new Animation(time, frames);
+		AnimatedSprite animSprite = new AnimatedSprite(animation);
+		
+		animSprite.setSize(frames.first().getWidth() * scaleX, frames.first().getHeight() * scaleY);
+		animSprite.setKeepSize(true);
+		
+		/* Return an animation */
+		return animSprite;
+	}
 
 }

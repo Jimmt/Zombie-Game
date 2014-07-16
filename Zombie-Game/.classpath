@@ -6,5 +6,7 @@
 	<classpathentry kind="src" path="box2dlights-src"/>
 	<classpathentry kind="lib" path="libs/libgdx-utils.jar" sourcepath="libs/libgdx-utils-sources.jar"/>
 	<classpathentry kind="lib" path="libs/GameUtil-Internal.jar" sourcepath="libs/GameUtil-Internal-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-freetype-natives.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-freetype.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

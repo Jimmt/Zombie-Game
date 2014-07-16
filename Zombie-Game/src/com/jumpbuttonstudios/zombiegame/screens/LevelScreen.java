@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -77,6 +78,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(uiStage);
 		multiplexer.addProcessor(this);
+		multiplexer.addProcessor(level.getPlayer());
 
 		hudTable.debug();
 
@@ -88,14 +90,20 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		stage.addActor(parentTable);
 
 		temp = new Vector3();
-		
+
 		level.getPlayer().setHealth(3f);
+
 	}
 
 	@Override
 	public void show() {
 		super.show();
 		Gdx.input.setInputProcessor(multiplexer);
+
+		cursor = new Pixmap(Gdx.files.internal("UI/Cursors/potGreen.png"));
+		redCursor = new Pixmap(Gdx.files.internal("UI/Cursors/potRed.png"));
+		Gdx.input.setCursorImage(cursor, 32, 32);
+
 	}
 
 	@Override
@@ -112,11 +120,10 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		if (defensePlacer.isPlacing()) {
 			defenseTable.setVisible(false);
 		}
-		
-		for(int i = 0; i < hudTable.getHearts().length - level.getPlayer().getHealth(); i++){
+
+		for (int i = 0; i < hudTable.getHearts().length - level.getPlayer().getHealth(); i++) {
 			hudTable.getHearts()[hudTable.getHearts().length - 1 - i].setEmpty(true);
 		}
-		
 
 		if (defenseTable.isVisible()) {
 			level.getPlayer().setInMenu(true);
@@ -241,20 +248,21 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		if (button == Buttons.RIGHT) {
 
 			for (Defense defense : level.getDefenses()) {
-				temp.set(defense.getSprite().getX(), defense.getSprite().getX(), 0);
-				b2dCam.project(temp);
 
 				/** Check if mouse overlaps with any doors */
 				if (defense instanceof Door) {
-					if (screenX > temp.x
-							&& screenX < temp.x + defense.getSprite().getWidth() / Constants.scale
-							&& (Constants.HEIGHT - screenY) < temp.y
-							&& (Constants.HEIGHT - screenY) > temp.y - defense.getSprite().getY()
-									/ Constants.scale) {
+					temp.set(screenX, screenY, 0);
+					b2dCam.unproject(temp);
 
-						/** Operate the door; open if closed and vice versa */
-						((Door) defense).operate();
+					if (temp.x > defense.getSprite().getX()
+							&& temp.x < defense.getSprite().getX() + defense.getSprite().getWidth()) {
+						if (temp.y > defense.getSprite().getY()
+								&& temp.y < defense.getSprite().getY()
+										+ defense.getSprite().getHeight()) {
+							/** Operate the door; open if closed and vice versa */
+							((Door) defense).operate();
 
+						}
 					} else {
 
 					}

@@ -20,13 +20,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.gibbo.gameutil.ai.state.State;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class JumpingState extends PlayerState {
+public class JumpingState implements State<Player> {
 
 	private static JumpingState instance = new JumpingState();
 
@@ -48,9 +50,7 @@ public class JumpingState extends PlayerState {
 	float damp = 5;
 
 	@Override
-	public void enter(Object object) {
-		super.enter(object);
-
+	public void enter(Player player) {
 		/* Set the previous facing direction from the characters current */
 		prevFacing = player.getFacing();
 
@@ -73,11 +73,11 @@ public class JumpingState extends PlayerState {
 		tmp.set(player.getArm().getWeapon().getBodyJoint().getRelativePos());
 		tmp2.set(player.getArm().getWeapon().getMuzzle().getPivot()
 				.getRelativePos());
+
 	}
 
 	@Override
-	public void execute(Object object) {
-		super.execute(object);
+	public void execute(Player player) {
 		Body body = player.getBody();
 
 		/* Sets the pivots up to adjust position in the air */
@@ -136,21 +136,21 @@ public class JumpingState extends PlayerState {
 	}
 
 	@Override
-	public void exit(Object object) {
-		super.exit(object);
-			
+	public void exit(Player player) {
+
 		/*
 		 * Check if the character is facing the same way he was when he jumped,
 		 * if not we flip the pivot values
 		 */
-		if (player.getFacing() != prevFacing){
+		if (player.getFacing() != prevFacing) {
 			tmp.set(-tmp.x, tmp.y);
 			tmp2.set(-tmp2.x, tmp2.y);
 		}
 		/* Finally reset the pivots to their original positions */
 		player.getArm().getWeapon().getBodyJoint().getRelativePos().set(tmp);
 		player.getArm().getWeapon().getMuzzle().getPivot().getRelativePos()
-		.set(tmp2);
+				.set(tmp2);
+
 	}
 
 	public static JumpingState instance() {

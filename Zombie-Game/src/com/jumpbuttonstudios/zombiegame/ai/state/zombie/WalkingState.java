@@ -18,17 +18,18 @@ package com.jumpbuttonstudios.zombiegame.ai.state.zombie;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.gibbo.gameutil.ai.state.State;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
+import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class WalkingState extends ZombieState {
+public class WalkingState implements State<Zombie> {
 
 	@Override
-	public void enter(Object object) {
-		super.enter(object);
+	public void enter(Zombie zombie) {
 
 		/* Set the zombies current animation to walking */
 		zombie.setCurrentAnimation("walking");
@@ -39,8 +40,7 @@ public class WalkingState extends ZombieState {
 	}
 
 	@Override
-	public void execute(Object object) {
-		super.enter(object);
+	public void execute(Zombie zombie) {
 		Body body = zombie.getBody();
 
 		/* First check which direction the zombie is facing */
@@ -84,8 +84,7 @@ public class WalkingState extends ZombieState {
 	}
 
 	@Override
-	public void exit(Object object) {
-		super.enter(object);
+	public void exit(Zombie zombie) {
 		zombie.getCurrentAnimation().stop();
 	}
 

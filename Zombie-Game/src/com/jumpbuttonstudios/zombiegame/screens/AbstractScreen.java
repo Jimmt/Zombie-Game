@@ -9,9 +9,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -34,6 +37,8 @@ public abstract class AbstractScreen implements Screen {
 	private Table table;
 	protected ShapeRenderer sr;
 	protected RayHandler rh;
+	protected Pixmap cursor;
+	protected Pixmap redCursor;
 	private FPSLogger logger;
 	protected InputMultiplexer multiplexer;
 
@@ -49,6 +54,9 @@ public abstract class AbstractScreen implements Screen {
 		sr = new ShapeRenderer();
 
 		logger = new FPSLogger();
+		
+		getSkin().getFont("default-font").setColor(1, 1, 1, 1.0f);
+		
 
 	}
 

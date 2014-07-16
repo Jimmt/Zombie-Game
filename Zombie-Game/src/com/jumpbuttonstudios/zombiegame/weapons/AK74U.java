@@ -28,6 +28,8 @@ public class AK74U extends Weapon {
 	public AK74U() {
 		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("AK74u"),
 				"Guns/AK74u/Icon.png", "Guns/AK74u/WithArm.png");
+		
+		weaponOrdinal = WeaponOrdinal.SECONDARY;
 
 		magazine = new AK74UMagazine(this);
 		muzzleVelocity = 50;

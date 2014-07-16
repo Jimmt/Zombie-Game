@@ -20,19 +20,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.gibbo.gameutil.ai.state.State;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class RunningState extends PlayerState {
+public class RunningState implements State<Player> {
 
 	private static RunningState instance = new RunningState();
 
+
 	@Override
-	public void enter(Object object) {
-		super.enter(object);
+	public void enter(Player player) {
 
 		/* Set the animation to running */
 		player.setCurrentAnimation("running");
@@ -40,12 +42,11 @@ public class RunningState extends PlayerState {
 		player.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP);
 		/* Play the animation */
 		player.getCurrentAnimation().play();
-
+		
 	}
 
 	@Override
-	public void execute(Object object) {
-		super.enter(object);
+	public void execute(Player player) {
 		Body body = player.getBody();
 
 		if (Gdx.input.isKeyPressed(Keys.A)) {
@@ -73,14 +74,15 @@ public class RunningState extends PlayerState {
 			player.getStateMachine().changeState(IdlePlayerState.instance());
 		}
 
+		
 	}
 
 	@Override
-	public void exit(Object object) {
-		super.exit(object);
+	public void exit(Player player) {
 		player.getCurrentAnimation().stop();
-		/* Stop the running sound */
+		
 	}
+	
 
 	public static RunningState instance() {
 		return instance;

@@ -16,6 +16,8 @@
 
 package com.jumpbuttonstudios.zombiegame.character;
 
+import java.awt.SecondaryLoop;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -24,8 +26,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.screens.LevelScreen;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
+import com.jumpbuttonstudios.zombiegame.weapons.Weapon.WeaponOrdinal;
 
 /**
  * 
@@ -33,8 +37,8 @@ import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
  */
 public class Arm {
 
-	/** The parent character of this arm */
-	private Character parent;
+	/** The parent Player of this arm */
+	private Player parent;
 
 	/** The offset on the X axis, used to determine sprite origin from centre */
 	float offsetX;
@@ -45,12 +49,15 @@ public class Arm {
 	/** Direction arm is facing */
 	Vector2 direction = new Vector2(), tmp = new Vector2();
 
-
 	/** The weapon for this arm, if applicable */
 	private Weapon weapon;
 
 	/** World coordinates for facing the arm */
 	Vector3 worldCoords = new Vector3();
+
+	public Arm(Player parent) {
+		this.parent = parent;
+	}
 
 	/**
 	 * Updates the weapon and pivot point for the arm
@@ -58,8 +65,13 @@ public class Arm {
 	 * @param delta
 	 */
 	public void update(float delta) {
-		if (weapon != null)
+		if (weapon != null) {
+			if (weapon.getWeaponOrdinal() == WeaponOrdinal.SECONDARY
+					&& weapon.getMagazine().getCapacity() == 0
+					&& parent.getSecondaryMagazines().size == 0)
+				changeWeapon(parent.getPrimaryWeapon());
 			weapon.update(delta);
+		}
 	}
 
 	public void draw(SpriteBatch batch) {
@@ -68,20 +80,24 @@ public class Arm {
 			 * This does not draw the weapon sprite, instead it draws the weapon
 			 * effects such as muzzle flash
 			 */
+
 			weapon.draw(batch);
 			/* Set the origin of the sprite to match the origin pivot */
 			weapon.getSprite().setOrigin(
-					weapon.getSprite().getWidth() / 2 - weapon.getOriginJoint().x,
+					weapon.getSprite().getWidth() / 2
+							- weapon.getOriginJoint().x,
 					weapon.getSprite().getHeight()
 							/ 2
-							- (weapon.getSprite().isFlipY() ? -weapon.getOriginJoint().y
-									: weapon.getOriginJoint().y));
+							- (weapon.getSprite().isFlipY() ? -weapon
+									.getOriginJoint().y : weapon
+									.getOriginJoint().y));
 			/* Set the position o the sprite to the pivots */
 			weapon.getSprite()
 					.setPosition(
 							weapon.getBodyJoint().x
-									- (((weapon.getSprite().getWidth() / 2)) - weapon.getOriginJoint().x),
-									weapon.getBodyJoint().y
+									- (((weapon.getSprite().getWidth() / 2)) - weapon
+											.getOriginJoint().x),
+							weapon.getBodyJoint().y
 									- (weapon.getSprite().getHeight() / 2 - (weapon
 											.getSprite().isFlipY() ? -0.05f
 											: 0.05f)));
@@ -183,7 +199,7 @@ public class Arm {
 	 * 
 	 * @return the character this arm belongs to
 	 */
-	public Character getParentCharacter() {
+	public Player getParentCharacter() {
 		return parent;
 	}
 
@@ -234,10 +250,10 @@ public class Arm {
 		 *            the path to the arm sprite
 		 * @return
 		 */
-		public static Arm create(Character parent, PivotJoint bodyPivot,
+		public static Arm create(Player parent, PivotJoint bodyPivot,
 				PivotJoint originPivot, Weapon weapon, String path,
 				String iconPath) {
-			Arm arm = new Arm();
+			Arm arm = new Arm(parent);
 			arm.parent = parent;
 			arm.weapon = weapon;
 			arm.weapon.setBodyJoint(bodyPivot);

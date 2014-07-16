@@ -19,7 +19,6 @@ package com.jumpbuttonstudios.zombiegame.weapons.drops;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.Magazine;
@@ -29,7 +28,7 @@ import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
  * 
  * @author Stephen Gibson
  */
-public class WeaponDrop extends Drop {
+public class WeaponDrop extends Drop<Player> {
 
 	/** The weapon in this drop */
 	Weapon weapon;
@@ -59,7 +58,7 @@ public class WeaponDrop extends Drop {
 
 
 	@Override
-	public void pickup(Character parent) {
+	public void pickup(Player parent) {
 		/*
 		 * Set the alpha for the icon back to 1, incase the character picked it
 		 * up during fade out
@@ -69,7 +68,7 @@ public class WeaponDrop extends Drop {
 		 * Give the character the new weapon and a random assortment of
 		 * magazines for it
 		 */
-		((Player) parent).getArm().changeWeapon(weapon);
+		parent.setSecondaryWeapon(weapon);
 		
 		/* Add the magazines from this weapon drop to the character picking up the drop */
 		parent.getSecondaryMagazines().addAll(magazines);

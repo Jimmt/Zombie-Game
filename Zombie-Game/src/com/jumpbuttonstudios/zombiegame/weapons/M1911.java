@@ -29,6 +29,8 @@ public class M1911 extends Weapon {
 		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("M1911"),
 				"Guns/M1911/Icon.png", "Guns/M1911/WithArm.png");
 
+		weaponOrdinal = WeaponOrdinal.PRIMARY;
+		
 		magazine = new M1911Magazine(this);
 		muzzleVelocity = 40; // Tweak later and get proper/appropriate number
 		rof = TimeConversion.secondToNanos(0.35f);
