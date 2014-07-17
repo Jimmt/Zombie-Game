@@ -22,14 +22,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.jumpbuttonstudios.zombiegame.Constants;
-import com.jumpbuttonstudios.zombiegame.character.Character;
+import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 
 /**
  * 
  * @author Stephen Gibson
  */
-public class AmmoDrop extends Drop {
+public class AmmoDrop extends Drop<Player> {
 
 
 	/** How many magazines this drop has */
@@ -50,11 +50,11 @@ public class AmmoDrop extends Drop {
 
 
 	@Override
-	public void pickup(Character parent) {
+	public void pickup(Player parent) {
 		/* Give the character x amount of magazines */
 		for (int x = 1; x < magazines; x++) {
-			parent.getMagazines().add(
-					parent.getArm().getWeapon().getMagazine().clone());
+			parent.getPrimaryMagazines().add(
+					parent.getPrimaryWeapon().getMagazine().clone());
 		}
 		
 		pickedUp = true;

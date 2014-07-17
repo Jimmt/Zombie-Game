@@ -23,14 +23,10 @@ import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
  * 
  * @author Stephen Gibson
  */
-public class IdleZombieState implements State {
-
-	/** The zombie that is using this state */
-	Zombie zombie;
+public class IdleZombieState implements State<Zombie> {
 
 	@Override
-	public void enter(Object object) {
-		zombie = (Zombie) object;
+	public void enter(Zombie zombie) {
 		
 		/* Set the zombies animation to idle */
 		zombie.setCurrentAnimation("idle");
@@ -56,14 +52,12 @@ public class IdleZombieState implements State {
 	}
 
 	@Override
-	public void execute(Object object) {
-		zombie = (Zombie) object;
+	public void execute(Zombie zombie) {
 
 	}
 
 	@Override
-	public void exit(Object object) {
-		zombie = (Zombie) object;
+	public void exit(Zombie zombie) {
 		zombie.getBody().setLinearDamping(0);
 
 	}

@@ -27,7 +27,6 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.gibbo.gameutil.time.TimeConversion;
-import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 
@@ -37,7 +36,7 @@ import com.jumpbuttonstudios.zombiegame.level.Level;
  * 
  * @author Stephen Gibson
  */
-public abstract class Drop extends Box2DObject {
+public abstract class Drop<V> extends Box2DObject {
 
 	/** Level instance */
 	Level level;
@@ -96,7 +95,7 @@ public abstract class Drop extends Box2DObject {
 	 * @param parent
 	 *            the pickup-ee
 	 */
-	public abstract void pickup(Character parent);
+	public abstract void pickup(V parent);
 
 	/** Creates box2d stuff for this drop */
 	public void create() {

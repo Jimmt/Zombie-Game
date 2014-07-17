@@ -88,7 +88,10 @@ public class Character extends Box2DObject {
 	protected float acceleration;
 
 	/** The jump power of the character */
-	protected float jumpPower;
+	protected float jumpPower;	
+
+	/** The character's health */
+	protected float health;
 
 	/***************************
 	 *************************** 
@@ -109,41 +112,10 @@ public class Character extends Box2DObject {
 	protected Facing facing;
 
 	/** If the character is on the ground */
-	private boolean isGrounded = true;	
+	private boolean isGrounded = true;
 
-	/** All the character this player has for their particular weapon */
-	Array<Magazine> magazines = new Array<Magazine>();
 
-	/***************************
-	 *************************** 
-	 ******* Limb stuff ********
-	 *************************** 
-	 **************************/
 
-	/** The set of arms this character is using, if any */
-	protected Arms arms;
-
-	/** The characters front arm */
-	protected Arm arm;
-	
-	/** The character's health */
-	protected float health;
-	
-	public void modHealth(float amt){
-		if((health + amt) > 0){
-		health += amt;
-		} else {
-			health = 0;
-		}
-	}
-	
-	public void setHealth(float health){
-		this.health = health;
-	}
-	
-	public float getHealth(){
-		return health;
-	}
 
 	public void update(float delta) {
 		/* Update the state machine */
@@ -168,6 +140,19 @@ public class Character extends Box2DObject {
 		body.applyForceToCenter(0, jumpPower, true);
 		setGrounded(false);
 	}
+	
+
+	/**
+	 * TODO Jimmt comments man, MOAR COMMENTS
+	 * @param amt
+	 */
+	public void modHealth(float amt) {
+		if ((health + amt) > 0) {
+			health += amt;
+		} else {
+			health = 0;
+		}
+	}
 
 	/**
 	 * Adds a new animation this character can use
@@ -187,6 +172,8 @@ public class Character extends Box2DObject {
 		return new Vector2(animation.getAnimatedSprite().getWidth(), animation
 				.getAnimatedSprite().getHeight());
 	}
+	
+	
 
 	/**
 	 * Swap the weapons in the characters weapon limbjoint
@@ -240,6 +227,15 @@ public class Character extends Box2DObject {
 	public Vector2 getVelocity() {
 		return velocity;
 	}
+	
+
+	public void setHealth(float health) {
+		this.health = health;
+	}
+
+	public float getHealth() {
+		return health;
+	}
 
 	public Facing getFacing() {
 		return facing;
@@ -248,25 +244,8 @@ public class Character extends Box2DObject {
 	public void setFacing(Facing facing) {
 		this.facing = facing;
 	}
-	
-
-	/** @return {@link #magazines} */
-	public Array<Magazine> getMagazines() {
-		return magazines;
-	}
-	
-	public void setArm(Arm arm) {
-		this.arm = arm;
-	}
-
-	public Arm getArm() {
-		return arm;
-	}
 
 
-	public void setArms(Arms arms) {
-		this.arms = arms;
-	}
 
 	/**
 	 * 

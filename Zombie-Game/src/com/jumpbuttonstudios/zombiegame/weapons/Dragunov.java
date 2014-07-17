@@ -18,6 +18,7 @@ package com.jumpbuttonstudios.zombiegame.weapons;
 
 import com.gibbo.gameutil.time.TimeConversion;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
+import com.jumpbuttonstudios.zombiegame.weapons.Weapon.WeaponOrdinal;
 
 /**
  * 
@@ -28,7 +29,9 @@ public class Dragunov extends Weapon {
 	public Dragunov() {
 		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("Dragunov"), "Guns/Dragunov/Icon.png", "Guns/Dragunov/WithArm.png");
 		
-		magazine = new Magazine(this, 10);
+		weaponOrdinal = WeaponOrdinal.SECONDARY;
+		
+		magazine = new DragunovMagazine(this);
 		muzzleVelocity = 120;
 		rof = TimeConversion.secondToNanos(1.2f); // Tweak later
 		reloadTime = TimeConversion.secondToNanos(1.8f);
@@ -42,6 +45,19 @@ public class Dragunov extends Weapon {
 		
 		bullet = new Bullet("Guns/Dragunov/Bullet.png", this);
 		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0.1f, 0.75f, 2.15f);
+	}
+	
+	/**
+	 * Specific magazine for the Dragunov
+	 * @author Gibbo
+	 *
+	 */
+	public class DragunovMagazine extends Magazine{
+
+		public DragunovMagazine(Weapon parent) {
+			super(parent, 10);
+		}
+		
 	}
 
 

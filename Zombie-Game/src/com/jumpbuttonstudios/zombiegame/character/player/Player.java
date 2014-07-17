@@ -3,22 +3,26 @@ package com.jumpbuttonstudios.zombiegame.character.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.player.IdlePlayerState;
 import com.jumpbuttonstudios.zombiegame.ai.state.player.JumpingState;
-import com.jumpbuttonstudios.zombiegame.character.Arm.ArmBuilder;
+import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 import com.jumpbuttonstudios.zombiegame.weapons.M1911;
+import com.jumpbuttonstudios.zombiegame.weapons.Magazine;
+import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 /**
  * The protagonist
@@ -27,13 +31,28 @@ import com.jumpbuttonstudios.zombiegame.weapons.M1911;
  * @author Jimmt
  * 
  */
-public class Player extends Character {
+public class Player extends Character implements InputProcessor {
 
 	/** The position of the mouse cursor */
 	Vector2 mouse = new Vector2();
 
 	/** Whether the player is in defense menu or not */
 	boolean inMenu;
+
+	/** The players primary weapon */
+	private Weapon primaryWeapon;
+
+	/** The players secondary weapon */
+	private Weapon secondaryWeapon;
+
+	/** All the character this player has for their primary weapon */
+	private Array<Magazine> primaryMags = new Array<Magazine>();
+
+	/** All the character this player has for their secondary weapon */
+	private Array<Magazine> secondaryMags = new Array<Magazine>();
+
+	/** The players front arm */
+	private Arm arm = new Arm(this);
 
 	/**
 	 * Creates a new player
@@ -86,20 +105,13 @@ public class Player extends Character {
 		Pivots.addPivotJoint("AK74u", null, .9f, 0);
 		Pivots.addPivotJoint("Dragunov", null, .9f, 0);
 
-		/* Create an arm with a pistol as the weapon */
-		// arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-		// Pivots.getPivotJoint("Dragunov"), new Dragunov(),
-		// "Guns/Dragunov/WithArm.png", "Guns/Dragunov/Icon.png");
-		// arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-		// Pivots.getPivotJoint("AK74u"), new AK74U(),
-		// "Guns/AK74u/WithArm.png", "Guns/AK74u/Icon.png");
-
-		arm = ArmBuilder.create(this, Pivots.getPivotJoint("shoulder"),
-				Pivots.getPivotJoint("M1911"), new M1911(),
-				"Guns/M1911/WithArm.png", "Guns/M1911/Icon.png");
+		/* Setup primary weapon */
+		primaryWeapon = new M1911();
+		/* Set the current weapon as the primary */
+		arm.changeWeapon(primaryWeapon);
 
 		for (int x = 0; x < 3; x++)
-//			getPrimaryMagazines().add(arm.getWeapon().getMagazine().clone());
+			getPrimaryMagazines().add(primaryWeapon.getMagazine().clone());
 
 		/* Setup state machine */
 		stateMachine.changeState(IdlePlayerState.instance());
@@ -118,6 +130,8 @@ public class Player extends Character {
 	@Override
 	public void update(float delta) {
 		super.update(delta);
+		
+		System.out.println(getSecondaryMagazines().size);
 
 		if (!inMenu) {
 			/* Check if the left mouse button was pressed */
@@ -170,6 +184,102 @@ public class Player extends Character {
 		/* Rotate the mouse towards the arm */
 		arm.rotateTowards(mouse);
 
+	}
+
+	/**
+	 * @param seondaryWeapon
+	 *            the weapon to be set as secondary
+	 */
+	public void setSecondaryWeapon(Weapon secondaryWeapon) {
+		this.secondaryMags.clear();
+		this.secondaryWeapon = secondaryWeapon;
+		if (!arm.getWeapon().equals(secondaryWeapon))
+			arm.changeWeapon(secondaryWeapon);
+
+	}
+	
+	/** @return {@link #primaryWeapon} */
+	public Weapon getPrimaryWeapon() {
+		return primaryWeapon;
+	}
+	
+	/** @return {@link #secondaryWeapon} */
+	public Weapon getSecondaryWeapon() {
+		return secondaryWeapon;
+	}
+
+	/** @return {@link #secondaryMags} */
+	public Array<Magazine> getSecondaryMagazines() {
+		return secondaryMags;
+	}
+
+	/** @return {@link #primaryMags} */
+	public Array<Magazine> getPrimaryMagazines() {
+		return primaryMags;
+	}
+
+	public Arm getArm() {
+		return arm;
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		/* Check for keypresses for weapon switching */
+		switch (keycode) {
+		case Keys.NUM_1:
+			/* Change to primary if 1 is pressed */
+			if (!getArm().getWeapon().equals(primaryWeapon))
+				getArm().changeWeapon(primaryWeapon);
+			break;
+		case Keys.NUM_2:
+			/*
+			 * Change to secondary if 2 is pressed, only if a gun exists in
+			 * there
+			 */
+			if (secondaryWeapon != null
+					&& !getArm().getWeapon().equals(secondaryWeapon))
+				getArm().changeWeapon(secondaryWeapon);
+
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
 	}
 
 }

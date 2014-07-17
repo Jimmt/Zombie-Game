@@ -78,6 +78,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(uiStage);
 		multiplexer.addProcessor(this);
+		multiplexer.addProcessor(level.getPlayer());
 
 		hudTable.debug();
 

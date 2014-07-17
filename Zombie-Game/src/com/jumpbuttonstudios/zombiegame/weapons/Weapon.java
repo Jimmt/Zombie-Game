@@ -27,6 +27,16 @@ import com.jumpbuttonstudios.zombiegame.screens.LevelScreen;
  */
 public abstract class Weapon {
 
+	/**
+	 * Describes if this weapon is a primary or secondary weapon
+	 * 
+	 * @author Gibbo
+	 * 
+	 */
+	public enum WeaponOrdinal {
+		PRIMARY, SECONDARY;
+	}
+
 	/** The arm that is holding this weapon */
 	protected Arm parent;
 
@@ -68,6 +78,9 @@ public abstract class Weapon {
 	 ********* Stats ***********
 	 *************************** 
 	 **************************/
+
+	/** This weapons orginal */
+	protected WeaponOrdinal weaponOrdinal;
 
 	/** The guns damage */
 	protected float damage;
@@ -185,17 +198,7 @@ public abstract class Weapon {
 	public void update(float delta) {
 		/* Check if we are reloading */
 		if (reloading) {
-			/* Check if the character has any magazines left */
-			if (parent.getParentCharacter().getMagazines().size != 0) {
-				/* See if the correct time has passed for a reload */
-				if (TimeUtils.nanoTime() - reloadStart > reloadTime) {
-					/** Play reloaded sound */
-					reload.play(0.5f);
-					reloading = false;
-					/* Create an exact copy of the original magazine */
-					magazine = parent.getParentCharacter().getMagazines().pop();
-				}
-			}
+			reload();
 			/*
 			 * If the time since the last shot is more than rof, we can shoot
 			 * again
@@ -207,7 +210,10 @@ public abstract class Weapon {
 			}
 		}
 
-		if (!reloading && parent.getParentCharacter().getMagazines().size != 0
+		if (!reloading
+				&& (weaponOrdinal == WeaponOrdinal.PRIMARY ? parent
+						.getParentCharacter().getPrimaryMagazines().size != 0
+						: parent.getParentCharacter().getSecondaryMagazines().size != 0)
 				&& Gdx.input.isKeyPressed(Keys.R)) {
 			reloading = true;
 			reloadStart = TimeUtils.nanoTime();
@@ -320,6 +326,29 @@ public abstract class Weapon {
 		}
 	}
 
+	/**
+	 * Reloads the weapon using appropriate magazines, as in primary guns reload
+	 * with primary ammo and secondary with secondary.
+	 */
+	public void reload() {
+		/* Check if the character has any magazines left for this weapon */
+		if (weaponOrdinal == WeaponOrdinal.PRIMARY ? parent
+				.getParentCharacter().getPrimaryMagazines().size != 0 : parent
+				.getParentCharacter().getSecondaryMagazines().size != 0) {
+			/* See if the correct time has passed for a reload */
+			if (TimeUtils.nanoTime() - reloadStart > reloadTime) {
+				/** Play reloaded sound */
+				reload.play(0.5f);
+				reloading = false;
+				/* Create an exact copy of the original magazine */
+				magazine = weaponOrdinal == WeaponOrdinal.PRIMARY ? parent
+						.getParentCharacter().getPrimaryMagazines().pop()
+						: parent.getParentCharacter().getSecondaryMagazines()
+								.pop();
+			}
+		}
+	}
+
 	/** @return {@link #icon} */
 	public Sprite getIcon() {
 		return icon;
@@ -327,6 +356,10 @@ public abstract class Weapon {
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
+	}
+	
+	public WeaponOrdinal getWeaponOrdinal() {
+		return weaponOrdinal;
 	}
 
 	/** @return {@link #sprite} */

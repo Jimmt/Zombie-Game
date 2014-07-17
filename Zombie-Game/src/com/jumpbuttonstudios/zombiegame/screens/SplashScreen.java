@@ -1,6 +1,7 @@
 package com.jumpbuttonstudios.zombiegame.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -9,7 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
 
 public class SplashScreen extends AbstractScreen {
-
+	
+	/** The JBS Logo */
 	private Image splashImage;
 
 	public SplashScreen(ZombieGame zg) {
@@ -30,7 +32,7 @@ public class SplashScreen extends AbstractScreen {
 
 		Action switchScreenAction = new Action() {
 			public boolean act(float delta) {
-				zg.setScreen(new MenuScreen(zg));
+				zg.setScreen(new LoadingScreen(zg));
 				return true;
 			}
 		};
