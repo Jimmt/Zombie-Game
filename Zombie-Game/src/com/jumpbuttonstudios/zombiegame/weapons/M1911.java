@@ -16,7 +16,10 @@
 
 package com.jumpbuttonstudios.zombiegame.weapons;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.gibbo.gameutil.time.TimeConversion;
+import com.jumpbuttonstudios.zombiegame.ZombieGame;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 
 /**
@@ -27,10 +30,11 @@ public class M1911 extends Weapon {
 
 	public M1911() {
 		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("M1911"),
-				"Guns/M1911/Icon.png", "Guns/M1911/WithArm.png");
+				ZombieGame.assets.get(Assets.GUN_M1911_ICON, Texture.class),
+				ZombieGame.assets.get(Assets.GUN_M1911_ARM, Texture.class));
 
 		weaponOrdinal = WeaponOrdinal.PRIMARY;
-		
+
 		magazine = new M1911Magazine(this);
 		muzzleVelocity = 40; // Tweak later and get proper/appropriate number
 		rof = TimeConversion.secondToNanos(0.35f);
@@ -42,7 +46,7 @@ public class M1911 extends Weapon {
 		shotPref[0] = 0.5f;
 		shotPref[1] = 1.35f;
 
-		bullet = new Bullet("Guns/M1911/Bullet.png", this);
+		bullet = new Bullet(ZombieGame.assets.get(Assets.GUN_M1911_BULLET, Texture.class), this);
 		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.65f,
 				1.6f);
 

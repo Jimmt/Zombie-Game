@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.zombie.WalkingState;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.level.Level;
 
@@ -38,23 +39,23 @@ public class WalkingZombie extends Zombie {
 		/* Idle animation, we get the size of the sprites from this as well */
 		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1,
 				Constants.scale, Constants.scale,
-				"Sprites/Zombies/Regular/Still.png", null), "idle");
+				Assets.ZOMBIE_IDLE.fileName, null), "idle");
 
 		/* Walking animation */
 		addAnimation(
 				AnimationBuilder.createb2d(0.09f, 1, 7, Constants.scale,
 						Constants.scale,
-						"Sprites/Zombies/Regular/Full/Walk.png", null),
+						Assets.ZOMBIE_FULL_WALK.fileName, null),
 				"walking");
 
 		/* Attack animation */
 		addAnimation(AnimationBuilder.createb2d(0.085f, 1, 5, Constants.scale,
-				Constants.scale, "Sprites/Zombies/Regular/Full/Attack.png",
+				Constants.scale, Assets.ZOMBIE_FULL_ATTACK.fileName,
 				null), "attacking");
 
 		/* Setup the width and height from our animations sprites */
-		width = tmp.x * Constants.scale;
-		height = tmp.y * Constants.scale;
+		width = tmp.x;
+		height = tmp.y;
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(x, y), true);

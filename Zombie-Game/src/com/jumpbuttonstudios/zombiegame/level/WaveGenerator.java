@@ -16,6 +16,7 @@
 
 package com.jumpbuttonstudios.zombiegame.level;
 
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.gibbo.gameutil.time.TimeConversion;
 
@@ -27,8 +28,14 @@ import com.gibbo.gameutil.time.TimeConversion;
  */
 public class WaveGenerator {
 
-	/** For testing purposes, turns on and off spawning */
-	public static boolean DEBUG_MODE = false;
+	/** Logger for wave generator */
+	private Logger logger = new Logger("Wave Generator");
+
+	/** For testing , displays debug info*/
+	public static boolean DEBUG_MODE = true;
+	
+	/** For testing, turns spawning on and off */
+	public static boolean SPAWNING_ACTIVE = true;
 
 	/** Level instance */
 	Level level;
@@ -51,6 +58,9 @@ public class WaveGenerator {
 	public WaveGenerator(Level level) {
 		this.level = level;
 
+		/* Set the logger up */
+		logger.setLevel(DEBUG_MODE == true ? Logger.DEBUG : Logger.NONE);
+
 		nextWave();
 	}
 
@@ -59,7 +69,7 @@ public class WaveGenerator {
 	 * iteration
 	 */
 	public void update() {
-		if (!DEBUG_MODE)
+		if (SPAWNING_ACTIVE)
 			/* Check if the wave has finished */
 			if (!waveFinished()) {
 				/* Update the current wave */
@@ -108,6 +118,11 @@ public class WaveGenerator {
 	/** @return {@link #wave} */
 	public int getWave() {
 		return wave;
+	}
+
+	/** @return {@link #logger} */
+	public Logger getLogger() {
+		return logger;
 	}
 
 }

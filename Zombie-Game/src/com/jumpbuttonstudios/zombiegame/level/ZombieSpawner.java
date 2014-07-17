@@ -43,7 +43,7 @@ public class ZombieSpawner {
 	double lastSpawn;
 
 	/** How often the an zombie can spawn */
-	double freq = TimeConversion.secondToNanos(1);
+	double freq = TimeConversion.secondToNanos(2f);
 
 	public ZombieSpawner(Level level, float x, float y) {
 		this.level = level;
@@ -81,6 +81,8 @@ public class ZombieSpawner {
 		zombiesLeft--;
 		/* Set the time of last spawn to now */
 		lastSpawn = TimeUtils.nanoTime();
+		/* Give the next spawn time some randomness */
+		freq = TimeConversion.secondToNanos(MathUtils.random(0.25f, 2f));
 	}
 
 	/** Reduces the frequency of zombie spawns, in seconds */

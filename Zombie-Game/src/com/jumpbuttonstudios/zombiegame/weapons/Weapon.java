@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character.Facing;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
@@ -151,7 +152,8 @@ public abstract class Weapon {
 	protected Weapon() {
 
 		muzzleFlash = AnimationBuilder.create(0.050f, 1, 3, Constants.scale,
-				Constants.scale, "Effect/Gunfire.png", null);
+				Constants.scale, Assets.EFFECT_GUNFIRE.fileName,
+				null);
 		muzzleFlash.getAnimation().setPlayMode(Animation.NORMAL);
 		muzzleFlash.setKeepSize(true);
 
@@ -165,18 +167,22 @@ public abstract class Weapon {
 	 * 
 	 * @param bodyJoint
 	 * @param originJoint
+	 * @param icon
+	 *            the weapons icon for drops and UI
+	 * @param sprite
+	 *            the weapons sprite for drawing on the character
 	 */
-	Weapon(PivotJoint bodyJoint, PivotJoint originJoint, String iconPath,
-			String spritePath) {
+	Weapon(PivotJoint bodyJoint, PivotJoint originJoint, Texture icon,
+			Texture sprite) {
 		this();
 
 		/* Set the icon for this weapon */
-		this.icon = new Sprite(new Texture(Gdx.files.internal(iconPath)));
+		this.icon = new Sprite(icon);
 		this.icon.setSize(this.icon.getWidth() * Constants.scale,
 				this.icon.getHeight() * Constants.scale);
 
 		/* Set the weapon sprite */
-		this.sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
+		this.sprite = new Sprite(sprite);
 		this.sprite.setSize(this.sprite.getWidth() * Constants.scale,
 				this.sprite.getHeight() * Constants.scale);
 
@@ -184,10 +190,6 @@ public abstract class Weapon {
 		this.bodyJoint = bodyJoint;
 		this.originJoint = originJoint;
 
-	}
-
-	public Magazine getMagazine() {
-		return magazine;
 	}
 
 	/**
@@ -357,7 +359,7 @@ public abstract class Weapon {
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
-	
+
 	public WeaponOrdinal getWeaponOrdinal() {
 		return weaponOrdinal;
 	}
@@ -365,6 +367,11 @@ public abstract class Weapon {
 	/** @return {@link #sprite} */
 	public Sprite getSprite() {
 		return sprite;
+	}
+
+	/** @return {@link #magazine} */
+	public Magazine getMagazine() {
+		return magazine;
 	}
 
 	public Muzzle getMuzzle() {

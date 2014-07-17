@@ -18,6 +18,7 @@ package com.jumpbuttonstudios.zombiegame.effects.death;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.zombie.WalkingZombie;
 import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
@@ -43,39 +44,39 @@ public class ZombieBodyParts extends Array<BodyPart> {
 		/* Add arms */
 
 		if (chance == 1) {
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Bottom.png"));
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Bottom.png"));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_TOP));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_BOTTOM));
 		} else if (chance == 2) {
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Top.png"));
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Top.png"));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_TOP));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_TOP));
 		} else {
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Bottom.png"));
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Bottom.png"));
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Top.png"));
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Arm/Top.png"));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_TOP));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_TOP));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_TOP));
+			add(new BodyPart(zombie, Assets.ZOMBIE_ARM_BOTTOM));
 
 		}
 
 		chance = MathUtils.random(1, 2);
 
 		/* Add head */
-		add(new BodyPart(zombie, "Sprites/Zombies/Regular/Head.png"));
+		add(new BodyPart(zombie, Assets.ZOMBIE_HEAD));
 
 
 		if (zombie instanceof WalkingZombie) {
 			/* Add torso */
 			if (chance == 1) {
 				add(new BodyPart(zombie,
-						"Sprites/Zombies/Regular/Body/Full.png"));
+						Assets.ZOMBIE_BODY_FULL));
 			} else {
-				add(new BodyPart(zombie, "Sprites/Zombies/Regular/Body/Top.png"));
+				add(new BodyPart(zombie, Assets.ZOMBIE_BODY_BOTTOM));
 
 			}
 			/* Add legs */
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Leg.png"));
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Leg.png"));
+			add(new BodyPart(zombie, Assets.ZOMBIE_LEG));
+			add(new BodyPart(zombie, Assets.ZOMBIE_LEG));
 		} else {
-			add(new BodyPart(zombie, "Sprites/Zombies/Regular/Body/Top.png"));
+			add(new BodyPart(zombie, Assets.ZOMBIE_BODY_TOP));
 
 		}
 

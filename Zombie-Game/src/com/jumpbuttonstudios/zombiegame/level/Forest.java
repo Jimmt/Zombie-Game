@@ -1,6 +1,5 @@
 package com.jumpbuttonstudios.zombiegame.level;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.ZombieGame;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 
 /**
@@ -32,19 +33,13 @@ public class Forest extends Box2DObject {
 
 	public Forest(World world) {
 		/* Load sprites */
-		left = new Sprite(new Texture(
-				Gdx.files.internal("Environment/Ground/Left.png")));
-		middle = new Sprite(new Texture(
-				Gdx.files.internal("Environment/Ground/Middle.png")));
-		right = new Sprite(new Texture(
-				Gdx.files.internal("Environment/Ground/Right.png")));
+		left = new Sprite(ZombieGame.assets.get(Assets.GROUND_LEFT, Texture.class));
+		middle = new Sprite(ZombieGame.assets.get(Assets.GROUND_MIDDLE, Texture.class));
+		right = new Sprite(ZombieGame.assets.get(Assets.GROUND_RIGHT, Texture.class));
 
-		backgroundLeft = new Sprite(new Texture(
-				Gdx.files.internal("Environment/BG/Left.png")));
-		backgroundMiddle = new Sprite(new Texture(
-				Gdx.files.internal("Environment/BG/Middle.png")));
-		backgroundRight = new Sprite(new Texture(
-				Gdx.files.internal("Environment/BG/Right.png")));
+		backgroundLeft = new Sprite(ZombieGame.assets.get(Assets.BACKGROUND_LEFT, Texture.class));
+		backgroundMiddle = new Sprite(ZombieGame.assets.get(Assets.BACKGROUND_MIDDLE, Texture.class));
+		backgroundRight = new Sprite(ZombieGame.assets.get(Assets.BACKGROUND_MIDDLE, Texture.class));
 
 		/* Scale sprites */
 		left.setSize(left.getWidth() * Constants.scale, left.getHeight()
@@ -73,7 +68,7 @@ public class Forest extends Box2DObject {
 		groundHeight = 0.5f;
 
 		/* Create the ground */
-		createBody(world, BodyType.StaticBody, new Vector2(16, 00f), false);
+		createBody(world, BodyType.StaticBody, new Vector2(16, 0.5f), false);
 
 		createPolyFixture(groundWidth, groundHeight, 0, 0.50f, 0, false);
 		Filter filter = body.getFixtureList().get(0).getFilterData();

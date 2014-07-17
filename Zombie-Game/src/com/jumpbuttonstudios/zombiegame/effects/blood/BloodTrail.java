@@ -18,6 +18,7 @@ package com.jumpbuttonstudios.zombiegame.effects.blood;
 
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 
 /**
@@ -28,7 +29,7 @@ public class BloodTrail extends Blood {
 
 	public BloodTrail(Character parent) {
 		super(parent, AnimationBuilder.create(1, 1, 1, Constants.scale,
-				Constants.scale, "Effect/Blood/Trail.png", null));
+				Constants.scale, Assets.EFFECT_BLOOD_TRAIL, null));
 		
 		sprite.setPosition(
 				(parent.getX() - sprite.getWidth() / 2), (parent.getY()

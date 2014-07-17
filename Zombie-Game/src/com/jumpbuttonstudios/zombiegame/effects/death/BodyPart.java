@@ -16,7 +16,6 @@
 
 package com.jumpbuttonstudios.zombiegame.effects.death;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,6 +26,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.gibbo.gameutil.time.TimeConversion;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.ZombieGame;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 
@@ -56,12 +56,12 @@ public class BodyPart extends Box2DObject {
 	/** The time this body part was created */
 	double createTime;
 
-	public BodyPart(Character parent, String path) {
+	public BodyPart(Character parent, String asset) {
 		this.parent = parent;
-		sprite = new Sprite(new Texture(Gdx.files.internal(path)));
-		width = sprite.getWidth() * Constants.scale;
-		height = sprite.getHeight() * Constants.scale;
-		sprite.setSize(width, height);
+		this.sprite = new Sprite(ZombieGame.assets.get(asset, Texture.class));
+		width = this.sprite.getWidth() * Constants.scale;
+		height = this.sprite.getHeight() * Constants.scale;
+		this.sprite.setSize(width, height);
 
 		/* Set a random decay time for this body part */
 		decayTime = TimeConversion.secondToNanos(MathUtils.random(5, 10));
@@ -110,8 +110,9 @@ public class BodyPart extends Box2DObject {
 	  */
 	public boolean fade(float delta) {
 		sprite.setAlpha(sprite.getColor().a - 0.1f * delta);
-		if (sprite.getColor().a <= 0)
+		if (sprite.getColor().a <= 0){
 			return true;
+		}
 		return false;
 	}
 

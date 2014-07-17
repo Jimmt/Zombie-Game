@@ -16,7 +16,10 @@
 
 package com.jumpbuttonstudios.zombiegame.weapons;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.gibbo.gameutil.time.TimeConversion;
+import com.jumpbuttonstudios.zombiegame.ZombieGame;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 
 /**
@@ -27,7 +30,7 @@ public class AK74U extends Weapon {
 
 	public AK74U() {
 		super(Pivots.getPivotJoint("shoulder"), Pivots.getPivotJoint("AK74u"),
-				"Guns/AK74u/Icon.png", "Guns/AK74u/WithArm.png");
+				ZombieGame.assets.get(Assets.GUN_AK74U_ICON, Texture.class), ZombieGame.assets.get(Assets.GUN_AK74U_ARM, Texture.class));
 		
 		weaponOrdinal = WeaponOrdinal.SECONDARY;
 
@@ -42,7 +45,7 @@ public class AK74U extends Weapon {
 		shotPref[0] = 0.6f;
 		shotPref[1] = 1f;
 
-		bullet = new Bullet("Guns/AK74u/Bullet.png", this);
+		bullet = new Bullet(ZombieGame.assets.get(Assets.GUN_AK74U_BULLET, Texture.class), this);
 		muzzle = new Muzzle(this, Pivots.getPivotJoint("muzzle"), 0f, 0.90f,
 				2.15f);
 

@@ -65,7 +65,7 @@ public class Wave {
 			 * or the last level
 			 */
 			this.zombieCount = this.prevWave.getZombieCount()
-					+ (MathUtils.random(1, 5) * this.prevWave.getScale());
+					+ (MathUtils.random(2, 5) * this.prevWave.getScale());
 			/*
 			 * Check if the wave level is a multiple of 3, if so lets scale the
 			 * wave
@@ -74,6 +74,10 @@ public class Wave {
 					+ (waveGenerator.getWave() % 3 == 0 ? 1 : 0);
 
 		}
+		
+		/* Output debug info */
+		waveGenerator.getLogger().debug("Wave " + waveGenerator.getWave() + " - ");
+		waveGenerator.getLogger().debug("Total Zombies = " + zombieCount);
 		
 
 	}
@@ -91,7 +95,7 @@ public class Wave {
 	 */
 	public void distributeZombies() {
 		int chance;
-		for (int i = 1; i < zombieCount; i++) {
+		for (int i = 0; i < zombieCount; i++) {
 			/* Generate 1 or 0 */
 			chance = MathUtils.random(0, 1);
 			/*
@@ -101,6 +105,10 @@ public class Wave {
 			spawners[chance]
 					.setZombiesLeft(spawners[chance].getZombiesLeft() + 1);
 		}
+		
+		/* Output debug info about zombie distribution */
+		waveGenerator.getLogger().debug("Left Spawner = " + spawners[0].getZombiesLeft());
+		waveGenerator.getLogger().debug("Right Spawner = " + spawners[1].getZombiesLeft());
 	}
 
 	/** @return the current time in nanoseconds */

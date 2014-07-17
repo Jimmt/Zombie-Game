@@ -62,7 +62,7 @@ public class Level {
 	private Array<Blood> bloodEffects = new Array<Blood>();
 
 	/** All drops present in the level */
-	private Array<Drop> drops = new Array<Drop>();
+	private Array<Drop<?>> drops = new Array<Drop<?>>();
 
 	/** All the defense in the level */
 	private Array<Defense> defenses = new Array<Defense>();
@@ -125,7 +125,7 @@ public class Level {
 		}
 
 		/* Update all the drops in the level */
-		for (Drop drop : drops) {
+		for (Drop<?> drop : drops) {
 			if(!drop.isCreated())
 				drop.create();
 			if (drop.isPickedUp()){
@@ -210,7 +210,7 @@ public class Level {
 	}
 
 	/** @return {@link #drops} */
-	public Array<Drop> getDrops() {
+	public Array<Drop<?>> getDrops() {
 		return drops;
 	}
 

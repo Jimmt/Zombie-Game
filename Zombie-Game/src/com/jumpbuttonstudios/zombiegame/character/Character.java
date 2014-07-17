@@ -24,12 +24,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.ai.state.StateMachine;
 import com.gibbo.gameutil.box2d.Box2DObject;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
+import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.level.Level;
-import com.jumpbuttonstudios.zombiegame.weapons.Magazine;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
 
 /**
@@ -168,9 +167,12 @@ public class Character extends Box2DObject {
 	 *         creating Box2D fixture
 	 */
 	public Vector2 addAnimation(AnimatedBox2DSprite animation, String name) {
+//		animation.setAdjustSize(false);
+//		animation.setKeepSize(true);
+//		animation.setSize(animation.getWidth() * Constants.scale, animation.getWidth() * Constants.scale);
 		this.animations.put(name, animation);
-		return new Vector2(animation.getAnimatedSprite().getWidth(), animation
-				.getAnimatedSprite().getHeight());
+		return new Vector2(animation.getAnimatedSprite().getWidth() * Constants.scale, animation
+				.getAnimatedSprite().getHeight() * Constants.scale);
 	}
 	
 	

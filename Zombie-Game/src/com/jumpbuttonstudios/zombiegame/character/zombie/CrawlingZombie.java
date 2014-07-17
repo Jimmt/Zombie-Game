@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.zombie.WalkingState;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.effects.blood.BloodTrail;
 import com.jumpbuttonstudios.zombiegame.level.Level;
@@ -45,16 +46,16 @@ public class CrawlingZombie extends Zombie {
 		/* Walking animation */
 		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(0.1f, 1, 6,
 				Constants.scale, Constants.scale,
-				"Sprites/Zombies/Regular/Half/Walk.png", null), "walking");
+				Assets.ZOMBIE_HALF_WALK.fileName, null), "walking");
 
 		/* Attack animation */
 		addAnimation(AnimationBuilder.createb2d(0.085f, 1, 4, Constants.scale,
-				Constants.scale, "Sprites/Zombies/Regular/Half/Attack.png",
+				Constants.scale, Assets.ZOMBIE_HALF_ATTACK.fileName,
 				null), "attacking");
 
 		/* Setup the width and height from our animations sprites */
-		width = tmp.x * Constants.scale;
-		height = tmp.y * Constants.scale;
+		width = tmp.x;
+		height = tmp.y;
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(x, y), true);

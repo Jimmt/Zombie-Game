@@ -16,15 +16,17 @@
 
 package com.jumpbuttonstudios.zombiegame.screens;
 
+import net.dermetfan.utils.libgdx.AnnotationAssetManager;
 import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.utils.Logger;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
+import com.jumpbuttonstudios.zombiegame.asset.loaders.AnimationLoader;
 
 /**
  * 
@@ -39,11 +41,14 @@ public class LoadingScreen extends AbstractScreen {
 	AnimatedSprite zombie;
 
 	/** Instance of the assets manager */
-	AssetManager assets = ZombieGame.assets;
+	AnnotationAssetManager assets = ZombieGame.assets;
 
 	public LoadingScreen(ZombieGame zg) {
 		super(zg);
 
+		assets.getLogger().setLevel(Logger.INFO);
+		assets.setLoader(AnimatedSprite.class, new AnimationLoader(
+				new InternalFileHandleResolver()));
 		loadScreenAnimations();
 		load();
 
@@ -70,129 +75,8 @@ public class LoadingScreen extends AbstractScreen {
 	 * sounds and music
 	 */
 	public void load() {
-		/* Load player walk and idle sprites */
-		assets.load("Sprites/Characters/Male/Run/WithoutArms.png",
-				Texture.class);
-		assets.load("Sprites/Characters/Male/Stand/WithArms.png", Texture.class);
-		assets.load("Sprites/Characters/Male/Stand/WithoutArms.png",
-				Texture.class);
-
-		/* Player Roll and jup */
-		assets.load("Sprites/Characters/Male/Roll.png", Texture.class);
-		assets.load("Sprites/Characters/Male/Jump/WithoutArms.png",
-				Texture.class);
-
-		/* Player melee */
-		assets.load("Sprites/Characters/Male/Melee/Heavy.png", Texture.class);
-		assets.load("Sprites/Characters/Male/Melee/Light.png", Texture.class);
-
-		/* Player body parts, from head down */
-		assets.load("Sprites/Characters/Male/BodyParts/Head.png", Texture.class);
-		assets.load("Sprites/Characters/Male/BodyParts/Body.png", Texture.class);
-		assets.load("Sprites/Characters/Male/BodyParts/Leg.png", Texture.class);
-		assets.load("Sprites/Characters/Male/BodyParts/Arms/Back/Bent.png",
-				Texture.class);
-		assets.load("Sprites/Characters/Male/BodyParts/Arms/Back/Straight.png",
-				Texture.class);
-		assets.load("Sprites/Characters/Male/BodyParts/Arms/Front/Bent.png",
-				Texture.class);
-		assets.load(
-				"Sprites/Characters/Male/BodyParts/Arms/Front/Straight.png",
-				Texture.class);
-		assets.load(
-				"Sprites/Characters/Male/BodyParts/Arms/Separated/Bottom.png",
-				Texture.class);
-		assets.load("Sprites/Characters/Male/BodyParts/Arms/Separated/Top.png",
-				Texture.class);
-		
-		/* Load zombies walk and idle sprites */
-		assets.load("Sprites/Zombies/Regular/Still.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Full/Walk.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Half/Walk.png", Texture.class);
-
-		/* Load zombie attack sprites */
-		assets.load("Sprites/Zombies/Regular/Full/Attack.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Half/Attack.png", Texture.class);
-
-		/* Load zombie body parts, from head down */
-		assets.load("Sprites/Zombies/Regular/Head.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Body/Top.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Body/Bottom.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Body/Full.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Arm/Top.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Arm/Bottom.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Leg.png", Texture.class);
-		
-		/* Load M1911 assets */
-		assets.load("Guns/M1911/WithArm.png", Texture.class);
-		assets.load("Guns/M1911/Icon.png", Texture.class);
-		assets.load("Guns/M1911/Bullet.png", Texture.class);
-
-		/* Load AK74U assets */
-		assets.load("Guns/M1911/WithArm.png", Texture.class);
-		assets.load("Guns/M1911/Icon.png", Texture.class);
-		assets.load("Guns/M1911/Bullet.png", Texture.class);
-
-		/* Load Dragunov assets */
-		assets.load("Guns/M1911/WithArm.png", Texture.class);
-		assets.load("Guns/M1911/Icon.png", Texture.class);
-		assets.load("Guns/M1911/Bullet.png", Texture.class);
-		
-		/* Load background */
-		assets.load("Environment/BG/Left.png", Texture.class);
-		assets.load("Environment/BG/Middle.png", Texture.class);
-		assets.load("Environment/BG/Right.png", Texture.class);
-
-		/* Load ground */
-		assets.load("Environment/Ground/Left.png", Texture.class);
-		assets.load("Environment/Ground/Middle.png", Texture.class);
-		assets.load("Environment/Ground/Right.png", Texture.class);
-
-		/* Load defences */
-		assets.load("Environment/Defense/Block/Highlighted.png", Texture.class);
-		assets.load("Environment/Defense/Block/Icon.png", Texture.class);
-		assets.load("Environment/Defense/Door/Highlighted.png", Texture.class);
-		assets.load("Environment/Defense/Door/Icon.png", Texture.class);
-		assets.load("Environment/Defense/Floor/Highlighted.png", Texture.class);
-		assets.load("Environment/Defense/Floor/Icon.png", Texture.class);
-		assets.load("Environment/Defense/Ladder/Highlighted.png", Texture.class);
-		assets.load("Environment/Defense/Ladder/Icon.png", Texture.class);
-		assets.load("Environment/Defense/Wall/Highlighted.png", Texture.class);
-		assets.load("Environment/Defense/Wall/Icon.png", Texture.class);
-		assets.load("Environment/Defense/overlay.png", Texture.class);
-
-		/* Load ammo drop thing */
-		assets.load("Environment/Ammo.png", Texture.class);
-		
-		/* Load blood effects */
-		assets.load("Effect/Blood/Splatter.png", Texture.class);
-		assets.load("Effect/Blood/Spray.png", Texture.class);
-		assets.load("Effect/Blood/Trail.png", Texture.class);
-		assets.load("Effect/Blood/Overlay.png", Texture.class);
-
-		/* Gun fire effect */
-		assets.load("Effect/Fog.png", Texture.class);
-		assets.load("Effect/Gunfire.png", Texture.class);
-		assets.load("Effect/Haze.png", Texture.class);
-		
-		/* Load gun sounds */
-		assets.load("SFX/Pistol.wav", Sound.class);
-		assets.load("SFX/Click2.wav", Sound.class);
-		assets.load("SFX/Reload.wav", Sound.class);
-
-		/* Load player sounds */
-		assets.load("SFX/Running.wav", Sound.class);
-		assets.load("SFX/Landing.wav", Sound.class);
-
-		/* Load zombie sounds */
-		assets.load("SFX/ZombieDeath.wav", Sound.class);
-
-		/* Load other */
-		assets.load("SFX/Pickup.wav", Sound.class);
-
-
+		assets.load(Assets.class);
 	}
-
 
 	/**
 	 * Loads the resources needed to display this loading screen
@@ -200,22 +84,16 @@ public class LoadingScreen extends AbstractScreen {
 	public void loadScreenAnimations() {
 
 		/* Put the assets in the manager */
-		assets.load("Sprites/Characters/Male/Run/WithArms.png", Texture.class);
-		assets.load("Sprites/Zombies/Regular/Full/Walk.png", Texture.class);
-
+		assets.load(Assets.ZOMBIE_FULL_WALK);
+		assets.load(Assets.PLAYER_RUN_ARMS);
 		/* Force the assets to load */
 		assets.finishLoading();
 
 		/* Create a player animation */
-		player = AnimationBuilder.create(0.06f, 2, 6, Constants.scale,
-				Constants.scale, assets.get(
-						"Sprites/Characters/Male/Run/WithArms.png",
-						Texture.class), new int[] { 11 });
+		player = AnimationBuilder.create(0.06f, 2, 6, Constants.scale, Constants.scale, Assets.PLAYER_RUN_ARMS.fileName, new int[]{11});
 		/* Create a zombie animation */
-		zombie = AnimationBuilder.create(0.08f, 1, 7, Constants.scale,
-				Constants.scale,
-				assets.get("Sprites/Zombies/Regular/Full/Walk.png",
-						Texture.class), null);
+		zombie = AnimationBuilder.create(0.06f, 1, 7, Constants.scale, Constants.scale, Assets.ZOMBIE_FULL_WALK.fileName, null);
+		/* Create a zombie animation */
 
 		player.getAnimation().setPlayMode(Animation.LOOP);
 		player.play();
@@ -227,5 +105,7 @@ public class LoadingScreen extends AbstractScreen {
 		zombie.setPosition((0 - zombie.getWidth() / 2) - 1,
 				0 - zombie.getHeight() / 2);
 	}
+	
+	
 
 }

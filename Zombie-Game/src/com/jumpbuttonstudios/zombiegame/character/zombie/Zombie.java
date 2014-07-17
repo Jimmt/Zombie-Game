@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
@@ -52,7 +53,7 @@ public abstract class Zombie extends Character {
 
 	/** Blood splatter */
 	Effect bloodSplatter = new Effect(AnimationBuilder.create(0.040f, 1, 5,
-			Constants.scale, Constants.scale, "Effect/Blood/Spray.png", null));
+			Constants.scale, Constants.scale, Assets.EFFECT_BLOOD_SPLATTER, null));
 
 	/** The sound made when a zombie dies */
 	static Sound deathSound = Gdx.audio.newSound(Gdx.files
@@ -209,8 +210,9 @@ public abstract class Zombie extends Character {
 	public void grab(Player target) {
 		/* Lower the players speed */
 		if (target.getMaxSpeed() > 0) {
-			target.setMaxSpeed(target.getMaxSpeed() - (1f * strength));
+			target.setMaxSpeed(target.getMaxSpeed() - (2f * strength));
 			grabbed = true;
+			System.out.println(target.getMaxSpeed());
 		}
 	}
 
@@ -222,7 +224,8 @@ public abstract class Zombie extends Character {
 	 */
 	public void release(Player target) {
 		/* Restore the players speed */
-		target.setMaxSpeed(target.getMaxSpeed() + (1f * strength));
+		target.setMaxSpeed(target.getMaxSpeed() + (2f * strength));
+		System.out.println(target.getMaxSpeed());
 		grabbed = false;
 	}
 

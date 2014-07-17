@@ -52,7 +52,7 @@ public class GameContactListener implements ContactListener {
 			Zombie zombie = (Zombie) B;
 
 			player.modHealth(-1f);
-			
+
 			if (!zombie.isGrabbed())
 				zombie.grab(player);
 
@@ -109,14 +109,16 @@ public class GameContactListener implements ContactListener {
 
 		} else if (A instanceof Player && B instanceof Drop) {
 			Player player = (Player) A;
-			Drop drop = (Drop) B;
-			
+			@SuppressWarnings("unchecked")
+			Drop<Player> drop = (Drop<Player>) B;
+
 			drop.pickup(player);
 
 		} else if (A instanceof Drop && B instanceof Player) {
-			Drop drop = (Drop) A;
+			@SuppressWarnings("unchecked")
+			Drop<Player> drop = (Drop<Player>) A;
 			Player player = (Player) B;
-			
+
 			drop.pickup(player);
 
 		}
@@ -138,11 +140,17 @@ public class GameContactListener implements ContactListener {
 					Zombie zombie = (Zombie) A;
 					Player player = (Player) B;
 
+					if(zombie.isGrabbed())
+						zombie.release(player);
+					
 					zombie.setTargetInRange(false);
 
 				} else if (B instanceof Zombie && A instanceof Player) {
 					Player player = (Player) A;
 					Zombie zombie = (Zombie) B;
+					
+					if(zombie.isGrabbed())
+						zombie.release(player);
 
 					zombie.setTargetInRange(false);
 
@@ -164,8 +172,24 @@ public class GameContactListener implements ContactListener {
 			if (A == null || B == null) {
 				return;
 			} else {
+				if (A instanceof Player && B instanceof Drop) {
 
+					contact.setEnabled(false);
+
+				} else if (A instanceof Drop && B instanceof Player) {
+
+					contact.setEnabled(false);
+				} else if (A instanceof Zombie && B instanceof Player) {
+
+					contact.setEnabled(false);
+
+				} else if (B instanceof Zombie && A instanceof Player) {
+
+					contact.setEnabled(false);
+
+				}
 			}
+
 		}
 
 	}

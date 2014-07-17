@@ -16,7 +16,6 @@
 
 package com.jumpbuttonstudios.zombiegame.weapons;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -61,10 +60,10 @@ public class Bullet extends Box2DObject {
 	/** The bullets sprite */
 	private Sprite sprite;
 
-	public Bullet(String spritePath, Weapon weapon) {
+	public Bullet(Texture sprite, Weapon weapon) {
 		this.parent = weapon;
-		sprite = new Sprite(new Texture(Gdx.files.internal(spritePath)));
-		sprite.setSize(sprite.getWidth() * Constants.scale, sprite.getHeight()
+		this.sprite = new Sprite(sprite);
+		this.sprite.setSize(this.sprite.getWidth() * Constants.scale, this.sprite.getHeight()
 				* Constants.scale);
 
 	}

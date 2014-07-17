@@ -15,6 +15,7 @@ import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.player.IdlePlayerState;
 import com.jumpbuttonstudios.zombiegame.ai.state.player.JumpingState;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
@@ -66,20 +67,25 @@ public class Player extends Character implements InputProcessor {
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
 		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1,
-				Constants.scale, Constants.scale, "still.png", null), "idle");
+				Constants.scale, Constants.scale,
+				Assets.PLAYER_IDLE.fileName, null), "idle");
+		
+		
 		/* Running animation */
 		addAnimation(AnimationBuilder.createb2d(0.06f, 2, 6, Constants.scale,
-				Constants.scale, "Sprites/Characters/Male/Run/WithoutArms.png",
+				Constants.scale,
+				Assets.PLAYER_RUN_NOARMS.fileName,
 				new int[] { 11 }), "running");
+
 		/* Jump animation */
 		addAnimation(AnimationBuilder.createb2d(1, 1, 2, Constants.scale,
 				Constants.scale,
-				"Sprites/Characters/Male/Jump/WithoutArms.png", null),
+				Assets.PLAYER_JUMP_NOARMS.fileName, null),
 				"jumping");
 
 		/* Setup the width and height from our animations sprites */
-		width = tmp.x * Constants.scale;
-		height = tmp.y * Constants.scale;
+		width = tmp.x;
+		height = tmp.y;
 
 		/* Setup Box2D stuff */
 		createBody(world, BodyType.DynamicBody, new Vector2(0, 2), true);
@@ -130,8 +136,7 @@ public class Player extends Character implements InputProcessor {
 	@Override
 	public void update(float delta) {
 		super.update(delta);
-		
-		System.out.println(getSecondaryMagazines().size);
+
 
 		if (!inMenu) {
 			/* Check if the left mouse button was pressed */
@@ -197,12 +202,12 @@ public class Player extends Character implements InputProcessor {
 			arm.changeWeapon(secondaryWeapon);
 
 	}
-	
+
 	/** @return {@link #primaryWeapon} */
 	public Weapon getPrimaryWeapon() {
 		return primaryWeapon;
 	}
-	
+
 	/** @return {@link #secondaryWeapon} */
 	public Weapon getSecondaryWeapon() {
 		return secondaryWeapon;
