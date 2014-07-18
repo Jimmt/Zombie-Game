@@ -2,12 +2,15 @@ package com.jumpbuttonstudios.zombiegame.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
+import com.jumpbuttonstudios.zombiegame.asset.Assets;
 
 public class MenuScreen extends AbstractScreen {
 
@@ -23,11 +26,13 @@ public class MenuScreen extends AbstractScreen {
 		table.setFillParent(true);
 		table.debug();
 
-		table.add("Game");
+		table.add("Zombie Game");
 
 		table.row();
 		
-		
+		Image background = new Image(new Texture(Gdx.files.internal(Assets.MENU_BACKGROUND)));
+		background.setFillParent(true);
+		stage.addActor(background);
 		
 		
 		

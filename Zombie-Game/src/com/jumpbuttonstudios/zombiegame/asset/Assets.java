@@ -136,6 +136,10 @@ public class Assets {
 			DEFENSE_LADDER_ICON = "Environment/Defense/Ladder/Icon.png",
 			DEFENSE_WALL_HIGHLIGHTED = "Environment/Defense/Wall/Highlighted.png",
 			DEFENSE_WALL_ICON = "Environment/Defense/Wall/Icon.png";
+	
+	/* Menu screen background */
+	@Asset(type = Texture.class)
+	public static final String MENU_BACKGROUND = "UI/MenuBG.png";
 
 	/* Ammo drop */
 	@Asset(type = Texture.class)
