@@ -21,6 +21,7 @@ import net.dermetfan.utils.libgdx.graphics.AnimatedSprite;
 
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Logger;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
@@ -68,6 +69,8 @@ public class LoadingScreen extends AbstractScreen {
 		player.draw(batch);
 		zombie.draw(batch);
 		batch.end();
+		
+		stage.draw();
 	}
 
 	/**
@@ -104,6 +107,12 @@ public class LoadingScreen extends AbstractScreen {
 		zombie.play();
 		zombie.setPosition((0 - zombie.getWidth() / 2) - 1,
 				0 - zombie.getHeight() / 2);
+		
+		Label label = new Label("LOADING", getSkin());
+//		label.setX(Constants.WIDTH - label.getWidth());
+		label.setX(Constants.WIDTH / 2 - label.getWidth() / 2);
+		label.setY(Constants.HEIGHT / 2 - Constants.HEIGHT / 5);
+		stage.addActor(label);
 	}
 	
 	

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +16,7 @@ import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ai.state.player.IdlePlayerState;
 import com.jumpbuttonstudios.zombiegame.ai.state.player.JumpingState;
+import com.jumpbuttonstudios.zombiegame.ai.state.player.MeleeState;
 import com.jumpbuttonstudios.zombiegame.asset.Assets;
 import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character;
@@ -66,22 +68,21 @@ public class Player extends Character implements InputProcessor {
 
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
-		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1,
-				Constants.scale, Constants.scale,
-				Assets.PLAYER_IDLE.fileName, null), "idle");
-		
-		
+		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1, Constants.scale,
+				Constants.scale, Assets.PLAYER_IDLE.fileName, null), "idle");
+
 		/* Running animation */
-		addAnimation(AnimationBuilder.createb2d(0.06f, 2, 6, Constants.scale,
-				Constants.scale,
-				Assets.PLAYER_RUN_NOARMS.fileName,
-				new int[] { 11 }), "running");
+		addAnimation(AnimationBuilder.createb2d(0.06f, 2, 6, Constants.scale, Constants.scale,
+				Assets.PLAYER_RUN_NOARMS.fileName, new int[] { 11 }), "running");
 
 		/* Jump animation */
-		addAnimation(AnimationBuilder.createb2d(1, 1, 2, Constants.scale,
-				Constants.scale,
-				Assets.PLAYER_JUMP_NOARMS.fileName, null),
-				"jumping");
+		addAnimation(AnimationBuilder.createb2d(1, 1, 2, Constants.scale, Constants.scale,
+				Assets.PLAYER_JUMP_NOARMS.fileName, null), "jumping");
+
+		/* Melee animation */
+		addAnimation(AnimationBuilder.createb2d(0.1f, 1, 5, Constants.scale, Constants.scale,
+				Assets.PLAYER_MELEE_HEAVY.fileName, null), "melee heavy");
+		
 
 		/* Setup the width and height from our animations sprites */
 		width = tmp.x;
@@ -95,8 +96,7 @@ public class Player extends Character implements InputProcessor {
 
 		Filter filter = body.getFixtureList().get(0).getFilterData();
 		filter.categoryBits = (short) CollisionFilters.PLAYER;
-		filter.maskBits = (short) (CollisionFilters.GROUND
-				| CollisionFilters.ZOMBIE | CollisionFilters.DROP);
+		filter.maskBits = (short) (CollisionFilters.GROUND | CollisionFilters.ZOMBIE | CollisionFilters.DROP);
 		body.getFixtureList().get(0).setFilterData(filter);
 
 		/* Character starts facing right */
@@ -137,10 +137,9 @@ public class Player extends Character implements InputProcessor {
 	public void update(float delta) {
 		super.update(delta);
 
-
 		if (!inMenu) {
 			/* Check if the left mouse button was pressed */
-			if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+			if (Gdx.input.isButtonPressed(Buttons.LEFT) && !getCurrentAnimation().equals(getAnimation("melee heavy"))) {
 				if (arm.getWeapon() != null) {
 					/* Fire the weapon if it is not null */
 					arm.getWeapon().fire(arm.getDirection());
@@ -151,6 +150,11 @@ public class Player extends Character implements InputProcessor {
 			/* Check if space is pressed, if so we want to enter a jumping state */
 			if (Gdx.input.isKeyPressed(Keys.SPACE) && isGrounded())
 				getStateMachine().changeState(JumpingState.instance());
+			
+			if(Gdx.input.isKeyPressed(Keys.F)){
+				getStateMachine().changeState(MeleeState.instance());
+				
+			}
 		}
 		/* Update the arm */
 		arm.update(delta);
@@ -166,13 +170,11 @@ public class Player extends Character implements InputProcessor {
 		 */
 		if (currentAnimation.equals(getAnimation("running"))) {
 			if (getBody().getLinearVelocity().x < 0) {
-				currentAnimation.draw(batch, getBody().getPosition().x - 0.49f,
-						getBody().getPosition().y, width, height,
-						body.getAngle() * MathUtils.radDeg);
+				currentAnimation.draw(batch, getBody().getPosition().x - 0.49f, getBody()
+						.getPosition().y, width, height, body.getAngle() * MathUtils.radDeg);
 			} else {
-				currentAnimation.draw(batch, getBody().getPosition().x - 0.39f,
-						getBody().getPosition().y, width, height,
-						body.getAngle() * MathUtils.radDeg);
+				currentAnimation.draw(batch, getBody().getPosition().x - 0.39f, getBody()
+						.getPosition().y, width, height, body.getAngle() * MathUtils.radDeg);
 
 			}
 
@@ -241,8 +243,7 @@ public class Player extends Character implements InputProcessor {
 			 * Change to secondary if 2 is pressed, only if a gun exists in
 			 * there
 			 */
-			if (secondaryWeapon != null
-					&& !getArm().getWeapon().equals(secondaryWeapon))
+			if (secondaryWeapon != null && !getArm().getWeapon().equals(secondaryWeapon))
 				getArm().changeWeapon(secondaryWeapon);
 
 			break;

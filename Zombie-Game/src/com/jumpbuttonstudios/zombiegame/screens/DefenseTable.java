@@ -59,7 +59,7 @@ public class DefenseTable extends Table {
 		setFillParent(true);
 		setVisible(false);
 
-		add("Defenses");
+		add("Defenses").colspan(paths.length);
 		row();
 
 		// add the released/pressed image for each ImageButton

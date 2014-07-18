@@ -32,7 +32,6 @@ public class RunningState implements State<Player> {
 
 	private static RunningState instance = new RunningState();
 
-
 	@Override
 	public void enter(Player player) {
 
@@ -42,7 +41,7 @@ public class RunningState implements State<Player> {
 		player.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP);
 		/* Play the animation */
 		player.getCurrentAnimation().play();
-		
+
 	}
 
 	@Override
@@ -52,8 +51,7 @@ public class RunningState implements State<Player> {
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 
 			if (player.getFacing() == Facing.RIGHT)
-				player.getCurrentAnimation().getAnimation()
-						.setPlayMode(Animation.LOOP_REVERSED);
+				player.getCurrentAnimation().getAnimation().setPlayMode(Animation.LOOP_REVERSED);
 
 			/* Keep below max speed */
 			if (Math.abs(body.getLinearVelocity().x) <= player.getMaxSpeed()) {
@@ -67,22 +65,23 @@ public class RunningState implements State<Player> {
 				body.applyForceToCenter(player.getAcceleration(), 0, true);
 			}
 
+		} else if (Gdx.input.isKeyPressed(Keys.F)) {
+			player.getStateMachine().changeState(MeleeState.instance());
 		} else if (Gdx.input.isKeyPressed(Keys.SPACE) && player.isGrounded()) {
+
 			player.getStateMachine().changeState(JumpingState.instance());
 		} else if (player.isGrounded()) {
 			/* Go idle if no keys pressed */
 			player.getStateMachine().changeState(IdlePlayerState.instance());
 		}
 
-		
 	}
 
 	@Override
 	public void exit(Player player) {
 		player.getCurrentAnimation().stop();
-		
+
 	}
-	
 
 	public static RunningState instance() {
 		return instance;
