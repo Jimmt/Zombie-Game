@@ -32,7 +32,7 @@ public class MenuScreen extends AbstractScreen {
 		
 		Image background = new Image(new Texture(Gdx.files.internal(Assets.MENU_BACKGROUND)));
 		background.setFillParent(true);
-		stage.addActor(background);
+		table.addActor(background);
 		
 		
 		
@@ -50,6 +50,7 @@ public class MenuScreen extends AbstractScreen {
 		table.row();
 		table.add(optionsButton).fill().prefWidth(Constants.WIDTH / 3)
 				.prefHeight(Constants.HEIGHT / 10);
+		
 	}
 
 }
