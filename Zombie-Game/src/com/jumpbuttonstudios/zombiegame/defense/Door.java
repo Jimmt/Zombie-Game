@@ -37,8 +37,10 @@ public class Door extends Defense {
 		if (opened) {
 			getSprite().set(open);
 			getSprite().setSize(openWidth, openHeight);
+			getBody().setActive(false);
 		} else {
 			getSprite().set(closed);
+			getBody().setActive(true);
 		}
 	}
 	

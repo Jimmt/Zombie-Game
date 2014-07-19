@@ -16,6 +16,8 @@
 
 package com.jumpbuttonstudios.zombiegame.level;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.box2d.Box2DFactory;
@@ -75,6 +77,9 @@ public class Level {
 	
 	/** Drop spawner */
 	private DropSpawner dropSpawner;
+	
+	private boolean defensePlacing;
+	
 
 	public Level() {
 
@@ -101,6 +106,9 @@ public class Level {
 	 */
 	public void update(float delta) {
 		getWorld().step(1f / 60f, 5, 8);
+		
+		
+		
 
 		/* Update wave generator to create waves */
 		waveGenerator.update();
@@ -175,6 +183,19 @@ public class Level {
 		;
 
 	}
+	
+	public void enterDefensePlacing(){
+		defensePlacing = true;
+	}
+	
+	public void exitDefensePlacing(){
+		defensePlacing = false;
+		waveGenerator.nextWave();
+	}
+	public boolean getDefensePlacing(){
+		return defensePlacing;
+	}
+	
 	
 	/** @return {@link #dropSpawner} */
 	public DropSpawner getDropSpawner() {

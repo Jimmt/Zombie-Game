@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -55,12 +56,15 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 	/** Player's arm, needed for weapon UI */
 	private Arm arm;
 
+	/** Popup for confirming defense building */
+	private ConfirmDefensePopup defensePopup = new ConfirmDefensePopup("", getSkin(), level);
+
 	/** Heads up display table, contains health UI and weapon UI */
-	private HudTable hudTable = new HudTable(getSkin());
+	private HudTable hudTable = new HudTable(getSkin(), defensePopup);
 
 	/** Parent table, in case anything else needs to be added */
 	private Table parentTable = new Table(getSkin());
-
+	
 	/** For comparing defenses x/y for rendering order in array */
 	private DefenseComparator defenseComp;
 
@@ -69,6 +73,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	/** Door mouse is overlapping */
 	private Door overlapDoor;
+
 
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
@@ -79,11 +84,14 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		multiplexer.addProcessor(uiStage);
 		multiplexer.addProcessor(this);
 		multiplexer.addProcessor(level.getPlayer());
+		multiplexer.addProcessor(stage);
 
 		hudTable.debug();
 
 		uiStage.addActor(defenseTable);
-
+		defensePopup.show(uiStage);
+		defensePopup.hide();
+		
 		parentTable.setFillParent(true);
 		parentTable.add(hudTable).expand().fill();
 
@@ -120,6 +128,15 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		if (defensePlacer.isPlacing()) {
 			defenseTable.setVisible(false);
 		}
+		
+		if(level.getDefensePlacing()){
+			hudTable.setDoneButtonVisibility(true);
+			level.getPlayer().setInMenu(true);
+			Gdx.input.setInputProcessor(multiplexer);
+			System.out.println(Gdx.input.getInputProcessor());
+			} else {
+			level.getPlayer().setInMenu(false);
+		}
 
 		for (int i = 0; i < hudTable.getHearts().length - level.getPlayer().getHealth(); i++) {
 			hudTable.getHearts()[hudTable.getHearts().length - 1 - i].setEmpty(true);
@@ -128,7 +145,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		if (defenseTable.isVisible()) {
 			level.getPlayer().setInMenu(true);
 		} else if (!defensePlacer.isPlacing() && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			level.getPlayer().setInMenu(false);
+			
 		}
 
 		/* Keep camera inside the level bounds */
@@ -215,7 +232,6 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		stage.draw();
 		uiStage.draw();
-
 	}
 
 	@Override
@@ -225,7 +241,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Keys.E) {
+		if (keycode == Keys.E && level.getDefensePlacing()) {
 			defenseTable.setVisible(!defenseTable.isVisible());
 		}
 		return false;

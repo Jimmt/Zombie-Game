@@ -91,6 +91,8 @@ public class Assets {
 			ZOMBIE_ARM_TOP = "Sprites/Zombies/Regular/Arm/Top.png",
 			ZOMBIE_ARM_BOTTOM = "Sprites/Zombies/Regular/Arm/Bottom.png",
 			ZOMBIE_LEG = "Sprites/Zombies/Regular/Leg.png";
+	
+	
 
 	/* Weapons */
 	/* M1911 */

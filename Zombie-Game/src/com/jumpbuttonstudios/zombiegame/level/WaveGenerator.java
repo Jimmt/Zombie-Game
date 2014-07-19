@@ -16,6 +16,8 @@
 
 package com.jumpbuttonstudios.zombiegame.level;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.gibbo.gameutil.time.TimeConversion;
@@ -31,9 +33,9 @@ public class WaveGenerator {
 	/** Logger for wave generator */
 	private Logger logger = new Logger("Wave Generator");
 
-	/** For testing , displays debug info*/
+	/** For testing , displays debug info */
 	public static boolean DEBUG_MODE = true;
-	
+
 	/** For testing, turns spawning on and off */
 	public static boolean SPAWNING_ACTIVE = true;
 
@@ -69,6 +71,9 @@ public class WaveGenerator {
 	 * iteration
 	 */
 	public void update() {
+		if (Gdx.input.isKeyPressed(Keys.Q) && level.getDefensePlacing()) {
+			level.exitDefensePlacing();
+		}
 		if (SPAWNING_ACTIVE)
 			/* Check if the wave has finished */
 			if (!waveFinished()) {
@@ -77,7 +82,8 @@ public class WaveGenerator {
 			} else {
 				/* Check if the rest period is over */
 				if (TimeUtils.nanoTime() - finishTime > freq) {
-					nextWave();
+					level.enterDefensePlacing();
+
 				}
 			}
 	}
@@ -100,8 +106,7 @@ public class WaveGenerator {
 	 */
 	public boolean waveFinished() {
 		if (currWave.spawners[0].getZombiesLeft() == 0
-				&& currWave.spawners[1].getZombiesLeft() == 0
-				&& level.getCharacters().size == 1) {
+				&& currWave.spawners[1].getZombiesLeft() == 0 && level.getCharacters().size == 1) {
 			if (!currWave.isFinished)
 				finishTime = currWave.getFinishedTime();
 			currWave.isFinished = true;
