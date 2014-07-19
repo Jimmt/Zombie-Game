@@ -64,7 +64,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	/** Parent table, in case anything else needs to be added */
 	private Table parentTable = new Table(getSkin());
-	
+
 	/** For comparing defenses x/y for rendering order in array */
 	private DefenseComparator defenseComp;
 
@@ -73,7 +73,6 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	/** Door mouse is overlapping */
 	private Door overlapDoor;
-
 
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
@@ -91,7 +90,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		uiStage.addActor(defenseTable);
 		defensePopup.show(uiStage);
 		defensePopup.hide();
-		
+
 		parentTable.setFillParent(true);
 		parentTable.add(hudTable).expand().fill();
 
@@ -128,13 +127,14 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		if (defensePlacer.isPlacing()) {
 			defenseTable.setVisible(false);
 		}
-		
-		if(level.getDefensePlacing()){
+
+		/* Put player in menu so player can't fire gun in defense placement time, also show the "done" button */
+		if (level.getDefensePlacing()) {
 			hudTable.setDoneButtonVisibility(true);
 			level.getPlayer().setInMenu(true);
 			Gdx.input.setInputProcessor(multiplexer);
-			System.out.println(Gdx.input.getInputProcessor());
-			} else {
+
+		} else {
 			level.getPlayer().setInMenu(false);
 		}
 
@@ -145,7 +145,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		if (defenseTable.isVisible()) {
 			level.getPlayer().setInMenu(true);
 		} else if (!defensePlacer.isPlacing() && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			
+
 		}
 
 		/* Keep camera inside the level bounds */
@@ -241,6 +241,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		
+		/* If E is pressed and if it is defense placing time*/
 		if (keycode == Keys.E && level.getDefensePlacing()) {
 			defenseTable.setVisible(!defenseTable.isVisible());
 		}

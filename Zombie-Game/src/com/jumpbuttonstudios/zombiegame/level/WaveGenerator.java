@@ -82,6 +82,8 @@ public class WaveGenerator {
 			} else {
 				/* Check if the rest period is over */
 				if (TimeUtils.nanoTime() - finishTime > freq) {
+					
+					/* Enter defense placement state */
 					level.enterDefensePlacing();
 
 				}

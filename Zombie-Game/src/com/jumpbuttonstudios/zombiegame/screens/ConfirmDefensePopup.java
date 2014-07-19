@@ -39,6 +39,8 @@ public class ConfirmDefensePopup extends Dialog {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				level.exitDefensePlacing();	
+				
+				/* Hide the "done" button, the check occurs in HudTable */
 				hideButton = true;
 			}
 		});
@@ -55,6 +57,8 @@ public class ConfirmDefensePopup extends Dialog {
 		no.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				/* Show the "done" button (check occurs in HudTable) */
+				
 				hideButton = false;
 			}
 		});
@@ -63,6 +67,7 @@ public class ConfirmDefensePopup extends Dialog {
 
 	}
 	
+	/* Whether to hide HudTable's Done button or not */
 	public boolean getHideButton(){
 		return hideButton;
 	}
