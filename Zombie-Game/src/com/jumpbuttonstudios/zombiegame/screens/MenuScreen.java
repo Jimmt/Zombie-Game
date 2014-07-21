@@ -22,7 +22,6 @@ public class MenuScreen extends AbstractScreen {
 	public void show() {
 		super.show();
 		Table table = super.getTable();
-		table.setTransform(true);
 		table.setFillParent(true);
 		table.debug();
 
@@ -47,6 +46,14 @@ public class MenuScreen extends AbstractScreen {
 		table.add(startButton).fill().prefWidth(Constants.WIDTH / 3)
 				.prefHeight(Constants.HEIGHT / 10);
 		TextButton optionsButton = new TextButton("Options", getSkin());
+		optionsButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y){
+
+				zg.setScreen(new OptionsScreen(zg));
+			}
+			
+		});
 		table.row();
 		table.add(optionsButton).fill().prefWidth(Constants.WIDTH / 3)
 				.prefHeight(Constants.HEIGHT / 10);

@@ -124,11 +124,18 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		arm = level.getPlayer().getArm();
 		hudTable.setWeapon(arm);
 
+		if (level.getPlayer().getHealth() == 0) {
+			zg.setScreen(new GameOverScreen(zg));
+		}
+
 		if (defensePlacer.isPlacing()) {
 			defenseTable.setVisible(false);
 		}
 
-		/* Put player in menu so player can't fire gun in defense placement time, also show the "done" button */
+		/*
+		 * Put player in menu so player can't fire gun in defense placement
+		 * time, also show the "done" button
+		 */
 		if (level.getDefensePlacing()) {
 			hudTable.setDoneButtonVisibility(true);
 			level.getPlayer().setInMenu(true);
@@ -241,8 +248,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		
-		/* If E is pressed and if it is defense placing time*/
+
+		/* If E is pressed and if it is defense placing time */
 		if (keycode == Keys.E && level.getDefensePlacing()) {
 			defenseTable.setVisible(!defenseTable.isVisible());
 		}

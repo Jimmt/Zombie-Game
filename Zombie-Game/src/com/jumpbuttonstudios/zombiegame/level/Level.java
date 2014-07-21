@@ -116,6 +116,8 @@ public class Level {
 		/* Update the Box2D factory so things get deleted */
 		factory.update();
 
+		
+		
 		/*
 		 * Update all the defined pivots to keep them updated in world
 		 * coordinats
