@@ -20,6 +20,7 @@ import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
+import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
 import com.jumpbuttonstudios.zombiegame.defense.Defense;
 import com.jumpbuttonstudios.zombiegame.defense.DefenseComparator;
 import com.jumpbuttonstudios.zombiegame.defense.DefensePlacer;
@@ -70,9 +71,14 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 	/** Vector3 for projecting doors */
 	private Vector3 temp;
+	
+	/** temporary vector */
+	private Vector2 temp2;
 
 	/** Door mouse is overlapping */
 	private Door overlapDoor;
+
+	
 
 	public LevelScreen(ZombieGame zg) {
 		super(zg);
@@ -99,6 +105,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		temp = new Vector3();
 
 		level.getPlayer().setHealth(3f);
+		
+		temp2 = new Vector2();
 
 	}
 
@@ -120,6 +128,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		level.update(delta);
 
 		defensePlacer.update(delta);
+		
+		hudTable.setScore(level.getScore());
 
 		arm = level.getPlayer().getArm();
 		hudTable.setWeapon(arm);
@@ -157,7 +167,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		/* Keep camera inside the level bounds */
 		if (level.getPlayer().getX() > -5 && level.getPlayer().getX() < 17) {
-			b2dCam.follow(delta, new Vector2(level.getPlayer().getX()
+			b2dCam.follow(delta, temp2.set(level.getPlayer().getX()
 					+ level.getPlayer().getWidth() / 2, 2), 0, 2.5f);
 		}
 
@@ -190,8 +200,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 			bullet.draw(batch);
 		}
 
-		for (Character player : level.getCharacters()) {
-			player.draw(batch);
+		for (Character character : level.getCharacters()) {
+			character.draw(batch);
 		}
 
 		for (Effect effect : level.getEffects()) {
@@ -240,6 +250,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		stage.draw();
 		uiStage.draw();
 	}
+	
+
 
 	@Override
 	public void resize(int width, int height) {

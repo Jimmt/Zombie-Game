@@ -19,8 +19,9 @@ public class HudTable extends Table {
 	private Image weapon, tmp, bullet;
 	private Arm arm;
 	private Label bulletCount;
-	private int max;
+	private int max, score;
 	private TextButton done;
+	private Label scoreLabel;
 	private ConfirmDefensePopup defensePopup;
 
 	public HudTable(Skin skin, final ConfirmDefensePopup dp) {
@@ -49,6 +50,8 @@ public class HudTable extends Table {
 		 * that's not occupied by hearts, then align weapon sprite to
 		 * the right of the cell
 		 */
+		scoreLabel = new Label(String.valueOf(score), skin);
+		add(scoreLabel).expandX();
 
 		add(weapon).expandX().right();
 		add(bullet);
@@ -58,7 +61,7 @@ public class HudTable extends Table {
 
 		/** Spacing hack, spans 4 columns */
 		add("").colspan(4).expand().fill();
-
+		
 		row();
 		done = new TextButton("Done", skin);
 		add(done).colspan(8);
@@ -78,11 +81,17 @@ public class HudTable extends Table {
 
 	@Override
 	public void act(float delta) {
+		scoreLabel.setText(String.valueOf(score));
+		
 		if (defensePopup.getHideButton()) {
 			done.setVisible(false);
 		} else {
 			done.setVisible(true);
 		}
+	}
+	
+	public void setScore(int score){
+		this.score = score;
 	}
 
 	public void setWeapon(Arm arm) {

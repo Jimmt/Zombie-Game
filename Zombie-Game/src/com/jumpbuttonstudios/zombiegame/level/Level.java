@@ -78,7 +78,11 @@ public class Level {
 	/** Drop spawner */
 	private DropSpawner dropSpawner;
 	
+	/** Whether in defense placing time or not*/
 	private boolean defensePlacing;
+	
+	/** Player score*/
+	private int score;
 	
 
 	public Level() {
@@ -196,6 +200,14 @@ public class Level {
 	}
 	public boolean getDefensePlacing(){
 		return defensePlacing;
+	}
+	
+	public void setScore(int score){
+		this.score = score;
+	}
+	
+	public int getScore(){
+		return score;
 	}
 	
 	
