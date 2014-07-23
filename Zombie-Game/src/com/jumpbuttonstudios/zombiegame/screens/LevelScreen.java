@@ -175,7 +175,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 			blood.draw(batch);
 		}
 
-		for (Drop drop : level.getDrops()) {
+		for (Drop<?> drop : level.getDrops()) {
 			drop.draw(batch);
 		}
 
