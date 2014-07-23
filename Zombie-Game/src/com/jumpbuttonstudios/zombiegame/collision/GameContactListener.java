@@ -70,6 +70,7 @@ public class GameContactListener implements ContactListener {
 			} else {
 				zombie.hurt(bullet, false);
 			}
+			
 
 			level.factory.deleteBody(bullet.getBody());
 			level.bullets.removeValue(bullet, true);
@@ -77,6 +78,7 @@ public class GameContactListener implements ContactListener {
 			level.getBloodEffects().add(new BloodPuddle(zombie));
 
 			if (zombie.isDead()) {
+				level.setScore(level.getScore() + 1);
 				level.getDeathEffects().add(
 						new DeathEffect(zombie, new ZombieBodyParts(zombie)));
 				level.getCharacters().removeValue(zombie, true);

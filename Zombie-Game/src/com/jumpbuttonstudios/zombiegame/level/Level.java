@@ -78,7 +78,11 @@ public class Level {
 	/** Drop spawner */
 	private DropSpawner dropSpawner;
 	
+	/** Whether in defense placing time or not*/
 	private boolean defensePlacing;
+	
+	/** Player score*/
+	private int score;
 	
 
 	public Level() {
@@ -116,6 +120,8 @@ public class Level {
 		/* Update the Box2D factory so things get deleted */
 		factory.update();
 
+		
+		
 		/*
 		 * Update all the defined pivots to keep them updated in world
 		 * coordinats
@@ -194,6 +200,14 @@ public class Level {
 	}
 	public boolean getDefensePlacing(){
 		return defensePlacing;
+	}
+	
+	public void setScore(int score){
+		this.score = score;
+	}
+	
+	public int getScore(){
+		return score;
 	}
 	
 	

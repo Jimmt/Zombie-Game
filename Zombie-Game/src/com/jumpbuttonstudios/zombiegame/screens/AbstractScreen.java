@@ -54,8 +54,7 @@ public abstract class AbstractScreen implements Screen {
 		sr = new ShapeRenderer();
 
 		logger = new FPSLogger();
-		
-		getSkin().getFont("default-font").setColor(1, 1, 1, 1.0f);
+
 		
 
 	}
