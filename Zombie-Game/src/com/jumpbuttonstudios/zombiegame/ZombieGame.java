@@ -12,7 +12,7 @@ import com.jumpbuttonstudios.zombiegame.screens.SplashScreen;
 public class ZombieGame extends Game {
 
 	/** If the debug lines should be drawn */
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	/**
 	 * All assets are located in here for easy access, later we will add

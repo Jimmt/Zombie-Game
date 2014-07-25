@@ -19,12 +19,12 @@ public class HudTable extends Table {
 	private Image weapon, tmp, bullet;
 	private Arm arm;
 	private Label bulletCount;
-	private int max, score;
+	private int max, score, cash;
 	private TextButton done;
 	private Label scoreLabel;
 	private ConfirmDefensePopup defensePopup;
 
-	public HudTable(Skin skin, final ConfirmDefensePopup dp) {
+	public HudTable(Skin skin, final ConfirmDefensePopup dp, final DefenseTable defenseTable) {
 		super(skin);
 
 		this.defensePopup = dp;
@@ -70,6 +70,7 @@ public class HudTable extends Table {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				done.setVisible(false);
+				defenseTable.setVisible(false);
 				dp.show(getStage());
 			}
 		});
@@ -81,7 +82,7 @@ public class HudTable extends Table {
 
 	@Override
 	public void act(float delta) {
-		scoreLabel.setText(String.valueOf(score));
+		scoreLabel.setText(String.valueOf(score) + "\n$" + cash);
 		
 		if (defensePopup.getHideButton()) {
 			done.setVisible(false);
@@ -93,6 +94,11 @@ public class HudTable extends Table {
 	public void setScore(int score){
 		this.score = score;
 	}
+	
+	public void setCash(int cash){
+		this.cash = cash;
+	}
+	
 
 	public void setWeapon(Arm arm) {
 		this.arm = arm;

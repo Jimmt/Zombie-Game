@@ -61,7 +61,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 	private ConfirmDefensePopup defensePopup = new ConfirmDefensePopup("", getSkin(), level);
 
 	/** Heads up display table, contains health UI and weapon UI */
-	private HudTable hudTable = new HudTable(getSkin(), defensePopup);
+	private HudTable hudTable = new HudTable(getSkin(), defensePopup, defenseTable);
 
 	/** Parent table, in case anything else needs to be added */
 	private Table parentTable = new Table(getSkin());
@@ -130,6 +130,10 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		defensePlacer.update(delta);
 		
 		hudTable.setScore(level.getScore());
+		hudTable.setCash(level.getCash());
+		
+		
+		
 
 		arm = level.getPlayer().getArm();
 		hudTable.setWeapon(arm);
@@ -161,6 +165,15 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		if (defenseTable.isVisible()) {
 			level.getPlayer().setInMenu(true);
+			
+			for (int i = 0; i < defenseTable.getDefenseButtons().size; i++) {
+
+				if(level.getCash() < defenseTable.getCosts()[i]){
+					defenseTable.getDefenseButtons().get(i).setDisabled(true);
+				} else {	
+					defenseTable.getDefenseButtons().get(i).setDisabled(false);
+				}
+			}
 		} else if (!defensePlacer.isPlacing() && !Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
 		}
