@@ -79,6 +79,7 @@ public class GameContactListener implements ContactListener {
 
 			if (zombie.isDead()) {
 				level.setScore(level.getScore() + 1);
+				level.setCash(level.getCash() + 1);
 				level.getDeathEffects().add(
 						new DeathEffect(zombie, new ZombieBodyParts(zombie)));
 				level.getCharacters().removeValue(zombie, true);

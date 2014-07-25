@@ -35,8 +35,9 @@ public class Assets {
 	
 	/* Player sprites */
 	@Asset
-	public static final AssetDescriptor<Texture> PLAYER_IDLE = new AssetDescriptor<Texture>(
-			"Still.png", Texture.class ),
+	public static final AssetDescriptor<Texture>
+	PLAYER_IDLE = new AssetDescriptor<Texture>(
+			"Sprites/Characters/Male/Still.png", Texture.class ),
 			PLAYER_RUN_ARMS = new AssetDescriptor<Texture>(
 					"Sprites/Characters/Male/Run/WithArms.png", Texture.class),
 			PLAYER_RUN_NOARMS = new AssetDescriptor<Texture>(

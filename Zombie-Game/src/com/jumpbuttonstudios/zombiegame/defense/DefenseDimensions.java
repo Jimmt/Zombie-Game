@@ -9,15 +9,21 @@ package com.jumpbuttonstudios.zombiegame.defense;
  */
 
 public enum DefenseDimensions {
-	BLOCK(86f, 116f), DOOR(19f, 162f), FLOOR(114f, 11f), LADDER(0f, 0f), WALL(52f, 160f);
+	BLOCK(86f, 116f, 10), DOOR(19f, 162f, 10), FLOOR(114f, 11f, 10), LADDER(0f, 0f, 10), WALL(52f, 160f, 10);
 		
 	private float width, height;
+	private int cost;
 	private static DefenseDimensions[] cache = values();
 
-	DefenseDimensions(float width, float height) {
+	DefenseDimensions(float width, float height, int cost) {
 		this.width = width;
 		this.height = height;
+		this.cost = cost;
 		
+	}
+	
+	public int getCost(){
+		return cost;
 	}
 	
 	public float getWidth(){

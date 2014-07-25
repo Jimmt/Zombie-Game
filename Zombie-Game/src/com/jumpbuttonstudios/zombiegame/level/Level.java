@@ -78,11 +78,11 @@ public class Level {
 	/** Drop spawner */
 	private DropSpawner dropSpawner;
 	
-	/** Whether in defense placing time or not*/
+	/** Whether in defense placing time or not */
 	private boolean defensePlacing;
 	
-	/** Player score*/
-	private int score;
+	/** Player score and player cash */
+	private int score, cash;
 	
 
 	public Level() {
@@ -186,8 +186,17 @@ public class Level {
 
 			}
 		}
-		;
+		
 
+	}
+	
+	/** @return {@link #cash} */
+	public int getCash(){
+		return cash;
+	}
+	
+	public void setCash(int cash){
+		this.cash = cash;
 	}
 	
 	public void enterDefensePlacing(){
