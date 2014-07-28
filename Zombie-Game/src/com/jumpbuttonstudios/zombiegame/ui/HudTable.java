@@ -1,4 +1,4 @@
-package com.jumpbuttonstudios.zombiegame.screens;
+package com.jumpbuttonstudios.zombiegame.ui;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -56,7 +56,7 @@ public class HudTable extends Table {
 		add(weapon).expandX().right();
 		add(bullet);
 		bullet.setScale(2.0f);
-		add(bulletCount);
+		add(bulletCount).width(bulletCount.getWidth() * 3);
 		row();
 
 		/** Spacing hack, spans 4 columns */

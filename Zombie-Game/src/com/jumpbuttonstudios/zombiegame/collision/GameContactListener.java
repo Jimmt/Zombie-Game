@@ -53,6 +53,7 @@ public class GameContactListener implements ContactListener {
 
 			player.modHealth(-1f);
 
+
 			if (!zombie.isGrabbed())
 				zombie.grab(player);
 
@@ -104,6 +105,8 @@ public class GameContactListener implements ContactListener {
 			level.getBloodEffects().add(new BloodPuddle(zombie));
 
 			if (zombie.isDead()) {
+				level.setScore(level.getScore() + 1);
+				level.setCash(level.getCash() + 1);
 				level.getDeathEffects().add(
 						new DeathEffect(zombie, new ZombieBodyParts(zombie)));
 				level.getCharacters().removeValue(zombie, true);

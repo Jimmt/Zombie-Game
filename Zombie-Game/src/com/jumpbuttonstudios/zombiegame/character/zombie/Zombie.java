@@ -168,6 +168,13 @@ public abstract class Zombie extends Character {
 				.getEffects().add(bloodSplatter);
 
 	}
+	
+	/** Remove HP method for melee attacks
+	 *  @param damage
+	 *  */
+	public void hurt(float damage){
+		HP -= damage;
+	}
 
 	/**
 	 * Sets up the collision filters for this object
