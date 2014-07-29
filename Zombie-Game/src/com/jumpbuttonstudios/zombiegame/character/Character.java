@@ -142,7 +142,7 @@ public class Character extends Box2DObject {
 	
 
 	/**
-	 * TODO Jimmt comments man, MOAR COMMENTS
+	 * TODO modify health by an amount (addition)
 	 * @param amt
 	 */
 	public void modHealth(float amt) {

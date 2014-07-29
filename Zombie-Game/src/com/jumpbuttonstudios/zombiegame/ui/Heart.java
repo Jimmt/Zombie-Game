@@ -1,4 +1,4 @@
-package com.jumpbuttonstudios.zombiegame.screens;
+package com.jumpbuttonstudios.zombiegame.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

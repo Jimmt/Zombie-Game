@@ -7,8 +7,12 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
@@ -56,6 +60,10 @@ public class Player extends Character implements InputProcessor {
 
 	/** The players front arm */
 	private Arm arm = new Arm(this);
+	
+	/** Timer variables for preventing melee spam */
+	private float lastMeleeTime = 999f, meleeTimeCap = 1.0f;
+	
 
 	/**
 	 * Creates a new player
@@ -65,7 +73,10 @@ public class Player extends Character implements InputProcessor {
 	public Player(Level level, World world) {
 		this.level = level;
 		this.world = world;
+		
+		
 
+		
 		/* Create animations */
 		/* Idle animation, we get the size of the sprites from this as well */
 		Vector2 tmp = addAnimation(AnimationBuilder.createb2d(1, 1, 1, Constants.scale,
@@ -82,6 +93,7 @@ public class Player extends Character implements InputProcessor {
 		/* Melee animation */
 		addAnimation(AnimationBuilder.createb2d(0.1f, 1, 5, Constants.scale, Constants.scale,
 				Assets.PLAYER_MELEE_HEAVY.fileName, null), "melee heavy");
+		
 		
 
 		/* Setup the width and height from our animations sprites */
@@ -141,6 +153,8 @@ public class Player extends Character implements InputProcessor {
 		super.update(delta);
 
 		if (!inMenu) {
+			lastMeleeTime += delta;
+			
 			/* Check if the left mouse button was pressed */
 			if (Gdx.input.isButtonPressed(Buttons.LEFT) && !getCurrentAnimation().equals(getAnimation("melee heavy"))) {
 				if (arm.getWeapon() != null) {
@@ -154,8 +168,9 @@ public class Player extends Character implements InputProcessor {
 			if (Gdx.input.isKeyPressed(Keys.SPACE) && isGrounded())
 				getStateMachine().changeState(JumpingState.instance());
 			
-			if(Gdx.input.isKeyPressed(Keys.F)){
+			if(Gdx.input.isKeyPressed(Keys.F) && lastMeleeTime > meleeTimeCap){
 				getStateMachine().changeState(MeleeState.instance());
+				lastMeleeTime = 0;
 				
 			}
 		}

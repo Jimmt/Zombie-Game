@@ -1,4 +1,4 @@
-package com.jumpbuttonstudios.zombiegame.screens;
+package com.jumpbuttonstudios.zombiegame.ui;
 
 import java.lang.reflect.Method;
 
