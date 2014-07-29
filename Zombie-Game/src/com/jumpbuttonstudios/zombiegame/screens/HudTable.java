@@ -101,6 +101,8 @@ public class HudTable extends Table {
 	
 
 	public void setWeapon(Arm arm) {
+		if (arm.getWeapon() == null)
+			return;
 		this.arm = arm;
 		tmp = new Image(arm.getWeapon().getIcon().getTexture());
 		this.weapon.setDrawable(tmp.getDrawable());

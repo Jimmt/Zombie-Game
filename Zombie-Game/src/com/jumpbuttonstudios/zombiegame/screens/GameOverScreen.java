@@ -11,7 +11,7 @@ public class GameOverScreen extends AbstractScreen {
 
 	public GameOverScreen(ZombieGame zg) {
 		super(zg);
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	@Override

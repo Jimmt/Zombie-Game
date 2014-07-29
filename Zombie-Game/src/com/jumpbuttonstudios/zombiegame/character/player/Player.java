@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -23,6 +22,7 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
 import com.jumpbuttonstudios.zombiegame.weapons.M1911;
 import com.jumpbuttonstudios.zombiegame.weapons.Magazine;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
@@ -115,7 +115,10 @@ public class Player extends Character implements InputProcessor {
 		primaryWeapon = new M1911();
 		/* Set the current weapon as the primary */
 		arm.changeWeapon(primaryWeapon);
+		
+		secondaryWeapon = new AK74U();
 
+		/* Give the player a bunch of magazines for primary weapon */
 		for (int x = 0; x < 3; x++)
 			getPrimaryMagazines().add(primaryWeapon.getMagazine().clone());
 

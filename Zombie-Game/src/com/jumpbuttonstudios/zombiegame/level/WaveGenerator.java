@@ -37,7 +37,7 @@ public class WaveGenerator {
 	public static boolean DEBUG_MODE = true;
 
 	/** For testing, turns spawning on and off */
-	public static boolean SPAWNING_ACTIVE = true;
+	public static boolean SPAWNING_ACTIVE = false;
 
 	/** Level instance */
 	Level level;
@@ -71,6 +71,7 @@ public class WaveGenerator {
 	 * iteration
 	 */
 	public void update() {
+		/* TODO Move to a better place */
 		if (Gdx.input.isKeyPressed(Keys.Q) && level.getDefensePlacing()) {
 			level.exitDefensePlacing();
 		}
