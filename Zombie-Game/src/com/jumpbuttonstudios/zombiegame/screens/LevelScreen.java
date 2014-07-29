@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -20,7 +19,6 @@ import com.jumpbuttonstudios.zombiegame.character.Arm;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
-import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
 import com.jumpbuttonstudios.zombiegame.defense.Defense;
 import com.jumpbuttonstudios.zombiegame.defense.DefenseComparator;
 import com.jumpbuttonstudios.zombiegame.defense.DefensePlacer;
@@ -110,6 +108,9 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		level.getPlayer().setHealth(3f);
 		
 		temp2 = new Vector2();
+		
+
+	
 
 	}
 
@@ -121,12 +122,17 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		cursor = new Pixmap(Gdx.files.internal("UI/Cursors/potGreen.png"));
 		redCursor = new Pixmap(Gdx.files.internal("UI/Cursors/potRed.png"));
 		Gdx.input.setCursorImage(cursor, 32, 32);
+		
+		/* Enable camera shake if not already */
+		if (!b2dCam.shakeEnabled())
+			b2dCam.enableShake(true);
 
 	}
 
 	@Override
 	public void render(float delta) {
-		super.render(delta);
+		super.render(delta);		
+
 
 		level.update(delta);
 
@@ -181,16 +187,15 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		}
 
+		b2dCam.update();
+		
 		/* Keep camera inside the level bounds */
 		if (level.getPlayer().getX() > -5 && level.getPlayer().getX() < 17) {
-			b2dCam.follow(delta, temp2.set(level.getPlayer().getX()
-					+ level.getPlayer().getWidth() / 2, 2), 0, 2.5f);
+			b2dCam.follow(level.getPlayer().getX()
+					+ level.getPlayer().getWidth() / 2, 2, 0, 2.5f);
 		}
 
-		if (!b2dCam.shakeEnabled())
-			b2dCam.enableShake(true);
 
-		b2dCam.update();
 
 		batch.setProjectionMatrix(b2dCam.combined);
 		batch.begin();
