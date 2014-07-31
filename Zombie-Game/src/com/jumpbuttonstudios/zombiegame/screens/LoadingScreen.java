@@ -27,7 +27,6 @@ import com.jumpbuttonstudios.zombiegame.AnimationBuilder;
 import com.jumpbuttonstudios.zombiegame.Constants;
 import com.jumpbuttonstudios.zombiegame.ZombieGame;
 import com.jumpbuttonstudios.zombiegame.asset.Assets;
-import com.jumpbuttonstudios.zombiegame.asset.loaders.AnimationLoader;
 
 /**
  * 
@@ -48,8 +47,6 @@ public class LoadingScreen extends AbstractScreen {
 		super(zg);
 
 		assets.getLogger().setLevel(Logger.INFO);
-		assets.setLoader(AnimatedSprite.class, new AnimationLoader(
-				new InternalFileHandleResolver()));
 		loadScreenAnimations();
 		load();
 

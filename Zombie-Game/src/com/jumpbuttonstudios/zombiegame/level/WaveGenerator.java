@@ -37,7 +37,7 @@ public class WaveGenerator {
 	public static boolean DEBUG_MODE = true;
 
 	/** For testing, turns spawning on and off */
-	public static boolean SPAWNING_ACTIVE = false;
+	public static boolean SPAWNING_ACTIVE = true;
 
 	/** Level instance */
 	Level level;

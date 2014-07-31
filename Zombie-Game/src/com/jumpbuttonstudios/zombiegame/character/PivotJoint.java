@@ -39,6 +39,11 @@ public class PivotJoint extends Vector2 {
 	/** The position relative to the parents box2d body */
 	private Vector2 relativePos = new Vector2();
 
+	/** If the pivot has been flipped on X */
+	private boolean isFlippedX;
+	/** If the pivot has been flipped on Y */
+	private boolean isFlippedY;
+
 	/**
 	 * Create a new pivot joint for a character
 	 * 
@@ -74,6 +79,20 @@ public class PivotJoint extends Vector2 {
 	public void flipPos(boolean x, boolean y) {
 		relativePos.set(x == true ? -relativePos.x : relativePos.x,
 				y == true ? -relativePos.y : relativePos.y);
+		if(x == true && !isFlippedX){
+			isFlippedX = true;
+			System.out.println("X Flipped");
+		}else if(x == true && isFlippedX){
+			isFlippedX = false;
+			System.out.println("X Not Flipped");
+		}
+		if(y == true && !isFlippedY){
+			isFlippedY = true;
+			System.out.println("Y Flipped");
+		}else if(y == true && isFlippedY){
+			isFlippedY = false;
+			System.out.println("Y Not Flipped");
+		}
 	}
 
 	/**
@@ -83,13 +102,23 @@ public class PivotJoint extends Vector2 {
 	public Character getParentCharacter() {
 		return parent;
 	}
-	
+
 	/**
 	 * 
 	 * @return the distance relative to the body centre
 	 */
 	public Vector2 getRelativePos() {
 		return relativePos;
+	}
+
+	/** @return {@link #isFlippedX()} */
+	public boolean isFlippedX() {
+		return isFlippedX;
+	}
+
+	/** @return {@link #isFlippedY()} */
+	public boolean isFlippedY() {
+		return isFlippedY;
 	}
 
 	/**

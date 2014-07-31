@@ -37,6 +37,11 @@ public abstract class Weapon {
 	public enum WeaponOrdinal {
 		PRIMARY, SECONDARY;
 	}
+	
+	/** Describes the weapon modes */
+	public enum WeaponMode{
+		SEMI_AUTOMATIC, AUTOMATIC;
+	}
 
 	/** The arm that is holding this weapon */
 	protected Arm parent;
@@ -68,7 +73,7 @@ public abstract class Weapon {
 	/** Preferences for the gunshot sound, Volume, Pitch and Pan */
 	protected float[] shotPref = new float[3];
 
-	// /** The empty magazine sound */
+	/** The empty magazine sound */
 	Sound empty = Gdx.audio.newSound(Gdx.files.internal("SFX/Click2.wav"));
 
 	/** The reload sound */
@@ -82,6 +87,9 @@ public abstract class Weapon {
 
 	/** This weapons orginal */
 	protected WeaponOrdinal weaponOrdinal;
+	
+	/** This weapons mode */
+	protected WeaponMode weaponMode;
 
 	/** The guns damage */
 	protected float damage;

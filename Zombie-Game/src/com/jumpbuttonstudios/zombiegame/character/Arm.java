@@ -16,8 +16,6 @@
 
 package com.jumpbuttonstudios.zombiegame.character;
 
-import java.awt.SecondaryLoop;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -157,8 +155,10 @@ public class Arm {
 			 */
 			if (weapon.getSprite().isFlipY()) {
 				weapon.getSprite().flip(false, true);
-				weapon.getBodyJoint().flipPos(true, false);
-				weapon.getOriginJoint().flipPos(false, true);
+				if (weapon.getBodyJoint().isFlippedX())
+					weapon.getBodyJoint().flipPos(true, false);
+				if (!weapon.getOriginJoint().isFlippedY())
+					weapon.getOriginJoint().flipPos(false, true);
 				weapon.getMuzzle().getPivot().flipPos(true, false);
 			}
 		} else {
@@ -187,8 +187,10 @@ public class Arm {
 			 */
 			if (!weapon.getSprite().isFlipY()) {
 				weapon.getSprite().flip(false, true);
-				weapon.getBodyJoint().flipPos(true, false);
-				weapon.getOriginJoint().flipPos(false, true);
+				if (!weapon.getBodyJoint().isFlippedX())
+					weapon.getBodyJoint().flipPos(true, false);
+				if (!weapon.getOriginJoint().isFlippedY())
+					weapon.getOriginJoint().flipPos(false, true);
 				weapon.getMuzzle().getPivot().flipPos(true, false);
 			}
 		}

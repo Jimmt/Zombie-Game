@@ -34,10 +34,12 @@ public class M1911 extends Weapon {
 				ZombieGame.assets.get(Assets.GUN_M1911_ARM, Texture.class));
 
 		weaponOrdinal = WeaponOrdinal.PRIMARY;
+		weaponMode = WeaponMode.SEMI_AUTOMATIC;
 
 		magazine = new M1911Magazine(this);
-		muzzleVelocity = 40; // Tweak later and get proper/appropriate number
+		muzzleVelocity = 40;
 		rof = TimeConversion.secondToNanos(0.35f);
+		rof = TimeConversion.secondToNanos(0.0035f);
 		reloadTime = TimeConversion.secondToNanos(1.25f);
 		recoil = 15;
 		accuracyMultiplier = 20;

@@ -52,8 +52,9 @@ public abstract class Zombie extends Character {
 	private boolean isDead;
 
 	/** Blood splatter */
-	Effect bloodSplatter = new Effect(AnimationBuilder.create(0.040f, 1, 5,
-			Constants.scale, Constants.scale, Assets.EFFECT_BLOOD_SPLATTER, null));
+	Effect bloodSplatter = new Effect(AnimationBuilder.create(0.050f, 1, 5,
+			Constants.scale, Constants.scale, Assets.EFFECT_BLOOD_SPRAY.fileName,
+			null));
 
 	/** The sound made when a zombie dies */
 	static Sound deathSound = Gdx.audio.newSound(Gdx.files
@@ -136,7 +137,6 @@ public abstract class Zombie extends Character {
 		}
 
 	}
-	
 
 	/**
 	 * Removes HP from the zombie and flags it dead if HP reaches zero, it also
@@ -164,15 +164,16 @@ public abstract class Zombie extends Character {
 				+ MathUtils.random(-getWidth() / 2, getWidth() / 2), getY()
 				+ MathUtils.random(-getHeight() / 2, getHeight() / 2), bullet
 				.getBody().getAngle() * MathUtils.radDeg);
-		bullet.getParent().getParentArm().getParentCharacter().getLevel()
-				.getEffects().add(bloodSplatter);
+		getLevel().getEffects().add(bloodSplatter);
 
 	}
-	
-	/** Remove HP method for melee attacks
-	 *  @param damage
-	 *  */
-	public void hurt(float damage){
+
+	/**
+	 * Remove HP method for melee attacks
+	 * 
+	 * @param damage
+	 * */
+	public void hurt(float damage) {
 		HP -= damage;
 	}
 

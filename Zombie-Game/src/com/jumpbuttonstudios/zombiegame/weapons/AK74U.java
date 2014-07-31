@@ -33,6 +33,7 @@ public class AK74U extends Weapon {
 				ZombieGame.assets.get(Assets.GUN_AK74U_ICON, Texture.class), ZombieGame.assets.get(Assets.GUN_AK74U_ARM, Texture.class));
 		
 		weaponOrdinal = WeaponOrdinal.SECONDARY;
+		weaponMode = WeaponMode.AUTOMATIC;
 
 		magazine = new AK74UMagazine(this);
 		muzzleVelocity = 50;
