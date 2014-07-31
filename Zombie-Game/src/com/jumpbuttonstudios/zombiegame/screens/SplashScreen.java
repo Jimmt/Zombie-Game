@@ -37,8 +37,12 @@ public class SplashScreen extends AbstractScreen {
 			}
 		};
 
+		if(ZombieGame.DEBUG){
+			splashImage.addAction(switchScreenAction);
+		} else {
 		splashImage.addAction(Actions.sequence(Actions.fadeIn(0.5f), Actions.delay(0.5f),
 				Actions.fadeOut(0.5f), switchScreenAction));
+		}
 		stage.addActor(splashImage);
 	}
 }

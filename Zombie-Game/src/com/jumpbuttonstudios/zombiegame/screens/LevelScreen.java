@@ -92,7 +92,6 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 		multiplexer.addProcessor(level.getPlayer());
 		multiplexer.addProcessor(stage);
 
-		hudTable.debug();
 
 		uiStage.addActor(defenseTable);
 		defensePopup.show(uiStage);
@@ -178,7 +177,7 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 			for (int i = 0; i < defenseTable.getDefenseButtons().size; i++) {
 
 				if(level.getCash() < defenseTable.getCosts()[i]){
-					defenseTable.getDefenseButtons().get(i).setDisabled(true);
+					defenseTable.getDefenseButtons().get(i).setDisabled(false);
 				} else {	
 					defenseTable.getDefenseButtons().get(i).setDisabled(false);
 				}
@@ -205,6 +204,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 		level.getDefenses().sort(defenseComp);
 
+		level.getBrain().draw(batch);
+		
 		for (Defense defense : level.getDefenses()) {
 			defense.draw(batch);
 		}
@@ -264,6 +265,8 @@ public class LevelScreen extends AbstractScreen implements InputProcessor {
 
 			sr.end();
 
+			hudTable.debug();
+			defenseTable.debug();
 			Table.drawDebug(stage);
 			Table.drawDebug(uiStage);
 		}

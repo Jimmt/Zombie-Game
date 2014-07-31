@@ -31,6 +31,7 @@ public class CollisionFilters {
 	public static short BOUNDARY = 0x00016;
 	public static short BODYPART = 0x00032;
 	public static short DROP = 0x00064;
+	public static short BRAIN = 0x00128;
 
 
 }
