@@ -71,9 +71,7 @@ public class WaveGenerator {
 	 * iteration
 	 */
 	public void update() {
-		if (Gdx.input.isKeyPressed(Keys.Q) && level.getDefensePlacing()) {
-			level.exitDefensePlacing();
-		}
+
 		if (SPAWNING_ACTIVE)
 			/* Check if the wave has finished */
 			if (!waveFinished()) {

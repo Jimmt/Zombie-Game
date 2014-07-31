@@ -160,7 +160,6 @@ public class DefenseTable extends Table {
 			add("$" + String.valueOf(DefenseDimensions.getCache()[i].getCost()));
 		}
 
-		debug();
 	}
 
 	public Array<ImageButton> getDefenseButtons() {

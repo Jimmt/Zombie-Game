@@ -26,6 +26,7 @@ import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
 import com.jumpbuttonstudios.zombiegame.collision.CollisionFilters;
 import com.jumpbuttonstudios.zombiegame.level.Level;
+import com.jumpbuttonstudios.zombiegame.weapons.AK74U;
 import com.jumpbuttonstudios.zombiegame.weapons.M1911;
 import com.jumpbuttonstudios.zombiegame.weapons.Magazine;
 import com.jumpbuttonstudios.zombiegame.weapons.Weapon;
@@ -72,7 +73,6 @@ public class Player extends Character implements InputProcessor {
 	public Player(Level level, World world) {
 		this.level = level;
 		this.world = world;
-		
 		
 
 		
@@ -123,7 +123,7 @@ public class Player extends Character implements InputProcessor {
 		Pivots.addPivotJoint("Dragunov", null, .9f, 0);
 
 		/* Setup primary weapon */
-		primaryWeapon = new M1911();
+		primaryWeapon = new AK74U();
 		/* Set the current weapon as the primary */
 		arm.changeWeapon(primaryWeapon);
 

@@ -1,9 +1,12 @@
 package com.jumpbuttonstudios.zombiegame.collision;
 
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import com.jumpbuttonstudios.zombiegame.Brain;
 import com.jumpbuttonstudios.zombiegame.ai.state.zombie.AttackState;
 import com.jumpbuttonstudios.zombiegame.character.player.Player;
 import com.jumpbuttonstudios.zombiegame.character.zombie.Zombie;
@@ -36,6 +39,8 @@ public class GameContactListener implements ContactListener {
 	public void beginContact(Contact contact) {
 		Object A = contact.getFixtureA().getBody().getUserData();
 		Object B = contact.getFixtureB().getBody().getUserData();
+		Body bodyA = contact.getFixtureA().getBody();
+		Body bodyB = contact.getFixtureB().getBody();
 
 		if (A instanceof Zombie && B instanceof Player) {
 			Zombie zombie = (Zombie) A;
@@ -52,7 +57,6 @@ public class GameContactListener implements ContactListener {
 			Zombie zombie = (Zombie) B;
 
 			player.modHealth(-1f);
-
 
 			if (!zombie.isGrabbed())
 				zombie.grab(player);
@@ -71,7 +75,6 @@ public class GameContactListener implements ContactListener {
 			} else {
 				zombie.hurt(bullet, false);
 			}
-			
 
 			level.factory.deleteBody(bullet.getBody());
 			level.bullets.removeValue(bullet, true);
@@ -81,8 +84,7 @@ public class GameContactListener implements ContactListener {
 			if (zombie.isDead()) {
 				level.setScore(level.getScore() + 1);
 				level.setCash(level.getCash() + 1);
-				level.getDeathEffects().add(
-						new DeathEffect(zombie, new ZombieBodyParts(zombie)));
+				level.getDeathEffects().add(new DeathEffect(zombie, new ZombieBodyParts(zombie)));
 				level.getCharacters().removeValue(zombie, true);
 				level.factory.deleteBody(zombie.getBody());
 			}
@@ -107,9 +109,9 @@ public class GameContactListener implements ContactListener {
 			if (zombie.isDead()) {
 				level.setScore(level.getScore() + 1);
 				level.setCash(level.getCash() + 1);
-				level.getDeathEffects().add(
-						new DeathEffect(zombie, new ZombieBodyParts(zombie)));
+				level.getDeathEffects().add(new DeathEffect(zombie, new ZombieBodyParts(zombie)));
 				level.getCharacters().removeValue(zombie, true);
+
 				level.factory.deleteBody(zombie.getBody());
 			}
 
@@ -127,6 +129,14 @@ public class GameContactListener implements ContactListener {
 
 			drop.pickup(player);
 
+		} else if (A instanceof Zombie && B instanceof Brain || B instanceof Zombie
+				&& A instanceof Brain) {
+			DistanceJointDef distanceJointDef = new DistanceJointDef();
+			distanceJointDef.bodyA = bodyA;
+			distanceJointDef.bodyB = bodyB;
+			distanceJointDef.length = 2f;
+			level.setJointDef(distanceJointDef);
+			level.setCreateJoint(true);
 		}
 
 	}
@@ -146,16 +156,16 @@ public class GameContactListener implements ContactListener {
 					Zombie zombie = (Zombie) A;
 					Player player = (Player) B;
 
-					if(zombie.isGrabbed())
+					if (zombie.isGrabbed())
 						zombie.release(player);
-					
+
 					zombie.setTargetInRange(false);
 
 				} else if (B instanceof Zombie && A instanceof Player) {
 					Player player = (Player) A;
 					Zombie zombie = (Zombie) B;
-					
-					if(zombie.isGrabbed())
+
+					if (zombie.isGrabbed())
 						zombie.release(player);
 
 					zombie.setTargetInRange(false);

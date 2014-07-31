@@ -16,11 +16,13 @@
 
 package com.jumpbuttonstudios.zombiegame.level;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.utils.Array;
 import com.gibbo.gameutil.box2d.Box2DFactory;
+import com.jumpbuttonstudios.zombiegame.Brain;
 import com.jumpbuttonstudios.zombiegame.character.Character;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint;
 import com.jumpbuttonstudios.zombiegame.character.PivotJoint.Pivots;
@@ -69,21 +71,32 @@ public class Level {
 	/** All the defense in the level */
 	private Array<Defense> defenses = new Array<Defense>();
 
+	/** Joint to create (set in contact listener) */
+	private JointDef jointDef;
+
 	/** The game scene */
 	public Forest forest;
 
 	/** The wave generator for spawning zombies */
 	WaveGenerator waveGenerator;
-	
+
 	/** Drop spawner */
 	private DropSpawner dropSpawner;
-	
+
 	/** Whether in defense placing time or not */
 	private boolean defensePlacing;
-	
+
 	/** Player score and player cash */
 	private int score, cash;
+
+	/** The brain */
+	private Brain brain;
+
+	/** Joint between brain and zombie */
+	private Joint joint;
 	
+	/** Whether to create joint between brain and zombie (set in contact listener) */
+	private boolean createJoint;
 
 	public Level() {
 
@@ -97,9 +110,12 @@ public class Level {
 
 		/* Create wave generator */
 		waveGenerator = new WaveGenerator(this);
-		
-		/** Create drop spawner */
+
+		/* Create drop spawner */
 		dropSpawner = new DropSpawner(this);
+
+		/* Instantiate brain */
+		brain = new Brain(getWorld());
 
 	}
 
@@ -110,9 +126,6 @@ public class Level {
 	 */
 	public void update(float delta) {
 		getWorld().step(1f / 60f, 5, 8);
-		
-		
-		
 
 		/* Update wave generator to create waves */
 		waveGenerator.update();
@@ -120,8 +133,8 @@ public class Level {
 		/* Update the Box2D factory so things get deleted */
 		factory.update();
 
-		
-		
+		brain.update(delta);
+
 		/*
 		 * Update all the defined pivots to keep them updated in world
 		 * coordinats
@@ -140,18 +153,24 @@ public class Level {
 
 		/* Update all the drops in the level */
 		for (Drop<?> drop : drops) {
-			if(!drop.isCreated())
+			if (!drop.isCreated())
 				drop.create();
-			if (drop.isPickedUp()){
+			if (drop.isPickedUp()) {
 				drops.removeValue(drop, true);
 				factory.deleteBody(drop.getBody());
-			}else if(drop.hasExpired())
-				if(drop.fade(delta)){
+			} else if (drop.hasExpired())
+				if (drop.fade(delta)) {
 					drops.removeValue(drop, true);
 					factory.deleteBody(drop.getBody());
 				}
-					
+
 		}
+
+		if (createJoint) {
+			joint = getWorld().createJoint(jointDef);
+			createJoint = false;
+		}
+
 
 		/*
 		 * Update all the games characters, this includes the player which is
@@ -186,40 +205,64 @@ public class Level {
 
 			}
 		}
-		
 
 	}
 	
+	public void setCreateJoint(boolean create){
+		createJoint = create;
+	}
+
+	public JointDef getJointDef() {
+		return jointDef;
+	}
+
+	public void setJointDef(JointDef jointDef) {
+		this.jointDef = jointDef;
+	}
+
+	public Joint getJoint() {
+		return joint;
+	}
+
+	public void setJoint(Joint joint) {
+		this.joint = joint;
+	}
+
+	/** @return {@link #brain} */
+	public Brain getBrain() {
+		return brain;
+	}
+
 	/** @return {@link #cash} */
-	public int getCash(){
+	public int getCash() {
 		return cash;
 	}
-	
-	public void setCash(int cash){
+
+	public void setCash(int cash) {
 		this.cash = cash;
 	}
-	
-	public void enterDefensePlacing(){
+
+	public void enterDefensePlacing() {
 		defensePlacing = true;
 	}
-	
-	public void exitDefensePlacing(){
+
+	public void exitDefensePlacing() {
 		defensePlacing = false;
 		waveGenerator.nextWave();
 	}
-	public boolean getDefensePlacing(){
+
+	public boolean getDefensePlacing() {
 		return defensePlacing;
 	}
-	
-	public void setScore(int score){
+
+	public void setScore(int score) {
 		this.score = score;
 	}
-	
-	public int getScore(){
+
+	public int getScore() {
 		return score;
 	}
-	
-	
+
 	/** @return {@link #dropSpawner} */
 	public DropSpawner getDropSpawner() {
 		return dropSpawner;
