@@ -74,7 +74,7 @@ public class Bullet extends Box2DObject {
 	public void create(Vector2 direction) {
 
 		createBody(parent.getParentArm().getParentCharacter().getLevel().getWorld(), BodyType.DynamicBody, Vector2.Zero, false);
-		createPolyFixture(0.00001f, 0.0000001f,
+		createPolyFixture(sprite.getWidth() / 2, sprite.getHeight() / 2,
 				0.15f, 0, 0, false);
 		getBody().setGravityScale(0.0f);
 		getBody().setBullet(true);
